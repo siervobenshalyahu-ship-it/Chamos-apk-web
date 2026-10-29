@@ -162,6 +162,21 @@ h2.one { white-space: nowrap; font-size: clamp(20px, 6.2vw, 40px); }
 .stage-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px 24px; flex-wrap: wrap; margin-top: 16px; color: var(--muted); font-size: 14px; }
 .stage-meta a { color: var(--amber); font-weight: 700; text-underline-offset: 3px; }
 
+/* Generaciones */
+.gen { display: grid; gap: 44px 64px; grid-template-columns: minmax(0, 380px) 1fr; align-items: center; }
+.gen figure { display: grid; justify-items: center; }
+.gen figure img { width: 100%; max-width: 380px; height: auto; filter: drop-shadow(0 24px 40px rgba(0,0,0,.5)); }
+.gen h2 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.08; }
+.gen h2 em { color: var(--amber); font-style: italic; }
+.gen .lead { margin-top: 16px; }
+.gen-list { margin: 28px 0 0; padding: 0; list-style: none; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.gen-list li { display: grid; grid-template-columns: minmax(100px, 130px) 1fr; gap: 4px 18px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.gen-list b { font-family: var(--font-serif); font-weight: 400; font-size: 21px; color: var(--amber); }
+.gen-list span { color: #d3d9e6; font-size: 16px; }
+.gen-close { margin-top: 24px; font-family: var(--font-serif); font-style: italic; font-size: clamp(20px, 3.4vw, 26px); line-height: 1.3; color: var(--ink); }
+@media (max-width: 760px) { .gen { grid-template-columns: 1fr; } .gen figure img { max-width: 300px; } }
+@media (max-width: 480px) { .gen-list li { grid-template-columns: 1fr; } }
+
 /* Pie */
 footer { padding-block: 44px 60px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
 footer .wrap { display: grid; gap: 8px; }
@@ -270,6 +285,25 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <div class="wrap">
     <p>Una arepa con café, una empanada con una maltica bien fría y la conversación que no se acaba.</p>
     <small>Chamos conecta con lo que somos</small>
+  </div>
+</section>
+
+<section id="generaciones">
+  <div class="wrap gen">
+    <figure>
+      <img src="img/chamos-generaciones.png" width="640" height="615" loading="lazy" alt="Ícono de Chamos: dos jóvenes chocando los puños, dos abuelos detrás de ellos y una niña al frente, sobre la bandera de Venezuela">
+    </figure>
+    <div>
+      <p class="kicker">Todas las generaciones</p>
+      <h2>Porque los viejos también <em>somos chamos</em></h2>
+      <p class="lead">Con la experiencia que da la vida, y las ganas de siempre. Aquí caben los abuelos y los nietos, la calle de hoy y las historias de ayer. Seguiremos siendo chamos, generación tras generación.</p>
+      <ul class="gen-list">
+        <li><b>Los abuelos</b><span>La experiencia, los cuentos de cuando éramos jóvenes y el cariño de siempre.</span></li>
+        <li><b>Los chamos</b><span>La calle, la música y el habla de hoy, sin perder la raíz.</span></li>
+        <li><b>Los más pequeños</b><span>La niña que apenas aprende a escribir también tiene su lugar en la conversación.</span></li>
+      </ul>
+      <p class="gen-close">Se nace chamo, y se sigue siendo chamo toda la vida.</p>
+    </div>
   </div>
 </section>
 
