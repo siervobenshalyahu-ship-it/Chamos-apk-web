@@ -181,6 +181,8 @@ h2.one { white-space: nowrap; font-size: clamp(20px, 6.2vw, 40px); }
 footer { padding-block: 44px 60px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
 footer .wrap { display: grid; gap: 8px; }
 footer .creador { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--line); }
+footer .verifica summary { cursor: pointer; color: var(--ink); }
+footer .verifica code { display: block; margin: 6px 0; font-size: 12px; word-break: break-all; color: var(--ink); }
 footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -337,6 +339,12 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <img class="creador" src="img/creador.jpg" alt="Logo del creador de Chamos: ilustración de un joven con los brazos alzados" width="72" height="72">
     <b>CHAMOS</b>
     <p>Hecha por venezolanos, para venezolanos.</p>
+    <details class="verifica">
+      <summary>¿Cómo sé que mi Chamos es la oficial?</summary>
+      <p>Descarga Chamos solo desde esta página. La app oficial está firmada con esta huella SHA-256:</p>
+      <code>7C:13:B8:F2:8E:A5:11:A3:8E:CE:5B:DE:FD:F9:10:72:E8:A5:84:CD:E9:2B:96:A7:16:29:07:A4:8F:EE:69:31</code>
+      <p>Si una copia muestra el aviso "Copia no oficial", bórrala y descarga la oficial aquí.</p>
+    </details>
     <p id="credits">Chamos es una aplicación de código abierto construida sobre Element X Android (licencia AGPL-3.0). No está afiliada a Element, Meta ni a otras aplicaciones de mensajería.</p>
   </div>
 </footer>
