@@ -145,7 +145,7 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
       <li><b>Cantos:</b> con las 3 cartas que recibes en cada vuelta puedes cantar una combinación antes de tirar tu primera carta. Lo que no cantas no se cobra, y los puntos se suman al cerrar la mano, antes de contar las cartas. Vale el canto más alto de tu mano:
         <ul>
           <li><b>Ronda</b> (dos cartas iguales y una distinta): 1 punto del 1 al 7, 2 la sota, 3 el caballo, 4 el rey.</li>
-          <li><b>Trivilín</b> (tres iguales): 5 puntos.</li>
+          <li><b>Trivilín</b> (tres iguales): mata la partida. Quien lo canta gana al instante.</li>
           <li><b>Patrulla</b> (tres números seguidos, como 4-5-6 o 7-sota-caballo): 6 puntos.</li>
           <li><b>Vigía</b> (dos iguales y una carta de número vecino, como 6-6-7): 7 puntos.</li>
           <li><b>Registro</b> (1, caballo y rey): 8 puntos.</li>
@@ -227,6 +227,8 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
   }
 
   function say(html) { $("log").innerHTML = html; }
+
+  function cantoLabel(bc) { return bc.name === "Trivilín" ? "Trivilín, ¡mata la partida!" : bc.name + " (+" + bc.pts + ")"; }
 
   /* Mejor canto de una mano de 3 cartas (o null). */
   function bestCanto(h) {
@@ -345,10 +347,14 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
   function botTurn() {
     if (S.hands[1].length === 3 && !S.canted[1]) {
       var bc = bestCanto(S.hands[1]);
+      if (bc && bc.name === "Trivilín") {
+        say('<b>Don Pedro</b> cantó <span class="pts">' + cantoLabel(bc) + "</span>");
+        return endGame(1, "Don Pedro cantó Trivilín y mató la partida.");
+      }
       if (bc) {
         S.pend[1] += bc.pts;
         S.canted[1] = true;
-        S.prefix = '<b>Don Pedro</b> cantó <span class="pts">' + bc.name + " (+" + bc.pts + ")</span> y ";
+        S.prefix = '<b>Don Pedro</b> cantó <span class="pts">' + cantoLabel(bc) + "</span> y ";
       }
     }
     play(1, botChoose(1));
@@ -407,16 +413,17 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
     renderScore();
   }
 
-  function endGame(w) {
+  function endGame(w, why) {
     S.over = true;
     clearTimeout(timer);
     renderScore();
     render();
-    showEnd(w);
+    showEnd(w, why);
   }
-  function showEnd(w) {
+  function showEnd(w, why) {
     finished = true;
     var h = '<div class="card"><h2 class="' + (w === 0 ? "win" : "lose") + '">' + (w === 0 ? "¡Ganaste, chamo!" : "Ganó Don Pedro") + "</h2>";
+    if (why) h += "<p>" + why + "</p>";
     h += "<p>Marcador final: " + total[0] + " – " + total[1] + ".</p>";
     h += '<button class="btn" id="again">Jugar otra partida</button></div>';
     $("overlay").innerHTML = h;
@@ -468,7 +475,7 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 
     var hint = "", bc = (myTurn && S.hands[0].length === 3 && !S.canted[0]) ? bestCanto(S.hands[0]) : null;
     if (bc) {
-      hint = '<button type="button" class="btn" id="cantar">Cantar ' + bc.name + " (+" + bc.pts + ')</button><br>Cántalo antes de tirar o no lo cobras.';
+      hint = '<button type="button" class="btn" id="cantar">Cantar ' + cantoLabel(bc) + "</button><br>Cántalo antes de tirar o no lo cobras.";
     } else if (myTurn) {
       var cai = S.hands[0].filter(function (c) { return isCaida(0, c.r); });
       if (cai.length) hint = "<b>¡Tienes caída!</b> Tira el " + cai[0].r + " sobre la carta marcada.";
@@ -478,9 +485,13 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
     $("hint").innerHTML = hint;
     if (bc) {
       $("cantar").onclick = function () {
+        if (bc.name === "Trivilín") {
+          say("<b>Tú</b> cantaste <span class='pts'>" + cantoLabel(bc) + "</span>");
+          return endGame(0, "Cantaste Trivilín y mataste la partida.");
+        }
         S.pend[0] += bc.pts;
         S.canted[0] = true;
-        say("<b>Tú</b> cantaste <span class='pts'>" + bc.name + " (+" + bc.pts + ")</span>. Ahora tira una carta.");
+        say("<b>Tú</b> cantaste <span class='pts'>" + cantoLabel(bc) + "</span>. Ahora tira una carta.");
         render();
       };
     }
