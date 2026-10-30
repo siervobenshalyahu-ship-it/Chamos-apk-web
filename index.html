@@ -180,7 +180,10 @@ h2.one { white-space: nowrap; font-size: clamp(20px, 6.2vw, 40px); }
 /* Pie */
 footer { padding-block: 44px 60px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
 footer .wrap { display: grid; gap: 8px; }
-footer .creador { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--line); }
+footer .marca { display: grid; grid-template-columns: 128px 1fr; grid-template-rows: 1fr 1fr; column-gap: 16px; }
+footer .marca .creador { grid-column: 1; grid-row: 1 / span 2; width: 128px; height: 100%; min-height: 104px; border-radius: 14px; object-fit: cover; border: 2px solid var(--line); }
+footer .marca b { grid-column: 2; grid-row: 1; align-self: end; }
+footer .marca p { grid-column: 2; grid-row: 2; align-self: start; margin: 6px 0 0; }
 footer .verifica summary { cursor: pointer; color: var(--ink); }
 footer .verifica code { display: block; margin: 6px 0; font-size: 12px; word-break: break-all; color: var(--ink); }
 footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
@@ -336,9 +339,11 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 <div class="flag" aria-hidden="true"></div>
 <footer>
   <div class="wrap">
-    <img class="creador" src="img/creador.jpg" alt="Logo del creador de Chamos: ilustración de un joven con los brazos alzados" width="72" height="72">
-    <b>EL HEBREO VENEZOLANO</b>
-    <p>Hecha por venezolanos, para venezolanos.</p>
+    <div class="marca">
+      <img class="creador" src="img/creador.jpg" alt="Logo del creador de Chamos: ilustración de un joven con los brazos alzados" width="128" height="104">
+      <b>EL HEBREO VENEZOLANO</b>
+      <p>Hecha por venezolanos, para venezolanos.</p>
+    </div>
     <details class="verifica">
       <summary>¿Cómo sé que mi Chamos es la oficial?</summary>
       <p>Descarga Chamos solo desde esta página. La app oficial está firmada con esta huella SHA-256:</p>
