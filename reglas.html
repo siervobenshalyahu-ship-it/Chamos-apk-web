@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Reglas, cantos y puntos de los juegos de Chamos: Caída y Dominó.">
+<title>Reglas Chamos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+/* Concepto: el reglamento pegado en la pared de la mesa de juego, de noche. Mismo azul noche y acento ámbar que el dominó y la caída. */
+:root {
+  --bg: #080c18;
+  --panel: #0e1424;
+  --panel-2: #121a30;
+  --line: rgba(255, 255, 255, .10);
+  --ink: #eef1f7;
+  --muted: #9aa4b8;
+  --amber: #f4b54a;
+  --good: #5fd39a;
+  --font-serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-block: 14px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--amber); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.app { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+.top a { text-decoration: none; color: var(--muted); font-weight: 600; }
+.top a:hover { color: var(--ink); }
+h1 { font-family: var(--font-serif); font-size: 32px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
+.tabs button { background: none; border: 0; border-radius: 8px; padding: 10px 8px; font-weight: 800; color: var(--muted); cursor: pointer; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-selected="true"] { background: var(--amber); color: #1a1205; }
+
+.sheet { display: flex; flex-direction: column; gap: 14px; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.box h2 { font-family: var(--font-serif); font-size: 22px; line-height: 1.2; margin: 0 0 8px; font-weight: 700; }
+.box p { margin: 0 0 8px; color: #cdd4e3; }
+.box p:last-child { margin-bottom: 0; }
+.box ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; color: #cdd4e3; }
+.box b { color: var(--ink); }
+.note { color: var(--muted); font-size: 13px; }
+
+.tw { overflow-x: auto; margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--panel-2); color: var(--muted); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-weight: 800; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.pt { text-align: right; font-family: var(--font-serif); font-weight: 700; font-size: 18px; color: var(--amber); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th.pt { text-align: right; }
+td.nm { font-weight: 800; white-space: nowrap; }
+td small { display: block; color: var(--muted); font-size: 12px; }
+
+.play { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.btn { display: inline-block; background: var(--amber); color: #1a1205; text-decoration: none; border-radius: 8px; padding: 9px 14px; font-weight: 800; }
+.btn:hover { filter: brightness(1.08); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 380px) { h1 { font-size: 27px; } th, td { padding: 8px 9px; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="top">
+    <a href="index.html">← Volver a Chamos</a>
+    <span><a href="caida.html">Jugar caída</a> · <a href="domino.html">Jugar dominó</a></span>
+  </div>
+
+  <header>
+    <h1>Reglas de los juegos</h1>
+    <p class="sub">Cantos, puntos y cómo se juega cada uno.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Juegos">
+    <button role="tab" id="tab-caida" aria-controls="p-caida" aria-selected="true">Caída</button>
+    <button role="tab" id="tab-domino" aria-controls="p-domino" aria-selected="false" tabindex="-1">Dominó</button>
+  </div>
+
+  <!-- ============ CAÍDA ============ -->
+  <div class="sheet" id="p-caida" role="tabpanel" aria-labelledby="tab-caida">
+
+    <section class="box">
+      <h2>Lo básico</h2>
+      <ul>
+        <li>Baraja española de <b>40 cartas</b>: del 1 al 7, sota (10), caballo (11) y rey (12), en oros, copas, espadas y bastos. No hay 8 ni 9. El palo no importa, solo el número.</li>
+        <li>Se juega de 1 contra 1. Gana quien llegue primero a la meta (24 puntos, o la que se elija).</li>
+        <li>Se ponen <b>4 cartas boca arriba</b> en la mesa y cada jugador recibe <b>3</b>. Al acabarse, se reparten 3 más, hasta terminar el mazo: son 6 vueltas por mano.</li>
+        <li>Empieza el jugador que está a la derecha de quien reparte, y quien reparte juega último.</li>
+        <li>En tu turno tiras una carta. No robas ni pasas.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Capturar cartas</h2>
+      <ul>
+        <li>Si no hay en la mesa otra carta del mismo número que la tuya, se queda allí.</li>
+        <li>Si la hay, te la llevas. Si hay dos del mismo número, te llevas las dos.</li>
+        <li><b>Escalera:</b> después de llevarte la carta, sigues subiendo y te llevas la siguiente si está en la mesa, y así hasta que falte una. Si tiras un 4 y hay 4, 5 y 6, te llevas las tres. El 7 y la sota son seguidos. No se vuelve del rey al 1.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Puntos de las jugadas</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Jugada</th><th>Cómo se hace</th><th class="pt">Puntos</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Caída</td><td>Tiras el mismo número que la carta que acaba de dejar el otro jugador. Te la llevas.<small>Vale según la carta, ver la tabla de abajo. No hay caída en la primera jugada de una vuelta.</small></td><td class="pt">1 a 4</td></tr>
+          <tr><td class="nm">Mesa limpia</td><td>Tu jugada deja la mesa vacía.<small>No cuenta en la última jugada de la mano. Se suma a la caída si las dos coinciden.</small></td><td class="pt">4</td></tr>
+          <tr><td class="nm">Mal echada</td><td>Al poner la mesa, quien reparte no acierta ningún número de su cuenta.<small>El primero en jugar suma 1 punto.</small></td><td class="pt">1</td></tr>
+          <tr><td class="nm">Cartas</td><td>Al acabar la mano cada jugador cuenta su montón. Cada carta por encima de 20 vale un punto.<small>Las cartas que queden en la mesa son de quien hizo la última captura.</small></td><td class="pt">+1 c/u</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px"><b>Valor según la carta</b> (caída y ronda):</p>
+      <div class="tw"><table>
+        <thead><tr><th>Carta</th><th class="pt">Puntos</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">1 al 7</td><td class="pt">1</td></tr>
+          <tr><td class="nm">Sota (10)</td><td class="pt">2</td></tr>
+          <tr><td class="nm">Caballo (11)</td><td class="pt">3</td></tr>
+          <tr><td class="nm">Rey (12)</td><td class="pt">4</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="box">
+      <h2>Echar la mesa</h2>
+      <p>Quien reparte pone las 4 cartas de la mesa contando <b>1-2-3-4</b> o <b>4-3-2-1</b>. Por cada carta cuyo número coincida con el que toca, suma ese número en puntos. Si no acierta ninguna, es mal echada y el primero en jugar suma 1 punto.</p>
+      <p class="note">La guía que usamos no precisa cuántos puntos suma quien acierta; aquí vale el número de la carta.</p>
+    </section>
+
+    <section class="box">
+      <h2>Los cantos</h2>
+      <p>Con las 3 cartas que recibes en cada vuelta puedes cantar una combinación, <b>antes de tirar tu primera carta</b>. Lo que no cantas no se cobra. Los puntos se suman al cerrar la mano, antes de contar las cartas. Si tienes más de un canto, cuenta el más alto.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Canto</th><th>Cartas</th><th class="pt">Puntos</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Ronda</td><td>Dos cartas iguales y una distinta.<small>Ejemplo: 5-5-2</small></td><td class="pt">1 a 4<small style="font-family:var(--font-sans);font-size:11px;font-weight:600">según la pareja</small></td></tr>
+          <tr><td class="nm">Trivilín</td><td>Tres cartas iguales.<small>Ejemplo: 3-3-3. Si es de reyes, o si lo tienes en la primera y la última vuelta, mata la partida y ganas al instante.</small></td><td class="pt">5</td></tr>
+          <tr><td class="nm">Patrulla</td><td>Tres números seguidos.<small>Ejemplo: 4-5-6, o 7-sota-caballo.</small></td><td class="pt">6</td></tr>
+          <tr><td class="nm">Vigía</td><td>Dos cartas iguales y una de número vecino.<small>Ejemplo: 6-6-7 o 3-3-2.</small></td><td class="pt">7</td></tr>
+          <tr><td class="nm">Registro</td><td>1, caballo y rey.</td><td class="pt">8</td></tr>
+          <tr><td class="nm">Registríco</td><td>1, sota y caballo.</td><td class="pt">10</td></tr>
+          <tr><td class="nm">Casa chica</td><td>1, caballo y caballo.</td><td class="pt">11</td></tr>
+          <tr><td class="nm">Casa grande</td><td>1, rey y rey.</td><td class="pt">12</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px"><b>Cantos iguales:</b> si los dos cantan lo mismo en la misma vuelta, solo cobra uno. En una ronda gana la que tenga la tercera carta más alta. En los demás casos pierde quien reparte.</p>
+    </section>
+
+    <section class="box">
+      <h2>Ganar la partida</h2>
+      <ul>
+        <li>Gana el primero que llegue a la meta, incluso a mitad de mano.</li>
+        <li>Si los dos pasan de la meta al cerrar la mano, gana quien tenga más puntos. Si empatan, se saca carta y gana la más alta.</li>
+      </ul>
+      <div class="play" style="margin-top:12px"><a class="btn" href="caida.html">Jugar caída</a></div>
+    </section>
+  </div>
+
+  <!-- ============ DOMINÓ ============ -->
+  <div class="sheet" id="p-domino" role="tabpanel" aria-labelledby="tab-domino" hidden>
+
+    <section class="box">
+      <h2>Lo básico</h2>
+      <ul>
+        <li>Mesa de cuatro, en parejas: tú y tu compa contra la otra pareja.</li>
+        <li>Son <b>28 fichas</b>, del doble blanco al doble seis. Cada jugador recibe 7 y no se roba.</li>
+        <li>La primera mano abre quien tenga el doble seis. Después abre la pareja que ganó la mano anterior.</li>
+        <li>Se juega en sentido contrario a las agujas del reloj.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Cómo se juega</h2>
+      <ul>
+        <li>En tu turno pones una ficha que coincida con uno de los dos extremos de la cadena.</li>
+        <li>Si no tienes ninguna que sirva, <b>pasas</b>.</li>
+        <li>Termina la mano cuando alguien se queda sin fichas (se pega) o cuando se <b>tranca</b>: cuatro pases seguidos.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Puntos</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Final de mano</th><th>Quién suma</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Alguien se pega</td><td>Su pareja suma los puntos de todas las fichas que quedan en la mesa, en las manos de los demás.</td></tr>
+          <tr><td class="nm">Se tranca</td><td>Gana la pareja con menos puntos en las fichas que le quedan, y suma el total de todas las fichas que quedan.</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px"><b>Cada ficha vale</b> la suma de sus dos lados. Por ejemplo, el 6-4 vale 10 puntos y el doble blanco vale 0.</p>
+    </section>
+
+    <section class="box">
+      <h2>Ganar la partida</h2>
+      <ul>
+        <li>Gana la primera pareja que llegue a la meta. En el juego se puede elegir 50, 100 o 200 puntos (por defecto 100).</li>
+      </ul>
+      <div class="play" style="margin-top:12px"><a class="btn" href="domino.html">Jugar dominó</a></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino")];
+  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino")];
+  var keys = ["caida", "domino"];
+
+  function show(i, focus) {
+    tabs.forEach(function (t, j) {
+      t.setAttribute("aria-selected", j === i ? "true" : "false");
+      t.tabIndex = j === i ? 0 : -1;
+      panels[j].hidden = j !== i;
+    });
+    if (focus) tabs[i].focus();
+    try { history.replaceState(null, "", "#" + keys[i]); } catch (e) {}
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { show(i, false); window.scrollTo(0, 0); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); show((i + 1) % 2, true); }
+    });
+  });
+  var h = (location.hash || "").replace("#", "");
+  if (h === "domino") show(1, false);
+})();
+</script>
+</body>
+</html>
