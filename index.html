@@ -138,12 +138,16 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .quote small { display: block; margin-top: 20px; color: var(--muted); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; }
 
 /* Diccionario */
-.dict { display: grid; gap: 0 56px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
-.term { display: grid; grid-template-columns: minmax(110px, 150px) 1fr; gap: 6px 18px; padding: 16px 0; border-top: 1px solid var(--line); min-width: 0; }
-.term dt { font-family: var(--font-serif); font-size: 21px; color: var(--amber); }
-.term dd { color: #d3d9e6; font-size: 16px; }
-.term dd em { display: block; color: var(--muted); font-size: 14px; margin-top: 2px; }
-@media (max-width: 480px) { .term { grid-template-columns: 1fr; } }
+.dict-car { position: relative; }
+.dict { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 6px 2px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.dict::-webkit-scrollbar { display: none; }
+.term { flex: 0 0 min(82vw, 340px); scroll-snap-align: start; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px 22px; display: flex; flex-direction: column; gap: 10px; min-height: 190px; }
+.term .pal { font-family: var(--font-serif); font-size: 26px; color: var(--amber); }
+.term .sig { color: #d3d9e6; font-size: 16px; }
+.term .ej { color: var(--muted); font-size: 14px; font-style: italic; margin-top: auto; }
+.dict-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 4px; }
+.dict-nav button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 20px; cursor: pointer; }
+.dict-nav span { color: var(--muted); font-size: 13px; min-width: 64px; text-align: center; }
 .note { margin-top: 20px; color: var(--muted); font-size: 14px; }
 
 /* Reproductor */
@@ -343,7 +347,10 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <p class="kicker">Diccionario chamo</p>
       <h2>Para entender cómo se habla por aquí</h2>
     </div>
-    <dl class="dict" id="dict"></dl>
+    <div class="dict-car">
+      <div class="dict" id="dict" tabindex="0" aria-label="Frases del argot venezolano"></div>
+      <div class="dict-nav"><button type="button" id="dprev" aria-label="Anterior">‹</button><span id="dcont"></span><button type="button" id="dnext" aria-label="Siguiente">›</button></div>
+    </div>
     <p class="note">El habla cambia entre regiones: un mismo dicho puede sonar distinto en Maracaibo, Caracas o Mérida.</p>
   </div>
 </section>
@@ -572,7 +579,14 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     ["Guayoyo", "Café ligero, de todo el día.", "«Un guayoyito, por favor.»"],
     ["Ni fu ni fa", "Ni bueno ni malo.", "«Quedó ni fu ni fa.»"]
   ];
-  document.getElementById("dict").innerHTML = terms.map(function (t) { return '<div class="term"><dt>' + t[0] + "</dt><dd>" + t[1] + "<em>" + t[2] + "</em></dd></div>"; }).join("");
+  var dict = document.getElementById("dict");
+  dict.innerHTML = terms.map(function (t) { return '<article class="term"><div class="pal">' + t[0] + '</div><div class="sig">' + t[1] + '</div><div class="ej">' + t[2] + "</div></article>"; }).join("");
+  function dpaso() { var c = dict.firstElementChild; return c ? c.getBoundingClientRect().width + 16 : 300; }
+  function dact() { document.getElementById("dcont").textContent = (Math.min(terms.length, Math.round(dict.scrollLeft / dpaso()) + 1)) + " / " + terms.length; }
+  document.getElementById("dprev").addEventListener("click", function () { dict.scrollBy({ left: -dpaso(), behavior: "smooth" }); });
+  document.getElementById("dnext").addEventListener("click", function () { dict.scrollBy({ left: dpaso(), behavior: "smooth" }); });
+  dict.addEventListener("scroll", dact, { passive: true });
+  dact();
 
   /* Reproductor */
   var yt = "https://www.youtube.com/watch?v=" + YT_ID;
