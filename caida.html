@@ -47,39 +47,48 @@ button { font: inherit; color: inherit; }
 .app { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 
 header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
-.sub { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
+h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
 .rulesbtn { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; color: var(--muted); cursor: pointer; font-weight: 600; font-size: 13px; }
 .rulesbtn:hover { color: var(--ink); border-color: var(--amber); }
 
-.score { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: stretch; }
-.team { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-width: 0; }
-.team b { display: block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
-.team span { font-family: var(--font-serif); font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.score { display: flex; align-items: center; gap: 6px; }
+.team { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 3px 10px; min-width: 0; display: flex; align-items: baseline; gap: 6px; flex: 1 1 0; white-space: nowrap; }
+.team b { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.team span { font-family: var(--font-serif); font-size: 19px; line-height: 1.2; font-weight: 700; font-variant-numeric: tabular-nums; }
 .team.us span { color: var(--amber); }
-.team .pend { display: block; font-style: normal; font-size: 11px; color: var(--amber); min-height: 14px; font-weight: 800; }
-.goal { display: flex; flex-direction: column; justify-content: center; align-items: flex-end; color: var(--muted); font-size: 12px; text-align: right; gap: 2px; }
-.goal select { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; font: inherit; }
+.team .pend { font-style: normal; font-size: 10px; color: var(--amber); font-weight: 800; margin-left: auto; overflow: hidden; text-overflow: ellipsis; }
+.goal { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; font-weight: 800; flex: none; }
+.goal select { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 2px 3px; font: inherit; font-size: 12px; letter-spacing: 0; }
 
-.table { background: radial-gradient(120% 90% at 50% 20%, var(--felt) 0%, var(--felt-2) 100%); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
-.opp { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(0, 0, 0, .28); border: 1px solid transparent; border-radius: 10px; padding: 8px 12px; transition: border-color .2s, background .2s; }
+.table { background: radial-gradient(120% 90% at 50% 20%, var(--felt) 0%, var(--felt-2) 100%); border: 1px solid var(--line); border-radius: 14px; padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
+.opp { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(0, 0, 0, .28); border: 1px solid transparent; border-radius: 10px; padding: 5px 12px; transition: border-color .2s, background .2s; }
 .opp.turn { border-color: var(--amber); background: rgba(244, 181, 74, .10); }
 .opp .nm { font-weight: 800; font-size: 14px; }
 .opp .tm { color: var(--muted); font-size: 12px; }
-.backs { display: flex; gap: 4px; min-height: 28px; align-items: center; }
-.backs i { width: 18px; height: 27px; border-radius: 4px; border: 1px solid var(--ivory-edge); background: repeating-linear-gradient(45deg, #1d3f9e 0 4px, #16327f 4px 8px); display: block; }
+.backs { display: flex; gap: 4px; min-height: 24px; align-items: center; }
+.backs i { width: 15px; height: 22px; border-radius: 4px; border: 1px solid var(--ivory-edge); background: repeating-linear-gradient(45deg, #1d3f9e 0 4px, #16327f 4px 8px); display: block; }
 
 .info { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; min-height: 26px; }
 .chip { background: rgba(0, 0, 0, .3); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-weight: 800; color: var(--amber); font-variant-numeric: tabular-nums; }
 
-.board { --cw: 54px; min-height: calc(var(--cw) * 1.56 + 16px); display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; align-items: center; gap: 6px; padding: 4px 0; }
+.board { --cw: 60px; min-height: 250px; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; align-items: center; gap: 8px; padding: 4px 0; }
 .board .empty { color: var(--muted); font-size: 13px; text-align: center; width: 100%; padding: 18px 0; }
 
 .pc { --cw: 56px; width: var(--cw); height: calc(var(--cw) * 1.56); flex: none; display: block; padding: 0; margin: 0; border: 0; border-radius: calc(var(--cw) * .09); background: none; box-shadow: 0 2px 0 rgba(0, 0, 0, .35), 0 3px 8px rgba(0, 0, 0, .45); }
 .pc svg { width: 100%; height: 100%; display: block; }
-.board .pc { --cw: 54px; }
+.board .pc { --cw: 60px; }
 .board .pc.last { outline: 2px solid var(--amber); outline-offset: 2px; }
 
+.tray { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 6px; background: rgba(0, 0, 0, .26); border: 1px solid rgba(255, 255, 255, .06); border-radius: 10px; padding: 5px 8px; min-height: 46px; }
+.tray .who { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 2px; flex: none; }
+.tray .vacia { font-size: 12px; color: var(--muted); opacity: .8; }
+.tray svg { display: block; flex: none; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .55)); }
+.tray .chapa { width: 34px; height: 34px; }
+.tray .piedra { width: 22px; height: 16px; }
+.tray .pop { animation: pop .4s ease-out; }
+.tray .cambiar { margin-left: auto; padding: 6px 10px; font-size: 12px; }
+@keyframes pop { 0% { transform: scale(.3); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); } }
 .log { color: var(--muted); font-size: 13px; text-align: center; min-height: 40px; }
 .log b { color: var(--ink); }
 .log .pts { color: var(--amber); font-weight: 800; }
@@ -88,8 +97,8 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 .me.turn { border-color: var(--amber); }
 .mehead { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
 .mehead b { color: var(--ink); font-size: 14px; }
-.hand { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; min-height: calc(64px * 1.56 + 6px); }
-.hand button.pc { --cw: 64px; cursor: default; font: inherit; transition: transform .15s, outline-color .15s; outline: 2px solid transparent; outline-offset: 2px; }
+.hand { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; min-height: calc(70px * 1.56 + 6px); }
+.hand button.pc { --cw: 70px; cursor: default; font: inherit; transition: transform .15s, outline-color .15s; outline: 2px solid transparent; outline-offset: 2px; }
 .hand button.pc.can { cursor: pointer; }
 .hand button.pc.can:hover { transform: translateY(-6px); outline-color: var(--amber); }
 .hand button.pc.cap { box-shadow: 0 0 0 2px rgba(95, 211, 154, .85), 0 3px 8px rgba(0, 0, 0, .45); }
@@ -115,7 +124,7 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 .win { color: var(--good); } .lose { color: var(--bad); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-@media (max-width: 380px) { h1 { font-size: 26px; } .hand button.pc { --cw: 58px; } .board .pc { --cw: 48px; } }
+@media (max-width: 380px) { h1 { font-size: 24px; } .hand button.pc { --cw: 62px; } .board .pc { --cw: 52px; } .board { gap: 6px; } }
 </style>
 </head>
 <body>
@@ -139,6 +148,7 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
       <li><b>Mesa limpia:</b> si tu jugada deja la mesa vacía, sumas 4 puntos (no cuenta en la última jugada de la mano).</li>
       <li>Al terminar la mano, las cartas que quedan en la mesa son de quien hizo la última captura. Cada carta que pase de 20 en tu montón vale 1 punto.</li>
       <li>Gana quien llegue primero a la meta, incluso a mitad de mano.</li>
+      <li><b>Piedras y chapas:</b> cada punto que ganas es una <b>piedra</b> sobre la mesa. Cuando juntes 12 piedras puedes cambiarlas por una <b>chapa</b> de refresco, que vale 12 puntos. El total no cambia: es solo para llevar la cuenta.</li>
       <li><b>Cantos:</b> con las 3 cartas que recibes en cada vuelta puedes cantar una combinación antes de tirar tu primera carta. Lo que no cantas no se cobra, y los puntos se suman al cerrar la mano, antes de contar las cartas. Vale el canto más alto de tu mano:
         <ul>
           <li><b>Ronda</b> (dos cartas iguales y una distinta): 1 punto del 1 al 7, 2 la sota, 3 el caballo, 4 el rey.</li>
@@ -161,9 +171,9 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 
   <div class="score" aria-live="polite">
     <div class="team us"><b>Tú</b><span id="sUs">0</span><i class="pend" id="pUs"></i></div>
-    <div class="team"><b>Don Pedro</b><span id="sThem">0</span><i class="pend" id="pThem"></i></div>
+    <div class="team"><b>Pedro</b><span id="sThem">0</span><i class="pend" id="pThem"></i></div>
     <label class="goal">Meta
-      <select id="goal"><option>12</option><option selected>24</option><option>36</option></select>
+      <select id="goal" aria-label="Meta de puntos"><option>12</option><option selected>24</option><option>36</option></select>
     </label>
   </div>
 
@@ -172,9 +182,11 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
       <div><div class="nm">Don Pedro</div><div class="tm" id="oppPile"></div></div>
       <div class="backs" id="backs"></div>
     </div>
+    <div class="tray" id="trayOpp" aria-label="Piedras y chapas de Don Pedro"></div>
     <div class="info"><span id="vuelta"></span><span class="chip" id="deck"></span></div>
     <div class="board" id="board"></div>
     <div class="log" id="log" aria-live="polite"></div>
+    <div class="tray" id="trayMe" aria-label="Tus piedras y chapas"></div>
   </main>
 
   <section class="me" id="me">
@@ -200,6 +212,65 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 
   var S = null;
   var total = [0, 0];
+  var tok = [{ stones: 0, caps: 0 }, { stones: 0, caps: 0 }];   /* piedras (1 punto) y chapas (12 puntos) de cada jugador */
+  var seen = [{ stones: 0, caps: 0 }, { stones: 0, caps: 0 }];
+  var CAPCOL = [["#a8281f", "#e0453a"], ["#1d7a3f", "#3bad66"], ["#b8860b", "#ebbb35"], ["#23499a", "#4a80dc"]];
+
+  function addPts(p, n) {
+    if (!n) return;
+    total[p] += n;
+    tok[p].stones += n;
+    if (p === 1) while (tok[1].stones >= 12) { tok[1].stones -= 12; tok[1].caps++; }   /* Don Pedro cambia solo */
+  }
+  function resetTok() { tok = [{ stones: 0, caps: 0 }, { stones: 0, caps: 0 }]; seen = [{ stones: 0, caps: 0 }, { stones: 0, caps: 0 }]; }
+
+  function chapaSVG(i) {
+    var c = CAPCOL[i % CAPCOL.length], pts = [], n = 20;
+    for (var k = 0; k < n * 2; k++) {
+      var a = (k / (n * 2)) * Math.PI * 2, r = k % 2 ? 13.4 : 15.6;
+      pts.push((16 + Math.cos(a) * r).toFixed(2) + " " + (16 + Math.sin(a) * r).toFixed(2));
+    }
+    return '<svg class="chapa" viewBox="0 0 32 32" aria-hidden="true" focusable="false">' +
+      '<path d="M' + pts.join("L") + 'Z" fill="' + c[0] + '" stroke="rgba(0,0,0,.45)" stroke-width=".8" stroke-linejoin="round"/>' +
+      '<circle cx="16" cy="16" r="11.2" fill="' + c[1] + '" stroke="rgba(0,0,0,.3)" stroke-width=".7"/>' +
+      '<circle cx="16" cy="16" r="8.6" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".8"/>' +
+      '<path d="M8.4 12.2Q12 6.2 19.6 7.2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<text x="16" y="19.6" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-weight="800" font-size="9.5" fill="#fff" stroke="rgba(0,0,0,.35)" stroke-width=".5" paint-order="stroke">12</text></svg>';
+  }
+  var ROCK = [
+    "M3 9Q2 3.6 8 2.4Q14 1 18 4Q21 7 19 11.5Q16 15 9.5 14.6Q4 14 3 9Z",
+    "M2.5 8Q4 2.8 10 2Q17 1.6 19.6 6.4Q21 11 16.6 13.8Q10 15.6 5 13Q2 11 2.5 8Z",
+    "M3.4 10.4Q1.6 5.4 7 3Q13 .8 18 3.6Q21.6 7 18.6 12Q14 15.4 8.4 14.2Q4.6 13.4 3.4 10.4Z"
+  ];
+  var ROCKCOL = [["#8b8d93", "#b9bbc1"], ["#7a7c82", "#a6a8ae"], ["#96989e", "#c4c6cb"]];
+  function piedraSVG(i) {
+    var c = ROCKCOL[i % 3];
+    return '<svg class="piedra" viewBox="0 0 22 17" aria-hidden="true" focusable="false">' +
+      '<path d="' + ROCK[i % 3] + '" fill="' + c[0] + '" stroke="#55575d" stroke-width=".9" stroke-linejoin="round"/>' +
+      '<path d="M5.4 7Q8 3.6 13 4" fill="none" stroke="' + c[1] + '" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<path d="M6 12.4Q11 14 16 11.4" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1.2" stroke-linecap="round"/></svg>';
+  }
+  function trayHTML(p, name) {
+    var t = tok[p], h = '<span class="who">' + name + "</span>", i, pop;
+    for (i = 0; i < t.caps; i++) { pop = i >= seen[p].caps; h += pop ? '<span class="pop">' + chapaSVG(i + p) + "</span>" : chapaSVG(i + p); }
+    for (i = 0; i < t.stones; i++) { pop = i >= seen[p].stones; h += pop ? '<span class="pop">' + piedraSVG(i) + "</span>" : piedraSVG(i); }
+    if (!t.caps && !t.stones) h += '<span class="vacia">Aún sin piedras</span>';
+    seen[p] = { stones: t.stones, caps: t.caps };
+    return h;
+  }
+  function renderTrays() {
+    $("trayOpp").innerHTML = trayHTML(1, "Don Pedro");
+    var h = trayHTML(0, "Tú");
+    if (tok[0].stones >= 12) h += '<button type="button" class="btn cambiar" id="cambiar">Cambiar 12 piedras por 1 chapa</button>';
+    $("trayMe").innerHTML = h;
+    var b = $("cambiar");
+    if (b) b.onclick = function () {
+      if (tok[0].stones < 12) return;
+      tok[0].stones -= 12; tok[0].caps++;
+      say("Cambiaste <span class='pts'>12 piedras por 1 chapa</span> (12 puntos).");
+      renderTrays();
+    };
+  }
   var dealer = 1;
   var timer = null;
   var finished = false;
@@ -277,8 +348,8 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
     deal();
     var order = Math.random() < 0.5 ? [1, 2, 3, 4] : [4, 3, 2, 1], hit = 0, first = S.turn, m;
     S.table.forEach(function (c, i) { if (c.r === order[i]) hit += c.r; });
-    if (hit) { total[dealer] += hit; m = "Reparte <b>" + NAMES[dealer] + "</b> y cuenta " + order.join("-") + ": acierta y suma <span class='pts'>+" + hit + "</span>."; }
-    else { total[first] += 1; m = "Reparte <b>" + NAMES[dealer] + "</b> y cuenta " + order.join("-") + ": mal echada, <b>" + NAMES[first] + "</b> suma <span class='pts'>+1</span>."; }
+    if (hit) { addPts(dealer, hit); m = "Reparte <b>" + NAMES[dealer] + "</b> y cuenta " + order.join("-") + ": acierta y suma <span class='pts'>+" + hit + "</span>."; }
+    else { addPts(first, 1); m = "Reparte <b>" + NAMES[dealer] + "</b> y cuenta " + order.join("-") + ": mal echada, <b>" + NAMES[first] + "</b> suma <span class='pts'>+1</span>."; }
     say(m + " Empieza <b>" + NAMES[first] + "</b>.");
     render();
     if (total[0] >= goal() || total[1] >= goal()) return endGame(leader());
@@ -346,10 +417,10 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
       S.last = { card: c, by: p };
       msg += ".";
     }
-    total[p] += pts;
+    addPts(p, pts);
     say(msg + note);
 
-    if (total[p] + S.pend[p] >= goal()) { total[p] += S.pend[p]; S.pend[p] = 0; return endGame(p); }
+    if (total[p] + S.pend[p] >= goal()) { addPts(p, S.pend[p]); S.pend[p] = 0; return endGame(p); }
     if (last) return endHand();
     if (S.hands[0].length === 0 && S.hands[1].length === 0) deal();
     else S.turn = 1 - p;
@@ -411,10 +482,10 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
     if (S.lastCap !== null) S.piles[S.lastCap] += left;
     S.table = [];
     var cantos = [S.pend[0], S.pend[1]];
-    total[0] += cantos[0]; total[1] += cantos[1];
+    addPts(0, cantos[0]); addPts(1, cantos[1]);
     S.pend = [0, 0];
     var bonus = [Math.max(0, S.piles[0] - 20), Math.max(0, S.piles[1] - 20)];
-    total[0] += bonus[0]; total[1] += bonus[1];
+    addPts(0, bonus[0]); addPts(1, bonus[1]);
     render();
     var done = total[0] >= goal() || total[1] >= goal();
     var h = '<div class="card"><h2>Mano terminada</h2>';
@@ -450,11 +521,11 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
     h += '<button class="btn" id="again">Jugar otra partida</button></div>';
     $("overlay").innerHTML = h;
     $("overlay").hidden = false;
-    $("again").onclick = function () { total = [0, 0]; finished = false; dealer = 1; startHand(); };
+    $("again").onclick = function () { total = [0, 0]; resetTok(); finished = false; dealer = 1; startHand(); };
     $("again").focus();
   }
 
-  function renderScore() { $("sUs").textContent = total[0]; $("sThem").textContent = total[1]; }
+  function renderScore() { $("sUs").textContent = total[0]; $("sThem").textContent = total[1]; renderTrays(); }
 
   function render() {
     renderScore();
