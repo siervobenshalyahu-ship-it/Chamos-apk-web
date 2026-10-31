@@ -200,6 +200,22 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   .twinkle { animation: none !important; }
   .rail { scroll-behavior: auto !important; }
 }
+
+/* Chamos IA */
+.ia-panel { position: fixed; right: 16px; bottom: 16px; width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100dvh - 32px)); display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.55); z-index: 1000; overflow: hidden; }
+.ia-panel[hidden] { display: none; }
+.ia-cab { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.ia-cab small { color: var(--muted); font-size: 12px; }
+.ia-cab button { margin-left: auto; background: none; border: 0; color: var(--ink); font-size: 18px; cursor: pointer; padding: 6px 8px; }
+.ia-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.ia-b { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: 15px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ia-b.bot { background: var(--bg-2); border: 1px solid var(--line); align-self: flex-start; }
+.ia-b.yo { background: var(--flag-b); color: #fff; align-self: flex-end; }
+.ia-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.ia-form input { flex: 1; min-width: 0; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
+.ia-form button { padding: 0 16px; border: 0; border-radius: 12px; background: var(--amber); color: #111; font-weight: 700; cursor: pointer; }
+.ia-form button:disabled { opacity: .5; }
+@media (max-width: 480px) { .ia-panel { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; } body.ia-abierto { overflow: hidden; } }
 </style>
 </head>
 <body>
@@ -392,15 +408,63 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 </footer>
 
 <script>
-/* Acceso directo a Chamos IA. Pon aquí la dirección cuando el Space esté listo. */
+/* Chamos IA: chat público que solo conversa. Habla con el Worker de Cloudflare. */
 (function () {
-  var CHAMOS_IA_URL = ""; /* ejemplo: "https://huggingface.co/spaces/TU_USUARIO/chamos-ia" */
-  var a = document.getElementById("chamos-ia");
-  if (!a) return;
-  if (CHAMOS_IA_URL) { a.href = CHAMOS_IA_URL; a.target = "_blank"; a.rel = "noopener"; }
-  else a.addEventListener("click", function (e) { e.preventDefault(); alert("Chamos IA estará disponible muy pronto."); });
+  var URL_IA = "https://chamos-push.siervodeyhwh57.workers.dev/ia";
+  var btn = document.getElementById("chamos-ia");
+  var panel = document.getElementById("ia-panel");
+  if (!btn || !panel) return;
+  var lista = document.getElementById("ia-msgs");
+  var form = document.getElementById("ia-form");
+  var campo = document.getElementById("ia-campo");
+  var enviarBtn = document.getElementById("ia-enviar");
+  var historial = [];
+  var ocupado = false;
+
+  function burbuja(rol, texto) {
+    var d = document.createElement("div");
+    d.className = "ia-b " + rol;
+    d.textContent = texto;   /* textContent: nunca se interpreta como HTML */
+    lista.appendChild(d);
+    lista.scrollTop = lista.scrollHeight;
+    return d;
+  }
+  function abrir() {
+    panel.hidden = false;
+    document.body.classList.add("ia-abierto");
+    if (!lista.children.length) burbuja("bot", "¡Épale! Soy Chamos IA, el asistente de la app. Estoy en modo de prueba, así que puedo equivocarme. ¿En qué te ayudo?");
+    setTimeout(function () { campo.focus(); }, 50);
+  }
+  function cerrar() { panel.hidden = true; document.body.classList.remove("ia-abierto"); }
+  btn.addEventListener("click", function (e) { e.preventDefault(); abrir(); });
+  document.getElementById("ia-cerrar").addEventListener("click", cerrar);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) cerrar(); });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var texto = campo.value.trim();
+    if (!texto || ocupado) return;
+    campo.value = "";
+    burbuja("yo", texto);
+    historial.push({ rol: "user", texto: texto });
+    ocupado = true; enviarBtn.disabled = true;
+    var espera = burbuja("bot", "Escribiendo…");
+    fetch(URL_IA, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ mensajes: historial.slice(-8) }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (x) {
+        if (x.ok && x.d.respuesta) { espera.textContent = x.d.respuesta; historial.push({ rol: "assistant", texto: x.d.respuesta }); }
+        else { espera.textContent = x.d.error || "No pude responder ahora. Intenta otra vez."; historial.pop(); }
+      })
+      .catch(function () { espera.textContent = "Se cortó la conexión. Intenta otra vez."; historial.pop(); })
+      .then(function () { ocupado = false; enviarBtn.disabled = false; lista.scrollTop = lista.scrollHeight; campo.focus(); });
+  });
 })();
 </script>
+<div id="ia-panel" class="ia-panel" hidden role="dialog" aria-label="Chamos IA">
+  <div class="ia-cab"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px"><b>Chamos IA</b><small>modo prueba</small><button type="button" id="ia-cerrar" aria-label="Cerrar">✕</button></div>
+  <div id="ia-msgs" class="ia-msgs" aria-live="polite"></div>
+  <form id="ia-form" class="ia-form"><input id="ia-campo" maxlength="500" autocomplete="off" placeholder="Escríbele a Chamos IA…" aria-label="Tu mensaje"><button id="ia-enviar" type="submit">Enviar</button></form>
+</div>
 <script>
 /* Estadísticas anónimas de Chamos: visitas y toques en "Descargar". */
 (function () {
