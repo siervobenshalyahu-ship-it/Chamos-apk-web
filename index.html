@@ -364,10 +364,35 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <code>7C:13:B8:F2:8E:A5:11:A3:8E:CE:5B:DE:FD:F9:10:72:E8:A5:84:CD:E9:2B:96:A7:16:29:07:A4:8F:EE:69:31</code>
       <p>Si una copia muestra el aviso "Copia no oficial", bórrala y descarga la oficial aquí.</p>
     </details>
+    <p style="opacity:.75;font-size:.85em">Contamos las visitas y las descargas de forma anónima, sin cookies ni datos personales.</p>
     <p id="credits">Chamos es una aplicación de código abierto construida sobre Element X Android (licencia AGPL-3.0). No está afiliada a Element, Meta ni a otras aplicaciones de mensajería.</p>
   </div>
 </footer>
 
+<script>
+/* Estadísticas anónimas de Chamos: visitas y toques en "Descargar". */
+(function () {
+  var URL_E = "https://chamos-push.siervodeyhwh57.workers.dev/e";
+  function anon() {
+    try {
+      var a = localStorage.getItem("chamos_anon");
+      if (!a) { a = (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now(); localStorage.setItem("chamos_anon", a); }
+      return a;
+    } catch (e) { return "sin-id"; }
+  }
+  function enviar(t) {
+    try {
+      fetch(URL_E, { method: "POST", keepalive: true, headers: { "content-type": "text/plain" },
+        body: JSON.stringify({ t: t, id: anon(), p: location.pathname }) }).catch(function () {});
+    } catch (e) {}
+  }
+  enviar("visita");
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("a");
+    if (a && /Chamos\.apk/.test(a.href || "")) enviar("descarga");
+  });
+})();
+</script>
 <script>
 (function () {
   /* Código del video de YouTube (lo que va después de v=). Cámbialo por el video que prefieras. */
