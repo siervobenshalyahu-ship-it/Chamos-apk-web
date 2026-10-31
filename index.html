@@ -226,6 +226,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <p class="lead">Aquí hablamos como somos. Chamos reúne a los tuyos en un solo lugar: mensajes privados, grupos, fotos, llamadas y videos, con la identidad de la calle, la mesa y la música venezolanas.</p>
       <div class="cta-row">
         <a class="btn solid" href="https://github.com/siervobenshalyahu-ship-it/Chamos/releases/latest/download/Chamos.apk">Descargar para Android</a>
+        <a class="btn ia" id="chamos-ia" href="#" data-url="" aria-label="Abrir Chamos IA"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px;vertical-align:middle;margin-right:8px">Chamos IA</a>
         <a class="btn" href="#app">Conocer la app</a>
         <a class="btn" href="domino.html">Jugar dominó</a>
         <a class="btn" href="caida.html">Jugar caída</a>
@@ -389,6 +390,16 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   </div>
 </footer>
 
+<script>
+/* Acceso directo a Chamos IA. Pon aquí la dirección cuando el Space esté listo. */
+(function () {
+  var CHAMOS_IA_URL = ""; /* ejemplo: "https://huggingface.co/spaces/TU_USUARIO/chamos-ia" */
+  var a = document.getElementById("chamos-ia");
+  if (!a) return;
+  if (CHAMOS_IA_URL) { a.href = CHAMOS_IA_URL; a.target = "_blank"; a.rel = "noopener"; }
+  else a.addEventListener("click", function (e) { e.preventDefault(); alert("Chamos IA estará disponible muy pronto."); });
+})();
+</script>
 <script>
 /* Estadísticas anónimas de Chamos: visitas y toques en "Descargar". */
 (function () {
