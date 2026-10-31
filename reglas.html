@@ -72,6 +72,12 @@ th.pt { text-align: right; }
 td.nm { font-weight: 800; white-space: nowrap; }
 td small { display: block; color: var(--muted); font-size: 12px; }
 
+.deck { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+.deck h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.strip { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; scroll-snap-type: x proximity; }
+.strip .c { flex: none; width: 66px; scroll-snap-align: start; }
+.strip .c svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,.5)); }
+.strip .c span { display: block; text-align: center; font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; }
 .play { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 .btn { display: inline-block; background: var(--amber); color: #1a1205; text-decoration: none; border-radius: 8px; padding: 9px 14px; font-weight: 800; }
 .btn:hover { filter: brightness(1.08); }
@@ -109,6 +115,12 @@ td small { display: block; color: var(--muted); font-size: 12px; }
         <li>Empieza el jugador que está a la derecha de quien reparte, y quien reparte juega último.</li>
         <li>En tu turno tiras una carta. No robas ni pasas.</li>
       </ul>
+    </section>
+
+    <section class="box">
+      <h2>La baraja</h2>
+      <p>Son 40 cartas en cuatro palos. El palo no importa al jugar, solo el número. Cada palo tiene estas diez cartas, de menor a mayor; la sota vale 10, el caballo 11 y el rey 12.</p>
+      <div class="deck" id="deck"></div>
     </section>
 
     <section class="box">
@@ -222,6 +234,20 @@ td small { display: block; color: var(--muted); font-size: 12px; }
   </div>
 </div>
 
+<script src="cartas.js"></script>
+<script>
+(function () {
+  "use strict";
+  var deck = document.getElementById("deck"), html = "";
+  var tit = { oros: "Oros", copas: "Copas", espadas: "Espadas", bastos: "Bastos" };
+  Cartas.suits.forEach(function (s) {
+    html += "<div><h3>" + tit[s] + '</h3><div class="strip">';
+    Cartas.ranks.forEach(function (r) { html += '<div class="c">' + Cartas.svg(r, s) + "<span>" + Cartas.nombre(r) + "</span></div>"; });
+    html += "</div></div>";
+  });
+  deck.innerHTML = html;
+})();
+</script>
 <script>
 (function () {
   "use strict";
