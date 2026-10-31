@@ -48,7 +48,7 @@ button { font: inherit; color: inherit; }
 h1 { font-family: var(--font-serif); font-size: 32px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
 .sub { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
 
-.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
 .tabs button { background: none; border: 0; border-radius: 8px; padding: 10px 8px; font-weight: 800; color: var(--muted); cursor: pointer; }
 .tabs button:hover { color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--amber); color: #1a1205; }
@@ -90,7 +90,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <div class="app">
   <div class="top">
     <a href="index.html">← Volver a Chamos</a>
-    <span><a href="caida.html">Jugar caída</a> · <a href="domino.html">Jugar dominó</a></span>
+    <span><a href="caida.html">Caída</a> · <a href="domino.html">Dominó</a> · <a href="ajilei.html">Ajilei</a></span>
   </div>
 
   <header>
@@ -101,6 +101,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
   <div class="tabs" role="tablist" aria-label="Juegos">
     <button role="tab" id="tab-caida" aria-controls="p-caida" aria-selected="true">Caída</button>
     <button role="tab" id="tab-domino" aria-controls="p-domino" aria-selected="false" tabindex="-1">Dominó</button>
+    <button role="tab" id="tab-ajilei" aria-controls="p-ajilei" aria-selected="false" tabindex="-1">Ajilei</button>
   </div>
 
   <!-- ============ CAÍDA ============ -->
@@ -245,6 +246,105 @@ td small { display: block; color: var(--muted); font-size: 12px; }
       <div class="play" style="margin-top:12px"><a class="btn" href="domino.html">Jugar dominó</a></div>
     </section>
   </div>
+
+  <!-- ============ AJILEI ============ -->
+  <div class="sheet" id="p-ajilei" role="tabpanel" aria-labelledby="tab-ajilei" hidden>
+
+    <section class="box">
+      <h2>Lo básico</h2>
+      <ul>
+        <li>Se juega de 2 a 4 personas con la baraja española de <b>40 cartas</b> (sin 8 ni 9).</li>
+        <li>Se apuesta con fichas (chapas, frijoles, caramelos). Todo lo que se apuesta forma el <b>pote</b>, y se lo lleva quien gane la mano.</li>
+        <li>El objetivo es tener la <b>mejor suma de cartas de un mismo palo</b>, o completar un <b>ajilei</b>.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Valor de las cartas</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Carta</th><th class="pt">Vale</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">As</td><td class="pt">11</td></tr>
+          <tr><td class="nm">Siete</td><td class="pt">7</td></tr>
+          <tr><td class="nm">Seis</td><td class="pt">6</td></tr>
+          <tr><td class="nm">2, 3, 4, 5, sota, caballo y rey</td><td class="pt">10</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:12px">Solo suman las cartas <b>del mismo palo</b>. Tu mano vale el total de tu mejor palo.</p>
+      <p><b>Comodín:</b> el <b>siete de oros</b> vale 10 en el palo que tú elijas.</p>
+    </section>
+
+    <section class="box">
+      <h2>Quién reparte</h2>
+      <ul>
+        <li><b>Corte de carta alta:</b> cada uno saca una carta. La más alta reparte y se llama <b>pie</b>. El orden es rey, caballo, sota, 7, 6, 5, 4, 3, 2 y as (el as es la más baja). Si hay empate, decide el palo, y las copas ganan a los bastos.</li>
+        <li>El jugador siguiente al pie es el <b>mano</b>. Habla primero en las apuestas y gana los empates al final.</li>
+        <li>Después de cada mano, el reparto pasa al mano.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Cómo va la mano</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Paso</th><th>Qué pasa</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">1. Reparto</td><td>El pie reparte <b>2 cartas</b> a cada uno, empezando por el mano.</td></tr>
+          <tr><td class="nm">2. Primer envite</td><td>Ronda de apuestas con 2 cartas.</td></tr>
+          <tr><td class="nm">3. Más cartas</td><td>El pie reparte <b>3 cartas más</b> a quienes siguen en la mano. Ahora tienes 5.</td></tr>
+          <tr><td class="nm">4. Segundo envite</td><td>Ronda de apuestas con 5 cartas.</td></tr>
+          <tr><td class="nm">5. Ajilei</td><td>Quien tenga cinco cartas del mismo palo lo muestra y la mano termina.</td></tr>
+          <tr><td class="nm">6. Descarte</td><td>Cada uno cambia de <b>0 a 5 cartas</b>, una sola vez, empezando por el mano.</td></tr>
+          <tr><td class="nm">7. Tercer envite</td><td>Última ronda de apuestas.</td></tr>
+          <tr><td class="nm">8. Se muestran</td><td>Se enseñan las cartas y gana el total más alto. En empate gana el mano.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="box">
+      <h2>Los envites (apuestas)</h2>
+      <ul>
+        <li><b>Pasar:</b> solo se puede mientras nadie haya apostado en esa ronda.</li>
+        <li><b>Apostar:</b> pones fichas al pote.</li>
+        <li>Cuando alguien apostó, cada jugador debe elegir: <b>ir</b> (igualar la apuesta), <b>subir</b> (igualar y apostar más) o <b>retirarse</b>.</li>
+        <li>Quien ya vio una apuesta no puede pasar después en esa ronda.</li>
+        <li>Si te retiras, lo que ya pusiste se queda en el pote.</li>
+        <li>Si todos se retiran menos uno, ese se lleva el pote sin mostrar cartas.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>El ajilei</h2>
+      <p><b>Cinco cartas del mismo palo</b>, y el comodín cuenta. Se revisa después del segundo envite: quien lo tenga lo muestra, la mano termina de una vez, <b>sin descarte ni tercer envite</b>, y el ajilei gana a cualquier mano que no lo sea.</p>
+      <p class="note">Ejemplo de la guía: un ajilei de 51 le gana a una mano de 31. Con cinco cartas de un palo, el máximo posible es 51.</p>
+    </section>
+
+    <section class="box">
+      <h2>Palabras del juego</h2>
+      <div class="tw"><table>
+        <tbody>
+          <tr><td class="nm">Pie</td><td>Quien reparte.</td></tr>
+          <tr><td class="nm">Mano</td><td>El que habla primero y gana los empates. Va después del pie.</td></tr>
+          <tr><td class="nm">Pote</td><td>Todas las fichas apostadas en la mano.</td></tr>
+          <tr><td class="nm">Envite</td><td>Una ronda de apuestas.</td></tr>
+          <tr><td class="nm">Comodín</td><td>El siete de oros.</td></tr>
+          <tr><td class="nm">Ajilei</td><td>Cinco cartas del mismo palo.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="box">
+      <h2>En nuestra sala</h2>
+      <p>La guía de referencia no dice cuánto se apuesta ni cómo termina una partida, así que en la sala usamos estas reglas de la casa:</p>
+      <ul>
+        <li>Empiezas con <b>20 chapas</b> y hay otros tres jugadores: Don Pedro, Doña Carmen y Tío Luis.</li>
+        <li>Cada mano, todos ponen <b>1 chapa</b> de entrada al pote.</li>
+        <li>Apostar o subir vale <b>1 chapa</b>, con un máximo de <b>2 subidas</b> por envite. Nadie puede apostar más chapas de las que le quedan a los demás.</li>
+        <li>Con dos ajilei a la vez gana el de mayor total; si empatan, el más cercano al mano.</li>
+        <li>El jugador que se queda sin chapas sale de la mesa. Terminas si te quedas sin chapas, si te quedas con todas, o si decides <b>plantarte</b> entre manos.</li>
+      </ul>
+      <div class="play" style="margin-top:12px"><a class="btn" href="ajilei.html">Jugar ajilei</a></div>
+    </section>
+  </div>
 </div>
 
 <script src="cartas.js"></script>
@@ -264,9 +364,9 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <script>
 (function () {
   "use strict";
-  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino")];
-  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino")];
-  var keys = ["caida", "domino"];
+  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino"), document.getElementById("tab-ajilei")];
+  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino"), document.getElementById("p-ajilei")];
+  var keys = ["caida", "domino", "ajilei"];
 
   function show(i, focus) {
     tabs.forEach(function (t, j) {
@@ -280,11 +380,13 @@ td small { display: block; color: var(--muted); font-size: 12px; }
   tabs.forEach(function (t, i) {
     t.addEventListener("click", function () { show(i, false); window.scrollTo(0, 0); });
     t.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); show((i + 1) % 2, true); }
+      if (e.key === "ArrowRight") { e.preventDefault(); show((i + 1) % 3, true); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); show((i + 2) % 3, true); }
     });
   });
   var h = (location.hash || "").replace("#", "");
-  if (h === "domino") show(1, false);
+  var hi = keys.indexOf(h);
+  if (hi > 0) show(hi, false);
 })();
 </script>
 </body>
