@@ -76,11 +76,12 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
 .board { --u: 23px; min-height: 270px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 6px 0; }
 .board .row { display: flex; justify-content: center; align-items: center; gap: 2px; min-height: calc(var(--u) * 2 + 2px); }
 .board .empty { color: var(--muted); font-size: 14px; text-align: center; width: 100%; padding: 14px 0; }
-.board .tile.end { outline: 2px solid var(--amber); outline-offset: 1px; }
+.board .tile.extremo { outline: 2px solid var(--amber); outline-offset: 1px; }
 
-.tile { display: flex; background: linear-gradient(180deg, var(--ivory), #e6dcc0); border-radius: calc(var(--u) * .2); border: 1px solid var(--ivory-edge); box-shadow: 0 2px 0 #a89c7c, 0 3px 6px rgba(0, 0, 0, .4); flex: none; }
-.tile.h { flex-direction: row; width: calc(var(--u) * 2); height: var(--u); }
-.tile.v { flex-direction: column; width: var(--u); height: calc(var(--u) * 2); }
+.tile { display: block; position: relative; background: linear-gradient(160deg, #fbf7ea 0%, #f1e8cc 55%, #e2d6b3 100%); border-radius: calc(var(--u) * .24); border: 1px solid #bfb28d; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -2px 3px rgba(120, 100, 55, .18), 0 2px 0 #9a8d6c, 0 3px 7px rgba(0, 0, 0, .45); flex: none; }
+.tile svg { display: block; width: 100%; height: 100%; }
+.tile.h { width: calc(var(--u) * 2); height: var(--u); }
+.tile.v { width: var(--u); height: calc(var(--u) * 2); }
 .tile .hf { width: var(--u); height: var(--u); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: calc(var(--u) * .14); position: relative; }
 .tile .hf i { width: calc(var(--u) * .2); height: calc(var(--u) * .2); border-radius: 50%; background: var(--pip); place-self: center; display: block; }
 .tile.h .hf + .hf::before { content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; width: 1px; background: var(--ivory-edge); }
@@ -184,13 +185,27 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
 
-  function half(n) {
-    var h = '<span class="hf">';
-    for (var i = 0; i < 9; i++) h += PIPS[n].indexOf(i) >= 0 ? "<i></i>" : "<span></span>";
-    return h + "</span>";
+  /* Ficha en SVG: puntos grandes y oscuros, división con pivote dorado. */
+  var CX = [11, 25, 39];
+  function pips(n, ox, oy, vert) {
+    var o = "";
+    PIPS[n].forEach(function (i) {
+      var c = i % 3, r = Math.floor(i / 3);
+      var x = ox + CX[vert ? r : c], y = oy + CX[vert ? c : r];   /* en vertical, las filas del 6 quedan paralelas a la raya */
+      o += '<circle cx="' + x + '" cy="' + y + '" r="5.8" fill="#17110b"/><circle cx="' + (x - 1.8) + '" cy="' + (y - 2) + '" r="1.6" fill="#ffffff" fill-opacity=".3"/>';
+    });
+    return o;
   }
   function tileHTML(a, b, orient, extra) {
-    return '<div class="tile ' + orient + (extra ? " " + extra : "") + '" data-a="' + a + '" data-b="' + b + '">' + half(a) + half(b) + "</div>";
+    var h = orient === "h", vb = h ? "0 0 100 50" : "0 0 50 100", body;
+    if (h) {
+      body = pips(a, 0, 0) + pips(b, 50, 0) +
+        '<path d="M50 8V42" stroke="#a89b78" stroke-width="1.8" stroke-linecap="round"/><circle cx="50" cy="25" r="2.6" fill="#c9a24a" stroke="#8a6a1c" stroke-width=".8"/>';
+    } else {
+      body = pips(a, 0, 0, true) + pips(b, 0, 50, true) +
+        '<path d="M8 50H42" stroke="#a89b78" stroke-width="1.8" stroke-linecap="round"/><circle cx="25" cy="50" r="2.6" fill="#c9a24a" stroke="#8a6a1c" stroke-width=".8"/>';
+    }
+    return '<div class="tile ' + orient + (extra ? " " + extra : "") + '" data-a="' + a + '" data-b="' + b + '"><svg viewBox="' + vb + '" aria-hidden="true" focusable="false">' + body + "</svg></div>";
   }
 
   function newDeck() {
@@ -350,7 +365,7 @@ h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.1; margin: 
       var rev = ri % 2 === 1, items = rev ? r.slice().reverse() : r;
       return '<div class="row">' + items.map(function (o) {
         var a = rev ? o.t[1] : o.t[0], b = rev ? o.t[0] : o.t[1];
-        return tileHTML(a, b, a === b ? "v" : "h", o.i === 0 || o.i === n - 1 ? "end" : "");
+        return tileHTML(a, b, a === b ? "v" : "h", o.i === 0 || o.i === n - 1 ? "extremo" : "");
       }).join("") + "</div>";
     }).join("");
   }
