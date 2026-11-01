@@ -90,7 +90,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 .ring.on { opacity: 1; animation: spin 2.4s linear infinite; transform-origin: 180px 352px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .pop { font-family: var(--font-serif); font-weight: 700; text-anchor: middle; paint-order: stroke; stroke: rgba(0, 0, 0, .6); stroke-width: 4px; stroke-linejoin: round; }
-.status { position: absolute; left: 8px; right: 8px; top: 8px; text-align: center; background: rgba(8, 12, 24, .72); border: 1px solid var(--line); border-radius: 10px; padding: 5px 10px; font-size: 13px; color: var(--ink); min-height: 32px; display: flex; align-items: center; justify-content: center; text-wrap: balance; }
+.status { position: absolute; left: 8px; right: 8px; top: 15%; text-align: center; background: rgba(8, 12, 24, .72); border: 1px solid var(--line); border-radius: 10px; padding: 5px 10px; font-size: 13px; color: var(--ink); min-height: 32px; display: flex; align-items: center; justify-content: center; text-wrap: balance; }
 .status b { color: var(--amber); }
 
 .controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 52px; }
@@ -156,21 +156,70 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   <div class="hud" id="hud"></div>
 
   <div class="field" id="fieldWrap">
-    <svg id="field" viewBox="0 0 360 430" role="img" aria-label="Calle con la zona de juego marcada con tiza: plato, primera, segunda y tercera base, punto de lanzamiento y línea de jonrón. Cuatro niños y jóvenes de distintos tamaños, unos sin camisa, descalzos, con cholas o con zapatos rotos, juegan.">
+    <svg id="field" viewBox="0 -70 360 500" role="img" aria-label="Calle con la zona de juego marcada con tiza: plato, primera, segunda y tercera base, punto de lanzamiento y línea de jonrón. Calle de barrio con niños y jóvenes de distintos tamaños, tres jugadores cubriendo las bases, unos sin camisa, descalzos, con cholas o con zapatos rotos, juegan.">
       <defs>
         <filter id="tiza" x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="r"/>
           <feDisplacementMap in="SourceGraphic" in2="r" scale="2.6"/>
         </filter>
+        <pattern id="bump" width="18" height="11" patternUnits="userSpaceOnUse" patternTransform="skewX(-25)"><rect width="18" height="11" fill="#e8c13a"/><rect width="9" height="11" fill="#1b1c20"/></pattern>
+        <radialGradient id="vinieta" cx="50%" cy="55%" r="75%"><stop offset="60%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".45"/></radialGradient>
         <pattern id="asf" width="24" height="24" patternUnits="userSpaceOnUse">
           <rect width="24" height="24" fill="#3b3e47"/>
           <circle cx="4" cy="6" r="1" fill="#464a54"/><circle cx="15" cy="3" r=".8" fill="#2f323a"/><circle cx="20" cy="14" r="1.1" fill="#464a54"/>
           <circle cx="8" cy="19" r=".9" fill="#2f323a"/><circle cx="2" cy="13" r=".6" fill="#50545f"/><circle cx="13" cy="12" r=".7" fill="#50545f"/>
         </pattern>
       </defs>
-      <rect width="360" height="430" fill="url(#asf)"/>
-      <rect x="0" y="0" width="14" height="430" fill="#8c8e93"/><rect x="346" y="0" width="14" height="430" fill="#8c8e93"/>
-      <path d="M14 0V430M346 0V430" stroke="#5a5c62" stroke-width="3"/>
+      <rect y="-70" width="360" height="500" fill="url(#asf)"/>
+      <rect x="0" y="-70" width="14" height="500" fill="#8c8e93"/><rect x="346" y="-70" width="14" height="500" fill="#8c8e93"/>
+      <path d="M14 -70V430M346 -70V430" stroke="#2a2b30" stroke-width="3"/>
+      <path d="M12 -70V430M348 -70V430" stroke="#e8c13a" stroke-width="2.4" stroke-dasharray="9 7" opacity=".85"/>
+      <g id="barrio" pointer-events="none">
+        <!-- casas del barrio al fondo -->
+        <rect x="14" y="-70" width="332" height="64" fill="#23252e"/>
+        <rect x="14" y="-62" width="72" height="56" fill="#c9694a"/><rect x="14" y="-67" width="72" height="7" fill="#7c828c"/>
+        <rect x="86" y="-52" width="62" height="46" fill="#5fa58a"/><rect x="86" y="-57" width="62" height="7" fill="#7c828c"/>
+        <rect x="148" y="-64" width="76" height="58" fill="#d9b44a"/><rect x="148" y="-69" width="76" height="7" fill="#7c828c"/>
+        <rect x="224" y="-54" width="60" height="48" fill="#4a74b5"/><rect x="224" y="-59" width="60" height="7" fill="#7c828c"/>
+        <rect x="284" y="-60" width="62" height="54" fill="#b5517a"/><rect x="284" y="-65" width="62" height="7" fill="#7c828c"/>
+        <path d="M14 -64h72M86 -54h62M148 -66h76M224 -56h60M284 -62h62" stroke="rgba(0,0,0,.35)" stroke-width="1.4" stroke-dasharray="3 3"/>
+        <rect x="24" y="-48" width="16" height="18" fill="#1b1d25"/><path d="M24 -42h16M24 -36h16M32 -48v18" stroke="#9aa0ab" stroke-width="1"/>
+        <rect x="50" y="-40" width="18" height="34" fill="#3a2a20"/><circle cx="64" cy="-23" r="1.3" fill="#e8c13a"/>
+        <rect x="96" y="-40" width="16" height="16" fill="#1b1d25"/><path d="M96 -32h16M104 -40v16" stroke="#9aa0ab" stroke-width="1"/>
+        <rect x="122" y="-36" width="16" height="30" fill="#2d3a63"/>
+        <rect x="154" y="-58" width="64" height="14" rx="2" fill="#a52a2a" stroke="#e8c13a" stroke-width="1.2"/><text x="186" y="-48" text-anchor="middle" font-size="8.5" font-weight="900" fill="#ffe27a" font-family="sans-serif">BODEGA EL CHAMO</text>
+        <rect x="160" y="-38" width="52" height="30" fill="#1b1d25"/><path d="M160 -30h52M160 -22h52M173 -38v30M186 -38v30M199 -38v30" stroke="#9aa0ab" stroke-width="1"/>
+        <rect x="232" y="-42" width="16" height="16" fill="#1b1d25"/><path d="M232 -34h16M240 -42v16" stroke="#9aa0ab" stroke-width="1"/>
+        <rect x="258" y="-40" width="18" height="34" fill="#e8e0cc"/>
+        <text x="315" y="-30" text-anchor="middle" font-size="9" font-weight="900" fill="#ffe27a" font-family="sans-serif" transform="rotate(-6 315 -30)">MANÍ</text>
+        <text x="317" y="-18" text-anchor="middle" font-size="9" font-weight="900" fill="#5fe0c0" font-family="sans-serif" transform="rotate(-6 317 -18)">♥ TOSTÓN</text>
+        <rect x="14" y="-6" width="332" height="6" fill="#6b6d73"/><path d="M14 -6H346" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+        <!-- poste y cables -->
+        <rect x="5" y="-70" width="5" height="190" fill="#4b4e57"/><rect x="0" y="-52" width="22" height="3" fill="#4b4e57"/><circle cx="3" cy="-52" r="2" fill="#bfc4cf"/><circle cx="19" cy="-52" r="2" fill="#bfc4cf"/>
+        <path d="M19 -52Q100 -36 180 -50T346 -54M19 -51Q110 -30 200 -44T346 -46" fill="none" stroke="#14151a" stroke-width="1.1"/>
+        <!-- carro viejo estacionado -->
+        <g transform="translate(262 8)"><ellipse cx="38" cy="30" rx="42" ry="5" fill="rgba(0,0,0,.35)"/>
+          <path d="M2 24V14Q2 9 8 9H22L32 0H56L66 9H74Q78 9 78 14V24Z" fill="#3a8f7a" stroke="#1d3d36" stroke-width="1.3"/>
+          <path d="M26 9L34 2H54L61 9Z" fill="#aee0e8" stroke="#1d3d36" stroke-width="1"/><path d="M44 2V9" stroke="#1d3d36" stroke-width="1"/>
+          <rect x="3" y="15" width="9" height="5" fill="#8a4b2a" opacity=".8"/><rect x="58" y="12" width="11" height="4" fill="#8a4b2a" opacity=".7"/>
+          <circle cx="18" cy="25" r="7" fill="#1a1a1e"/><circle cx="18" cy="25" r="3" fill="#8e929c"/><circle cx="62" cy="25" r="7" fill="#1a1a1e"/><circle cx="62" cy="25" r="3" fill="#8e929c"/></g>
+        <!-- líneas de la calle y policía acostado -->
+        <path d="M177 0V96M183 0V96" stroke="#e8c13a" stroke-width="2.2" stroke-dasharray="16 10" opacity=".8"/>
+        <path d="M60 0V86M300 0V86" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-dasharray="12 12"/>
+        <rect x="14" y="36" width="332" height="11" fill="url(#bump)" opacity=".92"/><path d="M14 36H346M14 47H346" stroke="rgba(0,0,0,.4)" stroke-width="1"/>
+        <!-- huecos, tapas y charcos -->
+        <ellipse cx="68" cy="152" rx="15" ry="7" fill="#1d1e24"/><ellipse cx="68" cy="150" rx="12" ry="5" fill="#2a2c34"/><path d="M54 150Q60 144 68 144" stroke="rgba(255,255,255,.12)" fill="none"/>
+        <circle cx="294" cy="146" r="10" fill="#2e3036" stroke="#6b6e78" stroke-width="1.6"/><path d="M286 146H302M294 138V154M288 140L300 152M300 140L288 152" stroke="#53565f" stroke-width="1"/>
+        <ellipse cx="92" cy="106" rx="24" ry="7" fill="#46618c" opacity=".7"/><ellipse cx="86" cy="104" rx="10" ry="2.4" fill="rgba(255,255,255,.35)"/>
+        <path d="M230 120Q250 112 268 122Q258 130 242 128Z" fill="#24262d" opacity=".8"/><path d="M40 218Q56 210 72 222" stroke="#202228" stroke-width="2" fill="none"/>
+        <!-- cauchos viejos -->
+        <g transform="translate(318 104)"><ellipse cx="0" cy="8" rx="13" ry="5" fill="rgba(0,0,0,.35)"/><ellipse cx="0" cy="4" rx="12" ry="6" fill="#16171b"/><ellipse cx="0" cy="3" rx="6" ry="3" fill="#3d3f47"/><ellipse cx="0" cy="-3" rx="12" ry="6" fill="#1b1c21"/><ellipse cx="0" cy="-4" rx="6" ry="3" fill="#464851"/></g>
+        <!-- perro de la cuadra -->
+        <g transform="translate(36 70)"><ellipse cx="6" cy="12" rx="13" ry="3.5" fill="rgba(0,0,0,.3)"/><path d="M-4 10Q-6 -2 4 -2L14 0Q18 -6 22 -4L24 2L18 4Q18 10 16 12Z" fill="#b98a4a" stroke="#6a4a22" stroke-width="1"/><circle cx="20" cy="-3" r="4" fill="#b98a4a" stroke="#6a4a22" stroke-width="1"/><path d="M18 -8L16 -3" stroke="#6a4a22" stroke-width="2"/><circle cx="22" cy="-4" r=".8" fill="#222"/><path d="M-4 8Q-12 4 -10 -2" stroke="#b98a4a" stroke-width="2.4" fill="none"/></g>
+        <!-- silla plástica y cava de hielo -->
+        <g transform="translate(318 200)"><ellipse cx="4" cy="22" rx="14" ry="3.5" fill="rgba(0,0,0,.3)"/><path d="M0 0H14V8H0Z" fill="#e8e2d0" stroke="#a49f8c" stroke-width="1"/><path d="M0 8V22M14 8V22M2 8V14H12V8" stroke="#e8e2d0" stroke-width="2.4" fill="none"/><path d="M0 0V-16H12V0" fill="#e8e2d0" stroke="#a49f8c" stroke-width="1"/></g>
+        <g transform="translate(30 250)"><ellipse cx="12" cy="14" rx="16" ry="3.5" fill="rgba(0,0,0,.3)"/><rect x="0" y="0" width="24" height="14" rx="2" fill="#2a78c8" stroke="#16456f" stroke-width="1"/><rect x="-1" y="-3" width="26" height="5" rx="1.5" fill="#f1efe8" stroke="#a49f8c" stroke-width=".8"/></g>
+      </g>
       <!-- zona buena -->
       <path class="chalk-f" d="M180 352L21 193A225 225 0 0 1 339 193Z"/>
       <path class="chalk" stroke-dasharray="14 3 10 4" d="M180 352L21 193M180 352L339 193"/>
@@ -196,6 +245,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
         <g id="capb"></g>
       </g>
       <g id="fx"></g>
+      <rect y="-70" width="360" height="500" fill="url(#vinieta)" pointer-events="none"/>
     </svg>
     <div class="status" id="status">Preparando la calle…</div>
   </div>
@@ -211,14 +261,15 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 (function () {
   "use strict";
   var FAST = !!window.__fast;
+  var ESC = 0.7;   /* tamaño de los jugadores */
   var REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HOME = { x: 180, y: 352 }, PITCH = { x: 180, y: 270 };
   var BASEPOS = [{ x: 262, y: 270 }, { x: 180, y: 188 }, { x: 98, y: 270 }];
   var R_HR = 225;
 
   var TEAMS = [
-    { name: "Maní", cls: "m", shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
-    { name: "Tostón", cls: "t", shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
+    { name: "Maní", cls: "m", extras: [{ n: "Pelón", alto: 60, ancho: 1.3, camisa: "franela", colCamisa: "#2f6fc2", calzado: "cholas", skin: "#b9774a", hair: "#1a1210" }, { n: "Flaco", alto: 92, ancho: 0.7, camisa: "no", calzado: "rotos", gorra: true, skin: "#8a5636", hair: "#14100d" }, { n: "Catire", alto: 72, ancho: 1.0, camisa: "no", calzado: "descalzo", skin: "#e0b48c", hair: "#c9a44a" }], shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
+    { name: "Tostón", cls: "t", extras: [{ n: "Moncho", alto: 62, ancho: 1.6, camisa: "no", calzado: "rotos", skin: "#6f4429", hair: "#0e0b09" }, { n: "Zurdo", alto: 88, ancho: 0.8, camisa: "franela", colCamisa: "#3aa86b", calzado: "descalzo", gorra: true, skin: "#c28a5c", hair: "#2a1a10" }, { n: "Pipo", alto: 70, ancho: 1.1, camisa: "no", calzado: "cholas", skin: "#a86f48", hair: "#1a1210" }], shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
   ];
   var PITCHES = {
     rapida: { label: "rápida", T: 720, k: 0.8, curve: 0 },
@@ -258,7 +309,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     var headCy = -H + hr + 2, neck = headCy + hr - 1, hip = -H * 0.42, sh = hip + H * 0.2;
     var skin = o.skin, shade = "rgba(0,0,0,.18)", g = "";
     var scy = o.crouch ? 0.82 : 1;
-    g += '<g transform="translate(' + o.x + " " + o.y + ") scale(" + (o.flip ? -1 : 1) + " " + scy + ')">';
+    g += '<g transform="translate(' + o.x + " " + o.y + ") rotate(" + (o.rot || 0) + ") scale(" + (o.flip ? -ESC : ESC) + " " + (scy * ESC) + ')">';
     g += '<ellipse cx="0" cy="1" rx="' + (w * 0.95) + '" ry="4" fill="rgba(0,0,0,.35)"/>';
     /* piernas y calzado */
     var lw = H * 0.1 * (0.8 + ancho * 0.2), lx = w * 0.38, fx = w * 0.34 + (ancho > 1.2 ? 2 : 0);
@@ -285,7 +336,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     if (ancho > 1.2 && o.camisa === "no") g += '<ellipse cx="0" cy="' + (hip - H * 0.06) + '" rx="' + (w * 0.62) + '" ry="' + (H * 0.1) + '" fill="' + skin + '" stroke="rgba(0,0,0,.15)" stroke-width=".8"/><circle cx="0" cy="' + (hip - H * 0.05) + '" r=".9" fill="rgba(0,0,0,.35)"/>';
     if (o.camisa === "franela") {
       var fw = w * 0.62 + 2;
-      g += '<path d="M' + (-fw) + " " + (neck + 2) + "L" + (-fw - 4) + " " + (neck + H * 0.17) + "L" + (-fw + 1) + " " + (neck + H * 0.2) + "L" + (-fw + 1) + " " + (hip - 1) + "Q0 " + (hip + 4) + " " + (fw - 1) + " " + (hip - 1) + "L" + (fw - 1) + " " + (neck + H * 0.2) + "L" + (fw + 4) + " " + (neck + H * 0.17) + "L" + fw + " " + (neck + 2) + "Q0 " + (neck + 7) + " " + (-fw) + " " + (neck + 2) + 'Z" fill="#c2402f" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>';
+      g += '<path d="M' + (-fw) + " " + (neck + 2) + "L" + (-fw - 4) + " " + (neck + H * 0.17) + "L" + (-fw + 1) + " " + (neck + H * 0.2) + "L" + (-fw + 1) + " " + (hip - 1) + "Q0 " + (hip + 4) + " " + (fw - 1) + " " + (hip - 1) + "L" + (fw - 1) + " " + (neck + H * 0.2) + "L" + (fw + 4) + " " + (neck + H * 0.17) + "L" + fw + " " + (neck + 2) + "Q0 " + (neck + 7) + " " + (-fw) + " " + (neck + 2) + 'Z" fill="' + (o.colCamisa || "#c2402f") + '" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>';
       g += '<path d="M' + (-fw + 3) + " " + (hip - 2) + "l3 -4l3 4l3 -4l3 4" + '" stroke="rgba(0,0,0,.25)" stroke-width=".9" fill="none"/>';
       g += '<circle cx="' + (fw * 0.3) + '" cy="' + (hip - H * 0.12) + '" r="2.2" fill="' + skin + '"/>';
     }
@@ -300,6 +351,9 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     else if (o.pose === "throw") { arm(-w / 2 + 2, sy, -w * 0.9, neck + H * 0.34); arm(w / 2 - 2, sy, w * 1.3, -H * 0.98); }
     else if (o.pose === "windup") { arm(-w / 2 + 2, sy, -w * 0.5, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.9, -H * 1.04); }
     else if (o.pose === "catch") { arm(-w / 2 + 2, sy, -w * 0.9, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.9, neck + H * 0.3); }
+    else if (o.pose === "run") { arm(-w / 2 + 2, sy, -w * 0.95, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.95, hip - 4); }
+    else if (o.pose === "ready") { arm(-w / 2 + 2, sy, -w * 0.85, hip + H * 0.06); arm(w / 2 - 2, sy, w * 0.85, hip + H * 0.06); }
+    else if (o.pose === "dive") { arm(-w / 2 + 2, sy, -w * 0.5, -H * 1.08); arm(w / 2 - 2, sy, w * 0.5, -H * 1.08); }
     else if (o.pose === "cheer") { arm(-w / 2 + 2, sy, -w * 1.1, -H * 1.02); arm(w / 2 - 2, sy, w * 1.1, -H * 1.02); }
     else { arm(-w / 2 + 2, sy, -w * 0.7, hip + 2); arm(w / 2 - 2, sy, w * 0.7, hip + 2); }
     g += arms;
@@ -332,17 +386,33 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   var poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" };
   var batAngle = -18;
   function batterTeam() { return S.half; }   /* 0 = Maní batea primero, 1 = Tostón */
+  /* defensores: uno cubriendo cada base (primera, segunda y tercera) */
+  var FL = [];
+  function initFielders() {
+    FL = [{ hx: 286, hy: 288 }, { hx: 208, hy: 206 }, { hx: 72, hy: 288 }].map(function (f) { return { x: f.hx, y: f.hy, hx: f.hx, hy: f.hy, pose: "ready", rot: 0, flip: false }; });
+  }
+  initFielders();
+  function aspecto(p, team, extra) {
+    var o = { tall: p.tall, alto: p.alto, ancho: p.ancho, camisa: p.camisa, colCamisa: p.colCamisa, calzado: p.calzado, gorra: p.gorra, skin: p.skin, hair: p.hair, shorts: team.shorts };
+    for (var k in extra) o[k] = extra[k];
+    return o;
+  }
   function drawActors() {
     var b = batterTeam(), d = 1 - b, bt = TEAMS[b], dt = TEAMS[d];
     var batter = bt.players[S.bat[b]], waiter = bt.players[1 - S.bat[b]], pitcher = dt.players[0], catcher = dt.players[1];
-    var h = "";
-    h += kid({ x: 292, y: 412, tall: waiter.tall, alto: waiter.alto, ancho: waiter.ancho, camisa: waiter.camisa, calzado: waiter.calzado, gorra: waiter.gorra, skin: waiter.skin, hair: waiter.hair, shorts: bt.shorts, pose: poses.wait });
-    h += kid({ x: 180, y: 292, tall: pitcher.tall, alto: pitcher.alto, ancho: pitcher.ancho, camisa: pitcher.camisa, calzado: pitcher.calzado, gorra: pitcher.gorra, skin: pitcher.skin, hair: pitcher.hair, shorts: dt.shorts, pose: poses.pitcher });
-    h += kid({ x: 180, y: 418, tall: catcher.tall, alto: catcher.alto, ancho: catcher.ancho, camisa: catcher.camisa, calzado: catcher.calzado, gorra: catcher.gorra, skin: catcher.skin, hair: catcher.hair, shorts: dt.shorts, pose: poses.catcher, crouch: true });
+    var specs = [];
+    specs.push({ y: 412, o: aspecto(waiter, bt, { x: 292, y: 412, pose: poses.wait }), extra: "" });
+    specs.push({ y: 292, o: aspecto(pitcher, dt, { x: 180, y: 292, pose: poses.pitcher }), extra: "" });
+    specs.push({ y: 418, o: aspecto(catcher, dt, { x: 180, y: 418, pose: poses.catcher, crouch: true }), extra: "" });
     var bx = 142, by = 368;
-    h += kid({ x: bx, y: by, tall: batter.tall, alto: batter.alto, ancho: batter.ancho, camisa: batter.camisa, calzado: batter.calzado, gorra: batter.gorra, skin: batter.skin, hair: batter.hair, shorts: bt.shorts, pose: poses.batter });
-    var bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62, hy = by - bh * 0.74;
-    h += '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
+    var bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62 * ESC, hy = by - bh * 0.74 * ESC;
+    var bate = '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ") scale(" + ESC + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
+    specs.push({ y: by, o: aspecto(batter, bt, { x: bx, y: by, pose: poses.batter }), extra: bate });
+    FL.forEach(function (f, i) {
+      specs.push({ y: f.y, o: aspecto(dt.extras[i], dt, { x: f.x, y: f.y, pose: f.pose, rot: f.rot, flip: f.flip }), extra: "" });
+    });
+    specs.sort(function (p, q) { return p.y - q.y; });
+    var h = specs.map(function (s) { return kid(s.o) + s.extra; }).join("");
     $("actors").innerHTML = h;
     $("actors").setAttribute("data-names", batter.n + "|" + pitcher.n);
   }
@@ -405,6 +475,50 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
 
   /* ---------- resultado de cada lanzamiento ---------- */
+  /* ---------- defensa: correr, lanzarse y lanzar a las bases ---------- */
+  function masCerca(pt) {
+    var mejor = 0, md = 1e9;
+    FL.forEach(function (f, i) { var q = Math.hypot(f.x - pt.x, f.y - pt.y); if (q < md) { md = q; mejor = i; } });
+    return mejor;
+  }
+  function mover(f, x, y, ms, pose) {
+    var x0 = f.x, y0 = f.y;
+    f.flip = x < x0; f.pose = pose || "run";
+    return tween(ms, function (p) {
+      f.x = x0 + (x - x0) * p;
+      f.y = y0 + (y - y0) * p - Math.abs(Math.sin(p * Math.PI * ms / 170)) * 3;
+      drawActorsLight();
+    }).then(function () { f.x = x; f.y = y; drawActors(); });
+  }
+  function lanzarse(f, dir, x, y) {
+    var x0 = f.x, y0 = f.y;
+    f.pose = "dive";
+    return tween(260, function (p) {
+      f.rot = dir * 72 * p; f.x = x0 + (x - x0) * p; f.y = y0 + (y - y0) * p - Math.sin(p * Math.PI) * 8;
+      drawActorsLight();
+    }).then(function () { drawActors(); });
+  }
+  async function pararse(f) {
+    var r0 = f.rot;
+    await tween(200, function (p) { f.rot = r0 * (1 - p); drawActorsLight(); });
+    f.rot = 0; f.pose = "ready"; drawActors();
+  }
+  function volverTodos() {
+    return Promise.all(FL.map(function (f) {
+      return mover(f, f.hx, f.hy, 420, "run").then(function () { f.pose = "ready"; f.rot = 0; f.flip = false; });
+    })).then(function () { drawActors(); });
+  }
+  /* El defensor más cercano sale corriendo hacia la pelota y, si hace falta, se lanza. */
+  function perseguir(pt, ms, lanzar) {
+    var i = masCerca(pt), f = FL[i], dir = pt.x >= f.x ? 1 : -1;
+    var correr = lanzar ? Math.max(260, ms - 300) : ms;
+    var antes = lanzar ? 26 : 0;
+    return { i: i, f: f, p: (async function () {
+      await mover(f, pt.x - dir * antes, pt.y + 8, correr, "run");
+      if (lanzar) await lanzarse(f, dir, pt.x, pt.y + 8);
+    })() };
+  }
+
   async function playOutcome(kind, side, d) {
     var catcherPt = { x: 180, y: 396 }, my = runId;
     if (kind === "look") {
@@ -415,24 +529,35 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       pop("¡STRIKE!", 180, 300, "#f4b54a");
     } else if (kind === "foul") {
       var f = polar(side * rnd(52, 78), rnd(90, 210));
-      await flyCap(HOME, f, 650, 40);
+      var cf = perseguir(f, 650, true);
+      await Promise.all([flyCap(HOME, f, 650, 40), cf.p]);
       pop("¡FOUL!", Math.max(50, Math.min(310, f.x)), Math.max(80, f.y), "#ffd0a0");
     } else if (kind === "hit") {
       var h = polar(side * rnd(2, 34) + rnd(-6, 6), rnd(95, 195));
-      await flyCap(HOME, h, 780, 46);
+      var ch = perseguir(h, 780, false);
+      await Promise.all([flyCap(HOME, h, 780, 46), ch.p]);
       pop("¡HIT!", h.x, h.y - 12, "#5fd39a");
+      /* recoge la chapa y la manda a una base */
+      ch.f.pose = "throw"; drawActors();
+      var otro = FL[ch.i === 0 ? 1 : 0];
+      await sleep(160);
+      await flyCap(h, { x: otro.x, y: otro.y - 14 }, 420, 24);
+      otro.pose = "catch"; ch.f.pose = "ready"; drawActors();
     } else if (kind === "hr") {
       var hrp = polar(rnd(-32, 32), rnd(R_HR + 35, R_HR + 85));
-      await flyCap(HOME, hrp, 1250, 120);
+      var cr = FL[masCerca({ x: hrp.x, y: 20 })];
+      var corre = mover(cr, Math.max(30, Math.min(330, hrp.x)), 60, 1000, "run").then(function () { cr.pose = "cheer"; drawActors(); });
+      await Promise.all([flyCap(HOME, hrp, 1250, 120), corre]);
       pop("¡JONRÓN!", 180, 120, "#ffd34f", 34);
     } else if (kind === "fly") {
       var lp = polar(rnd(-16, 16), rnd(105, 150));
-      await flyCap(HOME, lp, 800, 90);
+      var cl = perseguir(lp, 800, true);
+      await Promise.all([flyCap(HOME, lp, 800, 90), cl.p]);
       poses.pitcher = "cheer"; drawActors();
       pop("¡ATRAPADA!", lp.x, lp.y - 18, "#ef7a6e");
     }
     if (my !== runId) return;
-    await sleep(kind === "hr" ? 700 : 420);
+    await Promise.all([sleep(kind === "hr" ? 700 : 420), (kind === "fly" || kind === "foul") ? pararse(FL.reduce(function (a, f) { return Math.abs(f.rot) > Math.abs(a.rot) ? f : a; }, FL[0])).then(volverTodos) : volverTodos()]);
     hideCap();
     poses.pitcher = "idle"; poses.catcher = "catch"; poses.batter = "bat"; batAngle = -18;
   }
@@ -614,7 +739,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     runId++; timers.forEach(clearTimeout); timers = []; swingReq = null;
     S = { innings: parseInt($("innings").value, 10), outsMax: parseInt($("outsMax").value, 10), inn: 1, half: 0, outs: 0, strikes: 0,
       bases: [false, false, false], runs: [0, 0], line: [[], []], halfRuns: 0, bat: [0, 0], over: false, log: [], lastPitch: null, curveDir: 1 };
-    poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" }; batAngle = -18;
+    poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" }; batAngle = -18; initFielders();
     hideCap(); $("fx").innerHTML = ""; $("log").innerHTML = ""; $("overlay").hidden = true;
     say("¡Empieza el juego! <b>Maní</b> bate primero.");
     refresh();
