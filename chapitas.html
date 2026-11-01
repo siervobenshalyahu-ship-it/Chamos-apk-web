@@ -132,20 +132,22 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   <section class="panel" id="rules" hidden>
     <h2>Cómo se juega</h2>
     <ul>
-      <li>La pelota es una <b>chapa de botella</b> y el bate es un <b>palo de escoba</b>. Se juega en la calle, como el béisbol pero sin correr: los corredores son imaginarios.</li>
-      <li>Son dos equipos de dos: <b>Maní</b> (tú) y <b>Tostón</b>. Cada inning tiene dos mitades y cada mitad termina con <b>2 outs</b>. El juego dura <b>3 innings</b>. Gana quien tenga más carreras.</li>
+      <li>La pelota es una <b>chapa de botella</b> y el bate es un <b>palo de escoba</b>. Se juega en una calle asfaltada, como el béisbol pero con la zona marcada con tiza.</li>
+      <li>Son dos equipos de cinco: <b>Maní</b> (tú) y <b>Tostón</b>. Cada mitad termina con <b>2 outs</b>. <b>El primero que llegue a 10 carreras gana</b> (puedes cambiar la meta a 5 o 15).</li>
       <li><b>Bateando:</b> el pícher lanza la chapa y tú tocas <b>¡Batear!</b> justo cuando llega al plato. Entre más justo el tiempo, mejor el golpe.</li>
       <li><b>Lanzando:</b> tú eliges el lanzamiento (rápida, curva o lenta). El bateador trata de adivinarlo: si lo adivina, pega más fuerte.</li>
-      <li><b>Strike:</b> fallas el swing o no tiras. <b>Tres strikes</b> son un out. Un <b>foul</b> (chapa fuera de la zona) cuenta como strike, pero no puede ser el tercero.</li>
+      <li><b>Defensa:</b> pícher, cácher y tres jugadores, uno en cada base. El más cercano sale corriendo a atrapar la chapa.</li>
+      <li><b>Strike:</b> fallas el swing o no tiras. <b>Tres strikes</b> son un out. Un <b>foul</b> cuenta como strike, pero no puede ser el tercero.</li>
       <li><b>Out:</b> tres strikes, o una chapa bateada que atrapan en el aire.</li>
-      <li><b>Zona buena:</b> el área entre primera y tercera base. Si la chapa cae ahí es un <b>hit</b> y queda un corredor imaginario en primera; los que ya estaban avanzan una base.</li>
-      <li><b>Jonrón:</b> si cae más allá de la zona buena, anota una carrera, más una por cada corredor en base.</li>
+      <li><b>Sencillo:</b> la chapa cae en la zona cercana: el bateador llega a primera y los corredores avanzan una base.</li>
+      <li><b>Doblete:</b> cae en la zona marcada DOBLETE: el bateador llega a segunda y los corredores avanzan dos bases.</li>
+      <li><b>Jonrón:</b> cae más allá de la línea: anotan el bateador y todos los corredores.</li>
     </ul>
     <p style="margin:10px 0 0"><a href="reglas.html#chapitas">Ver todas las reglas →</a></p>
   </section>
 
   <div class="opts">
-    <label>Innings <select id="innings"><option value="1">1</option><option value="3" selected>3</option><option value="5">5</option></select></label>
+    <label>Carreras para ganar <select id="meta"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></label>
     <label>Outs <select id="outsMax"><option value="2" selected>2</option><option value="3">3</option></select></label>
   </div>
 
@@ -225,7 +227,11 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       <path class="chalk" stroke-dasharray="14 3 10 4" d="M180 352L21 193M180 352L339 193"/>
       <path class="chalk" stroke-dasharray="16 4 8 3" d="M21 193A225 225 0 0 1 339 193"/>
       <text class="ctext" x="180" y="116">JONRÓN</text>
-      <text class="ctext" x="180" y="160" style="font-size:9px">ZONA BUENA</text>
+      <path class="chalk" stroke-dasharray="10 5" d="M74 246A150 150 0 0 1 286 246"/>
+      <text class="ctext" x="132" y="158" style="font-size:9px">DOBLETE</text>
+      <text class="ctext" x="232" y="158" style="font-size:9px">DOBLETE</text>
+      <text class="ctext" x="104" y="236" style="font-size:8px">SENCILLO</text>
+      <text class="ctext" x="256" y="236" style="font-size:8px">SENCILLO</text>
       <text class="ctext" x="52" y="372" style="font-size:9px">FOUL</text>
       <text class="ctext" x="308" y="372" style="font-size:9px">FOUL</text>
       <!-- cuadro pintado con tiza -->
@@ -271,6 +277,13 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     { name: "Maní", cls: "m", extras: [{ n: "Pelón", alto: 60, ancho: 1.3, camisa: "franela", colCamisa: "#2f6fc2", calzado: "cholas", skin: "#b9774a", hair: "#1a1210" }, { n: "Flaco", alto: 92, ancho: 0.7, camisa: "no", calzado: "rotos", gorra: true, skin: "#8a5636", hair: "#14100d" }, { n: "Catire", alto: 72, ancho: 1.0, camisa: "no", calzado: "descalzo", skin: "#e0b48c", hair: "#c9a44a" }], shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
     { name: "Tostón", cls: "t", extras: [{ n: "Moncho", alto: 62, ancho: 1.6, camisa: "no", calzado: "rotos", skin: "#6f4429", hair: "#0e0b09" }, { n: "Zurdo", alto: 88, ancho: 0.8, camisa: "franela", colCamisa: "#3aa86b", calzado: "descalzo", gorra: true, skin: "#c28a5c", hair: "#2a1a10" }, { n: "Pipo", alto: 70, ancho: 1.1, camisa: "no", calzado: "cholas", skin: "#a86f48", hair: "#1a1210" }], shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
   ];
+  TEAMS.forEach(function (t) {
+    t.all = t.players.concat(t.extras);
+    t.all.forEach(function (p) { if (p.tall === undefined) p.tall = p.alto >= 80; });
+  });
+  var RSTAND = [{ x: 250, y: 278 }, { x: 158, y: 198 }, { x: 110, y: 278 }];
+  var HOMEPT = { x: 190, y: 366 }, STANCE = { x: 142, y: 368 };
+  var WAIT = [{ x: 262, y: 416 }, { x: 296, y: 408 }, { x: 330, y: 418 }, { x: 236, y: 424 }];
   var PITCHES = {
     rapida: { label: "rápida", T: 720, k: 0.8, curve: 0 },
     curva: { label: "curva", T: 1150, k: 1, curve: 1 },
@@ -397,42 +410,57 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     for (var k in extra) o[k] = extra[k];
     return o;
   }
+  var V = { team: 0, batter: 0, bases: [null, null, null] };
+  var ov = {};
+  function syncView() { V.team = batterTeam(); V.batter = S.bat[V.team]; V.bases = S.bases.slice(); ov = {}; }
   function drawActors() {
-    var b = batterTeam(), d = 1 - b, bt = TEAMS[b], dt = TEAMS[d];
-    var batter = bt.players[S.bat[b]], waiter = bt.players[1 - S.bat[b]], pitcher = dt.players[0], catcher = dt.players[1];
-    var specs = [];
-    specs.push({ y: 412, o: aspecto(waiter, bt, { x: 292, y: 412, pose: poses.wait }), extra: "" });
+    var b = V.team, d = 1 - b, bt = TEAMS[b], dt = TEAMS[d], bp = bt.all, dp = dt.all;
+    var batter = bp[V.batter], pitcher = dp[0], catcher = dp[1], specs = [], used = {};
     specs.push({ y: 292, o: aspecto(pitcher, dt, { x: 180, y: 292, pose: poses.pitcher }), extra: "" });
     specs.push({ y: 418, o: aspecto(catcher, dt, { x: 180, y: 418, pose: poses.catcher, crouch: true }), extra: "" });
-    var bx = 142, by = 368;
-    var bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62 * ESC, hy = by - bh * 0.74 * ESC;
-    var bate = '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ") scale(" + ESC + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
-    specs.push({ y: by, o: aspecto(batter, bt, { x: bx, y: by, pose: poses.batter }), extra: bate });
     FL.forEach(function (f, i) {
-      specs.push({ y: f.y, o: aspecto(dt.extras[i], dt, { x: f.x, y: f.y, pose: f.pose, rot: f.rot, flip: f.flip }), extra: "" });
+      specs.push({ y: f.y, o: aspecto(dp[2 + i], dt, { x: f.x, y: f.y, pose: f.pose, rot: f.rot, flip: f.flip }), extra: "" });
     });
-    specs.sort(function (p, q) { return p.y - q.y; });
-    var h = specs.map(function (s) { return kid(s.o) + s.extra; }).join("");
-    $("actors").innerHTML = h;
+    used[V.batter] = 1;
+    if (ov[V.batter]) {
+      var q = ov[V.batter];
+      specs.push({ y: q.y, o: aspecto(batter, bt, { x: q.x, y: q.y, pose: q.pose, flip: q.flip }), extra: "" });
+    } else {
+      var bx = STANCE.x, by = STANCE.y, bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62 * ESC, hy = by - bh * 0.74 * ESC;
+      var bate = '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ") scale(" + ESC + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
+      specs.push({ y: by, o: aspecto(batter, bt, { x: bx, y: by, pose: poses.batter }), extra: bate });
+    }
+    V.bases.forEach(function (pid, k) {
+      if (pid === null) return;
+      used[pid] = 1;
+      var o = ov[pid] || { x: RSTAND[k].x, y: RSTAND[k].y, pose: "idle" };
+      specs.push({ y: o.y, o: aspecto(bp[pid], bt, { x: o.x, y: o.y, pose: o.pose, flip: o.flip }), extra: "" });
+    });
+    for (var pid in ov) {
+      if (used[pid]) continue;
+      used[pid] = 1; var o2 = ov[pid];
+      specs.push({ y: o2.y, o: aspecto(bp[pid], bt, { x: o2.x, y: o2.y, pose: o2.pose, flip: o2.flip }), extra: "" });
+    }
+    var w = 0;
+    for (var k2 = 0; k2 < bp.length; k2++) {
+      if (used[k2]) continue;
+      var sp = WAIT[w++ % WAIT.length];
+      specs.push({ y: sp.y, o: aspecto(bp[k2], bt, { x: sp.x, y: sp.y, pose: "idle" }), extra: "" });
+    }
+    specs.sort(function (p, q2) { return p.y - q2.y; });
+    $("actors").innerHTML = specs.map(function (sp2) { return kid(sp2.o) + sp2.extra; }).join("");
     $("actors").setAttribute("data-names", batter.n + "|" + pitcher.n);
-  }
-  function drawRunners() {
-    var h = "", col = TEAMS[batterTeam()].shorts;
-    S.bases.forEach(function (on, i) {
-      if (on) h += '<g transform="translate(' + BASEPOS[i].x + " " + (BASEPOS[i].y - 4) + ')"><circle r="8" fill="' + col + '" stroke="#fff" stroke-width="2"/><circle r="3" fill="rgba(0,0,0,.3)"/></g>';
-    });
-    $("runners").innerHTML = h;
   }
 
   /* ---------- marcador ---------- */
   function renderLine() {
-    var n = Math.max(S.innings, S.inn), cols = "70px repeat(" + n + ", minmax(0, 1fr)) 34px", h = "";
+    var last = Math.max(5, S.inn), first = Math.max(1, last - 7), n = last - first + 1, cols = "70px repeat(" + n + ", minmax(0, 1fr)) 34px", h = "";
     h += '<div class="r h" style="grid-template-columns:' + cols + '"><span></span>';
-    for (var i = 1; i <= n; i++) h += "<span>" + i + "</span>";
+    for (var i = first; i <= last; i++) h += "<span>" + i + "</span>";
     h += "<span>C</span></div>";
     [0, 1].forEach(function (t) {
       h += '<div class="r" style="grid-template-columns:' + cols + '"><span class="' + TEAMS[t].cls + '">' + TEAMS[t].name + "</span>";
-      for (var i = 0; i < n; i++) {
+      for (var i = first - 1; i < last; i++) {
         var v = S.line[t][i], cur = !S.over && S.inn - 1 === i && S.half === t;
         h += '<span class="' + (cur ? "cur" : "") + '">' + (v === undefined ? (cur ? S.halfRuns : "") : v) + "</span>";
       }
@@ -442,8 +470,9 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
   function dots(n, max, cls) { var h = '<span class="dots ' + (cls || "") + '">'; for (var i = 0; i < max; i++) h += '<i class="' + (i < n ? "on" : "") + '"></i>'; return h + "</span>"; }
   function renderHud() {
-    var b = batterTeam(), bt = TEAMS[b], batter = bt.players[S.bat[b]];
+    var b = batterTeam(), bt = TEAMS[b], batter = bt.all[S.bat[b]];
     $("hud").innerHTML =
+      '<span><span class="lbl">Meta</span><b>' + S.target + "</b></span>" +
       '<span><span class="lbl">Inning</span><b>' + S.inn + (S.half === 0 ? " ▲" : " ▼") + "</b></span>" +
       '<span><span class="lbl">Batea</span><b class="' + bt.cls + '" style="color:var(--' + (b ? "toston" : "mani") + ')">' + bt.name + "</b> · " + batter.n + "</span>" +
       '<span><span class="lbl">Strikes</span>' + dots(S.strikes, 3) + "</span>" +
@@ -452,7 +481,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function say(html) { S.log.push(html); if (S.log.length > 3) S.log.shift(); $("log").innerHTML = S.log.map(function (l) { return "<div>" + l + "</div>"; }).join(""); }
   function status(html) { $("status").innerHTML = "<span>" + html + "</span>"; }
 
-  function refresh() { renderLine(); renderHud(); drawActors(); drawRunners(); }
+  function refresh() { syncView(); renderLine(); renderHud(); drawActors(); }
 
   /* ---------- trayectorias ---------- */
   function polar(theta, r) { var a = theta * Math.PI / 180; return { x: HOME.x + Math.sin(a) * r, y: HOME.y - Math.cos(a) * r }; }
@@ -519,8 +548,23 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     })() };
   }
 
+  function ptOf(k) { return (k < 0 || k > 2) ? HOMEPT : RSTAND[k]; }
+  function runPlan(plan) {
+    return Promise.all(plan.map(function (m) {
+      var pts = [], k;
+      for (k = m.f; k <= m.t; k++) pts.push(ptOf(k));
+      if (pts.length < 2) return Promise.resolve();
+      var legs = pts.length - 1, last = pts[legs];
+      return tween(legs * 330, function (p) {
+        var u = p * legs, i = Math.min(legs - 1, Math.floor(u)), q = u - i, a = pts[i], c = pts[i + 1];
+        ov[m.pid] = { x: a.x + (c.x - a.x) * q, y: a.y + (c.y - a.y) * q - Math.abs(Math.sin(u * Math.PI * 3)) * 3, pose: "run", flip: c.x < a.x };
+        drawActorsLight();
+      }).then(function () { ov[m.pid] = { x: last.x, y: last.y, pose: "idle" }; });
+    })).then(function () { drawActors(); });
+  }
+
   async function playOutcome(kind, side, d) {
-    var catcherPt = { x: 180, y: 396 }, my = runId;
+    var catcherPt = { x: 180, y: 396 }, my = runId, res = null, rp = null;
     if (kind === "look") {
       await flyCap(HOME, catcherPt, 160, 4);
       poses.catcher = "catch"; pop("¡STRIKE!", 180, 300, "#f4b54a");
@@ -532,11 +576,13 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       var cf = perseguir(f, 650, true);
       await Promise.all([flyCap(HOME, f, 650, 40), cf.p]);
       pop("¡FOUL!", Math.max(50, Math.min(310, f.x)), Math.max(80, f.y), "#ffd0a0");
-    } else if (kind === "hit") {
-      var h = polar(side * rnd(2, 34) + rnd(-6, 6), rnd(95, 195));
-      var ch = perseguir(h, 780, false);
-      await Promise.all([flyCap(HOME, h, 780, 46), ch.p]);
-      pop("¡HIT!", h.x, h.y - 12, "#5fd39a");
+    } else if (kind === "hit" || kind === "double") {
+      res = commit(kind); rp = runPlan(res.plan);
+      var dbl = kind === "double", ms = dbl ? 950 : 780;
+      var h = dbl ? polar(side * rnd(8, 40) + rnd(-6, 6), rnd(162, 214)) : polar(side * rnd(2, 34) + rnd(-6, 6), rnd(88, 146));
+      var ch = perseguir(h, ms, false);
+      await Promise.all([flyCap(HOME, h, ms, dbl ? 70 : 46), ch.p]);
+      pop(dbl ? "¡DOBLETE!" : "¡HIT!", h.x, h.y - 12, dbl ? "#7fe0e8" : "#5fd39a", dbl ? 28 : 26);
       /* recoge la chapa y la manda a una base */
       ch.f.pose = "throw"; drawActors();
       var otro = FL[ch.i === 0 ? 1 : 0];
@@ -544,6 +590,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       await flyCap(h, { x: otro.x, y: otro.y - 14 }, 420, 24);
       otro.pose = "catch"; ch.f.pose = "ready"; drawActors();
     } else if (kind === "hr") {
+      res = commit(kind); rp = runPlan(res.plan);
       var hrp = polar(rnd(-32, 32), rnd(R_HR + 35, R_HR + 85));
       var cr = FL[masCerca({ x: hrp.x, y: 20 })];
       var corre = mover(cr, Math.max(30, Math.min(330, hrp.x)), 60, 1000, "run").then(function () { cr.pose = "cheer"; drawActors(); });
@@ -556,10 +603,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       poses.pitcher = "cheer"; drawActors();
       pop("¡ATRAPADA!", lp.x, lp.y - 18, "#ef7a6e");
     }
-    if (my !== runId) return;
+    if (rp) await rp;
+    if (my !== runId) return { halfOver: false };
     await Promise.all([sleep(kind === "hr" ? 700 : 420), (kind === "fly" || kind === "foul") ? pararse(FL.reduce(function (a, f) { return Math.abs(f.rot) > Math.abs(a.rot) ? f : a; }, FL[0])).then(volverTodos) : volverTodos()]);
     hideCap();
     poses.pitcher = "idle"; poses.catcher = "catch"; poses.batter = "bat"; batAngle = -18;
+    return res || commit(kind);
   }
 
   function swingAnim() {
@@ -570,8 +619,13 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function drawActorsLight() { if (now() - lastDraw > 24 || FAST) { lastDraw = now(); drawActors(); } }
 
   /* ---------- reglas del partido ---------- */
+  function nextBatter(b) {
+    var i = (S.bat[b] + 1) % 5;
+    while (S.bases.indexOf(i) !== -1) i = (i + 1) % 5;
+    return i;
+  }
   function commit(kind) {
-    var b = batterTeam(), name = TEAMS[b].players[S.bat[b]].n, txt = "", endBatter = false, out = false;
+    var b = batterTeam(), cur = S.bat[b], name = TEAMS[b].all[cur].n, txt = "", endBatter = false, out = false, plan = [], scored = 0, i;
     if (kind === "look" || kind === "miss") {
       S.strikes++; txt = kind === "look" ? "Strike sin tirar" : "Strike, swing y falla";
       if (S.strikes >= 3) { out = true; txt = "¡Ponchado! Tercer strike"; }
@@ -580,35 +634,39 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       txt = "Foul, cuenta como strike";
     } else if (kind === "fly") {
       out = true; txt = "Atrapada en el aire: out";
-    } else if (kind === "hit") {
-      var sc = S.bases[2] ? 1 : 0;
-      S.bases = [true, S.bases[0], S.bases[1]];
-      S.runs[b] += sc; S.halfRuns += sc; endBatter = true;
-      txt = "¡Hit de <b>" + name + "</b>! Corredor en primera" + (sc ? ", anota 1 carrera" : "");
+    } else if (kind === "hit" || kind === "double") {
+      var n = kind === "hit" ? 1 : 2, nb = [null, null, null];
+      for (i = 2; i >= 0; i--) {
+        if (S.bases[i] === null) continue;
+        var t = i + n;
+        plan.push({ pid: S.bases[i], f: i, t: Math.min(t, 3) });
+        if (t >= 3) scored++; else nb[t] = S.bases[i];
+      }
+      plan.push({ pid: cur, f: -1, t: n - 1 }); nb[n - 1] = cur;
+      S.bases = nb; S.runs[b] += scored; S.halfRuns += scored; endBatter = true;
+      txt = (kind === "hit" ? "¡Hit de <b>" : "¡Doblete de <b>") + name + "</b>!" + (scored ? " Anota" + (scored > 1 ? "n " + scored + " carreras" : " 1 carrera") : "");
     } else if (kind === "hr") {
-      var n = 1 + S.bases.filter(Boolean).length;
-      S.bases = [false, false, false]; S.runs[b] += n; S.halfRuns += n; endBatter = true;
-      txt = "¡Jonrón de <b>" + name + "</b>! Anotan " + n + (n === 1 ? " carrera" : " carreras");
+      for (i = 2; i >= 0; i--) if (S.bases[i] !== null) plan.push({ pid: S.bases[i], f: i, t: 3 });
+      plan.push({ pid: cur, f: -1, t: 3 });
+      var nr = plan.length;
+      S.bases = [null, null, null]; S.runs[b] += nr; S.halfRuns += nr; endBatter = true;
+      txt = "¡Jonrón de <b>" + name + "</b>! Anotan " + nr + (nr === 1 ? " carrera" : " carreras");
     }
     if (out) { S.outs++; endBatter = true; }
-    if (endBatter) { S.strikes = 0; S.bat[b] = 1 - S.bat[b]; }
+    if (endBatter) { S.strikes = 0; S.bat[b] = nextBatter(b); }
     say(txt);
-    return { halfOver: S.outs >= S.outsMax };
+    return { halfOver: S.outs >= S.outsMax || S.runs[b] >= S.target, plan: plan };
   }
 
   async function endHalf() {
     var b = batterTeam();
     S.line[b][S.inn - 1] = S.halfRuns;
+    if (S.runs[b] >= S.target) { await sleep(500); return finish(); }
     status("Se acabó la mitad. <b>" + TEAMS[b].name + "</b> hizo " + S.halfRuns + (S.halfRuns === 1 ? " carrera." : " carreras."));
     say("Fin de la mitad: " + TEAMS[b].name + " " + S.halfRuns);
     await sleep(1300);
-    S.outs = 0; S.strikes = 0; S.bases = [false, false, false]; S.halfRuns = 0;
-    if (S.half === 0) { S.half = 1; }
-    else {
-      if (S.inn >= S.innings && S.runs[0] !== S.runs[1]) return finish();
-      S.half = 0; S.inn++;
-      if (S.inn > S.innings) say("¡Empate! Hay inning extra.");
-    }
+    S.outs = 0; S.strikes = 0; S.bases = [null, null, null]; S.halfRuns = 0;
+    if (S.half === 0) { S.half = 1; } else { S.half = 0; S.inn++; }
     poses.pitcher = "idle"; poses.batter = "bat"; batAngle = -18;
   }
 
@@ -641,7 +699,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function setControls(html) { $("controls").innerHTML = html; }
 
   async function humanBats(id) {
-    var b = 0, batter = TEAMS[0].players[S.bat[0]], pitcher = TEAMS[1].players[0];
+    var b = 0, batter = TEAMS[0].all[S.bat[0]], pitcher = TEAMS[1].players[0];
     setControls('<button type="button" class="btn big" id="bat" disabled>¡Batear!</button>');
     $("hint").textContent = "Toca ¡Batear! justo cuando la chapa llegue al plato.";
     status("<b>" + pitcher.n + "</b> se prepara a lanzar…");
@@ -675,24 +733,24 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     var kind = evalSwing(d, batter.tall), side = d !== null && d < 0 ? -1 : 1;
     if (d === null && FAST === false) { /* sin tirar */ }
     setControls(""); $("hint").textContent = "";
-    await playOutcome(kind, side, d);
+    var r1 = await playOutcome(kind, side, d);
     if (id !== runId) return;
-    return commit(kind).halfOver;
+    return r1.halfOver;
   }
 
   function evalSwing(d, tall) {
     if (d === null) return "look";
     var a = Math.abs(d), r = Math.random();
-    if (a <= 70) return r < 0.3 + (tall ? 0.05 : 0) ? "hr" : (r < 0.8 ? "hit" : "fly");
-    if (a <= 140) return r < 0.06 ? "hr" : (r < 0.62 ? "hit" : (r < 0.84 ? "fly" : "foul"));
-    if (a <= 230) return r < 0.25 ? "hit" : (r < 0.5 ? "fly" : "foul");
+    if (a <= 70) return r < 0.22 + (tall ? 0.05 : 0) ? "hr" : (r < 0.46 ? "double" : (r < 0.82 ? "hit" : "fly"));
+    if (a <= 140) return r < 0.04 ? "hr" : (r < 0.16 ? "double" : (r < 0.6 ? "hit" : (r < 0.84 ? "fly" : "foul")));
+    if (a <= 230) return r < 0.04 ? "double" : (r < 0.25 ? "hit" : (r < 0.5 ? "fly" : "foul"));
     if (a <= 330) return r < 0.7 ? "foul" : "miss";
     return "miss";
   }
 
   function cpuSwing(pitch, tall) {
     var guess = (S.lastPitch && Math.random() < 0.4) ? S.lastPitch : pick(PKEYS), match = guess === pitch;
-    var w = match ? { miss: 12, look: 3, foul: 15, fly: 10, hit: 40, hr: 20 } : { miss: 40, look: 8, foul: 17, fly: 15, hit: 17, hr: 3 };
+    var w = match ? { miss: 12, look: 3, foul: 15, fly: 10, hit: 32, double: 10, hr: 18 } : { miss: 40, look: 8, foul: 17, fly: 15, hit: 13, double: 4, hr: 3 };
     if (tall) w.hr += 3;
     var tot = 0, k; for (k in w) tot += w[k];
     var r = Math.random() * tot;
@@ -701,7 +759,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
 
   async function humanPitches(id) {
-    var b = 1, batter = TEAMS[1].players[S.bat[1]], pitcher = TEAMS[0].players[0];
+    var b = 1, batter = TEAMS[1].all[S.bat[1]], pitcher = TEAMS[0].players[0];
     $("hint").textContent = "El bateador intenta adivinar tu lanzamiento. Cambia de vez en cuando.";
     status("Tú lanzas. Bateador: <b>" + batter.n + "</b>");
     poses.pitcher = "idle"; poses.batter = "bat"; batAngle = -18; drawActors();
@@ -729,16 +787,16 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     poses.pitcher = "idle";
     var side = Math.random() < 0.5 ? -1 : 1;
     if (res.match && (res.kind === "hit" || res.kind === "hr")) say("<b>" + batter.n + "</b> adivinó tu lanzamiento.");
-    await playOutcome(res.kind, side, 0);
+    var r2 = await playOutcome(res.kind, side, 0);
     if (id !== runId) return;
-    return commit(res.kind).halfOver;
+    return r2.halfOver;
   }
 
   /* ---------- inicio ---------- */
   function start() {
     runId++; timers.forEach(clearTimeout); timers = []; swingReq = null;
-    S = { innings: parseInt($("innings").value, 10), outsMax: parseInt($("outsMax").value, 10), inn: 1, half: 0, outs: 0, strikes: 0,
-      bases: [false, false, false], runs: [0, 0], line: [[], []], halfRuns: 0, bat: [0, 0], over: false, log: [], lastPitch: null, curveDir: 1 };
+    S = { target: parseInt($("meta").value, 10), outsMax: parseInt($("outsMax").value, 10), inn: 1, half: 0, outs: 0, strikes: 0,
+      bases: [null, null, null], runs: [0, 0], line: [[], []], halfRuns: 0, bat: [0, 0], over: false, log: [], lastPitch: null, curveDir: 1 };
     poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" }; batAngle = -18; initFielders();
     hideCap(); $("fx").innerHTML = ""; $("log").innerHTML = ""; $("overlay").hidden = true;
     say("¡Empieza el juego! <b>Maní</b> bate primero.");
@@ -757,7 +815,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     r.hidden = !open;
     this.setAttribute("aria-expanded", open ? "true" : "false");
   };
-  $("innings").onchange = start;
+  $("meta").onchange = start;
   $("outsMax").onchange = start;
   start();
 })();
