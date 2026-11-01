@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Chapitas Maní Tostón: el juego de chapitas de la calle venezolana, con bate de escoba y chapas de botella.">
+<title>Chapitas Maní Tostón</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+/* Concepto: una tarde en la calle del barrio. Asfalto gris, rayas de tiza, chapas de botella y un palo de escoba. */
+:root {
+  --bg: #080c18;
+  --panel: #0e1424;
+  --line: rgba(255, 255, 255, .10);
+  --ink: #eef1f7;
+  --muted: #9aa4b8;
+  --amber: #f4b54a;
+  --mani: #c98a4a;
+  --toston: #e8b93a;
+  --good: #5fd39a;
+  --bad: #ef7a6e;
+  --font-serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 14px 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--amber); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.app { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+
+header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+.rulesbtn { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; color: var(--muted); cursor: pointer; font-weight: 600; font-size: 13px; }
+.rulesbtn:hover { color: var(--ink); border-color: var(--amber); }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 14px; }
+.panel h2 { font-family: var(--font-serif); font-size: 20px; margin: 0 0 6px; }
+.panel ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+
+.opts { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.opts label { display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; font-size: 10px; }
+.opts select { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; font: inherit; font-size: 12px; letter-spacing: 0; text-transform: none; }
+
+.board { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.line { grid-column: 1 / -1; display: grid; gap: 2px 0; font-variant-numeric: tabular-nums; font-size: 13px; }
+.line .r { display: grid; align-items: center; }
+.line .r span { text-align: center; min-width: 0; padding: 1px 0; }
+.line .r span:first-child { text-align: left; font-weight: 800; padding-left: 2px; }
+.line .r.h span { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; }
+.line .tot { font-family: var(--font-serif); font-weight: 700; font-size: 16px; }
+.line .cur { background: rgba(244, 181, 74, .16); border-radius: 4px; }
+.line .m { color: var(--mani); } .line .t { color: var(--toston); }
+
+.hud { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.hud b { color: var(--ink); }
+.dots { display: inline-flex; gap: 4px; vertical-align: middle; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--muted); display: block; }
+.dots i.on { background: var(--amber); border-color: var(--amber); }
+.dots.out i.on { background: var(--bad); border-color: var(--bad); }
+.lbl { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-right: 4px; }
+
+.field { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); background: #3b3e47; touch-action: manipulation; }
+.field svg { display: block; width: 100%; height: auto; }
+.chalk { fill: none; stroke: rgba(255, 255, 255, .72); stroke-width: 2; stroke-linecap: round; }
+.chalk-f { fill: rgba(255, 255, 255, .06); stroke: none; }
+.base { fill: #f4f1e6; stroke: rgba(0, 0, 0, .25); stroke-width: 1; }
+.ctext { fill: rgba(255, 255, 255, .5); font-family: var(--font-sans); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-anchor: middle; }
+.ring { fill: none; stroke: var(--amber); stroke-width: 2; stroke-dasharray: 4 4; opacity: 0; }
+.ring.on { opacity: 1; animation: spin 2.4s linear infinite; transform-origin: 180px 352px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pop { font-family: var(--font-serif); font-weight: 700; text-anchor: middle; paint-order: stroke; stroke: rgba(0, 0, 0, .6); stroke-width: 4px; stroke-linejoin: round; }
+.status { position: absolute; left: 8px; right: 8px; top: 8px; text-align: center; background: rgba(8, 12, 24, .72); border: 1px solid var(--line); border-radius: 10px; padding: 5px 10px; font-size: 13px; color: var(--ink); min-height: 32px; display: flex; align-items: center; justify-content: center; text-wrap: balance; }
+.status b { color: var(--amber); }
+
+.controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 52px; }
+.btn { background: var(--amber); color: #1a1205; border: 0; border-radius: 10px; padding: 11px 16px; font-weight: 800; cursor: pointer; }
+.btn.big { font-size: 20px; padding: 14px 28px; flex: 1 1 100%; letter-spacing: .02em; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn:hover:not([disabled]) { filter: brightness(1.08); }
+.pitchrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.pitchrow .btn { display: flex; flex-direction: column; gap: 2px; align-items: center; padding: 10px 6px; }
+.pitchrow .btn small { font-weight: 600; font-size: 11px; opacity: .75; }
+.hint { color: var(--muted); font-size: 12px; text-align: center; min-height: 18px; }
+.log { color: var(--muted); font-size: 13px; text-align: center; min-height: 40px; }
+.log div { opacity: .7; }
+.log div:last-child { opacity: 1; color: var(--ink); }
+.log b { color: var(--ink); }
+
+.overlay { position: fixed; inset: 0; background: rgba(4, 7, 14, .8); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 20; overflow-y: auto; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); margin: auto; }
+.card h2 { font-family: var(--font-serif); font-size: 26px; margin: 0; text-wrap: balance; }
+.card p { margin: 0; color: var(--muted); }
+.win { color: var(--good); } .lose { color: var(--bad); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (max-width: 380px) { h1 { font-size: 24px; } .line { font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div>
+      <h1>Chapitas Maní Tostón</h1>
+      <p class="sub">Bate de escoba y chapas de botella. Tú bateas con Maní.</p>
+    </div>
+    <button class="rulesbtn" id="rulesBtn" aria-expanded="false" aria-controls="rules">Reglas</button>
+  </header>
+
+  <section class="panel" id="rules" hidden>
+    <h2>Cómo se juega</h2>
+    <ul>
+      <li>La pelota es una <b>chapa de botella</b> y el bate es un <b>palo de escoba</b>. Se juega en la calle, como el béisbol pero sin correr: los corredores son imaginarios.</li>
+      <li>Son dos equipos de dos: <b>Maní</b> (tú) y <b>Tostón</b>. Cada inning tiene dos mitades y cada mitad termina con <b>2 outs</b>. El juego dura <b>3 innings</b>. Gana quien tenga más carreras.</li>
+      <li><b>Bateando:</b> el pícher lanza la chapa y tú tocas <b>¡Batear!</b> justo cuando llega al plato. Entre más justo el tiempo, mejor el golpe.</li>
+      <li><b>Lanzando:</b> tú eliges el lanzamiento (rápida, curva o lenta). El bateador trata de adivinarlo: si lo adivina, pega más fuerte.</li>
+      <li><b>Strike:</b> fallas el swing o no tiras. <b>Tres strikes</b> son un out. Un <b>foul</b> (chapa fuera de la zona) cuenta como strike, pero no puede ser el tercero.</li>
+      <li><b>Out:</b> tres strikes, o una chapa bateada que atrapan en el aire.</li>
+      <li><b>Zona buena:</b> el área entre primera y tercera base. Si la chapa cae ahí es un <b>hit</b> y queda un corredor imaginario en primera; los que ya estaban avanzan una base.</li>
+      <li><b>Jonrón:</b> si cae más allá de la zona buena, anota una carrera, más una por cada corredor en base.</li>
+    </ul>
+    <p style="margin:10px 0 0"><a href="reglas.html#chapitas">Ver todas las reglas →</a></p>
+  </section>
+
+  <div class="opts">
+    <label>Innings <select id="innings"><option value="1">1</option><option value="3" selected>3</option><option value="5">5</option></select></label>
+    <label>Outs <select id="outsMax"><option value="2" selected>2</option><option value="3">3</option></select></label>
+  </div>
+
+  <div class="board" aria-live="polite">
+    <div class="line" id="line"></div>
+  </div>
+
+  <div class="hud" id="hud"></div>
+
+  <div class="field" id="fieldWrap">
+    <svg id="field" viewBox="0 0 360 430" role="img" aria-label="Calle con la zona de juego marcada con tiza: plato, primera, segunda y tercera base, punto de lanzamiento y línea de jonrón. Cuatro niños y jóvenes descalzos y sin camisa juegan.">
+      <defs>
+        <pattern id="asf" width="24" height="24" patternUnits="userSpaceOnUse">
+          <rect width="24" height="24" fill="#3b3e47"/>
+          <circle cx="4" cy="6" r="1" fill="#464a54"/><circle cx="15" cy="3" r=".8" fill="#2f323a"/><circle cx="20" cy="14" r="1.1" fill="#464a54"/>
+          <circle cx="8" cy="19" r=".9" fill="#2f323a"/><circle cx="2" cy="13" r=".6" fill="#50545f"/><circle cx="13" cy="12" r=".7" fill="#50545f"/>
+        </pattern>
+      </defs>
+      <rect width="360" height="430" fill="url(#asf)"/>
+      <rect x="0" y="0" width="14" height="430" fill="#8c8e93"/><rect x="346" y="0" width="14" height="430" fill="#8c8e93"/>
+      <path d="M14 0V430M346 0V430" stroke="#5a5c62" stroke-width="3"/>
+      <!-- zona buena -->
+      <path class="chalk-f" d="M180 352L21 193A225 225 0 0 1 339 193Z"/>
+      <path class="chalk" stroke-dasharray="14 3 10 4" d="M180 352L21 193M180 352L339 193"/>
+      <path class="chalk" stroke-dasharray="16 4 8 3" d="M21 193A225 225 0 0 1 339 193"/>
+      <text class="ctext" x="180" y="116">JONRÓN</text>
+      <text class="ctext" x="180" y="160" style="font-size:9px">ZONA BUENA</text>
+      <text class="ctext" x="52" y="372" style="font-size:9px">FOUL</text>
+      <text class="ctext" x="308" y="372" style="font-size:9px">FOUL</text>
+      <!-- bases -->
+      <rect class="base" x="255" y="263" width="14" height="14" transform="rotate(45 262 270)"/>
+      <rect class="base" x="173" y="181" width="14" height="14" transform="rotate(45 180 188)"/>
+      <rect class="base" x="91" y="263" width="14" height="14" transform="rotate(45 98 270)"/>
+      <circle class="chalk" cx="180" cy="270" r="5"/>
+      <path class="base" d="M170 346H190V354L180 362L170 354Z"/>
+      <circle class="ring" id="ring" cx="180" cy="352" r="17"/>
+      <g id="runners"></g>
+      <g id="actors"></g>
+      <g id="capg" transform="translate(-50 -50)">
+        <ellipse id="capsh" cx="0" cy="9" rx="5" ry="2" fill="rgba(0,0,0,.35)"/>
+        <g id="capb"></g>
+      </g>
+      <g id="fx"></g>
+    </svg>
+    <div class="status" id="status">Preparando la calle…</div>
+  </div>
+
+  <div class="controls" id="controls"></div>
+  <div class="hint" id="hint"></div>
+  <div class="log" id="log" aria-live="polite"></div>
+</div>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  var FAST = !!window.__fast;
+  var REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var HOME = { x: 180, y: 352 }, PITCH = { x: 180, y: 270 };
+  var BASEPOS = [{ x: 262, y: 270 }, { x: 180, y: 188 }, { x: 98, y: 270 }];
+  var R_HR = 225;
+
+  var TEAMS = [
+    { name: "Maní", cls: "m", shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, skin: "#c98a5e", hair: "#2a1a10" }] },
+    { name: "Tostón", cls: "t", shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, skin: "#d49a6a", hair: "#3a2314" }] }
+  ];
+  var PITCHES = {
+    rapida: { label: "rápida", T: 720, k: 0.8, curve: 0 },
+    curva: { label: "curva", T: 1150, k: 1, curve: 1 },
+    lenta: { label: "lenta", T: 1500, k: 1.25, curve: 0 }
+  };
+  var PKEYS = ["rapida", "curva", "lenta"];
+
+  var S = null;
+  var runId = 0;
+  var swingReq = null;
+  var timers = [];
+
+  function $(id) { return document.getElementById(id); }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function now() { return performance.now(); }
+  function sleep(ms) {
+    return new Promise(function (res) { var t = setTimeout(res, FAST ? Math.min(ms, 8) : (REDUCE ? ms * 0.5 : ms)); timers.push(t); });
+  }
+  function dur(ms) { return FAST ? 25 : (REDUCE ? ms * 0.5 : ms); }
+  function tween(ms, fn) {
+    return new Promise(function (res) {
+      var t0 = now(), d = dur(ms);
+      function step() {
+        var p = Math.min(1, (now() - t0) / d);
+        fn(p);
+        if (p < 1) requestAnimationFrame(step); else res();
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* ---------- dibujo: niños y jóvenes descalzos y sin camisa ---------- */
+  function kid(o) {
+    var H = o.tall ? 86 : 64, hr = H * 0.14, w = H * 0.27;
+    var headCy = -H + hr + 2, neck = headCy + hr - 1, hip = -H * 0.42, sh = hip + H * 0.2;
+    var skin = o.skin, shade = "rgba(0,0,0,.18)", g = "";
+    var scy = o.crouch ? 0.82 : 1;
+    g += '<g transform="translate(' + o.x + " " + o.y + ") scale(" + (o.flip ? -1 : 1) + " " + scy + ')">';
+    g += '<ellipse cx="0" cy="1" rx="' + (w * 0.95) + '" ry="4" fill="rgba(0,0,0,.35)"/>';
+    /* piernas y pies descalzos */
+    g += '<rect x="' + (-w * 0.38) + '" y="' + sh + '" width="' + (H * 0.1) + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
+    g += '<rect x="' + (w * 0.38 - H * 0.1) + '" y="' + sh + '" width="' + (H * 0.1) + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
+    g += '<ellipse cx="' + (-w * 0.34) + '" cy="-1.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.03) + '" fill="' + skin + '"/><ellipse cx="' + (w * 0.34) + '" cy="-1.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.03) + '" fill="' + skin + '"/>';
+    g += '<ellipse cx="' + (-w * 0.34) + '" cy="-.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.018) + '" fill="' + shade + '"/><ellipse cx="' + (w * 0.34) + '" cy="-.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.018) + '" fill="' + shade + '"/>';
+    /* torso sin camisa */
+    g += '<path d="M' + (-w / 2) + " " + (neck + 3) + "Q" + (-w / 2 - 1) + " " + hip + " " + (-w / 2 + 1) + " " + hip + "H" + (w / 2 - 1) + "Q" + (w / 2 + 1) + " " + hip + " " + (w / 2) + " " + (neck + 3) + 'Z" fill="' + skin + '"/>';
+    /* short */
+    g += '<path d="M' + (-w / 2 - 1) + " " + hip + "H" + (w / 2 + 1) + "L" + (w / 2 + 3) + " " + sh + "H" + (-w / 2 - 3) + 'Z" fill="' + o.shorts + '" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>';
+    g += '<path d="M' + (-w / 2 - 1) + " " + (hip + 1.5) + "H" + (w / 2 + 1) + '" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>';
+    /* brazos */
+    var sy = neck + H * 0.06, aw = H * 0.075, arms = "";
+    function arm(x1, y1, x2, y2) { arms += '<path d="M' + x1 + " " + y1 + "L" + x2 + " " + y2 + '" stroke="' + skin + '" stroke-width="' + aw + '" stroke-linecap="round"/>'; }
+    if (o.pose === "bat") { arm(-w / 2 + 2, sy, w * 0.55, neck + H * 0.2); arm(w / 2 - 2, sy, w * 0.7, neck + H * 0.17); }
+    else if (o.pose === "swing") { arm(-w / 2 + 2, sy, w * 1.1, neck + H * 0.3); arm(w / 2 - 2, sy, w * 1.2, neck + H * 0.26); }
+    else if (o.pose === "throw") { arm(-w / 2 + 2, sy, -w * 0.9, neck + H * 0.34); arm(w / 2 - 2, sy, w * 1.3, -H * 0.98); }
+    else if (o.pose === "windup") { arm(-w / 2 + 2, sy, -w * 0.5, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.9, -H * 1.04); }
+    else if (o.pose === "catch") { arm(-w / 2 + 2, sy, -w * 0.9, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.9, neck + H * 0.3); }
+    else if (o.pose === "cheer") { arm(-w / 2 + 2, sy, -w * 1.1, -H * 1.02); arm(w / 2 - 2, sy, w * 1.1, -H * 1.02); }
+    else { arm(-w / 2 + 2, sy, -w * 0.7, hip + 2); arm(w / 2 - 2, sy, w * 0.7, hip + 2); }
+    g += arms;
+    /* cabeza */
+    g += '<rect x="' + (-hr * 0.35) + '" y="' + (headCy + hr * 0.6) + '" width="' + (hr * 0.7) + '" height="' + (hr * 0.8) + '" fill="' + skin + '"/>';
+    g += '<circle cx="0" cy="' + headCy + '" r="' + hr + '" fill="' + skin + '"/>';
+    g += '<path d="M' + (-hr) + " " + (headCy - 1) + "Q" + (-hr) + " " + (headCy - hr * 1.15) + " 0 " + (headCy - hr * 1.12) + "Q" + hr + " " + (headCy - hr * 1.15) + " " + hr + " " + (headCy - 1) + "Q" + (hr * 0.5) + " " + (headCy - hr * 0.55) + " 0 " + (headCy - hr * 0.5) + "Q" + (-hr * 0.5) + " " + (headCy - hr * 0.55) + " " + (-hr) + " " + (headCy - 1) + 'Z" fill="' + o.hair + '"/>';
+    g += '<circle cx="' + (-hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/><circle cx="' + (hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/>';
+    g += '<path d="M' + (-hr * 0.35) + " " + (headCy + hr * 0.45) + "Q0 " + (headCy + hr * 0.8) + " " + (hr * 0.35) + " " + (headCy + hr * 0.45) + '" fill="none" stroke="#1a1210" stroke-width=".9" stroke-linecap="round"/>';
+    g += "</g>";
+    return g;
+  }
+
+  function chapaPath(r) {
+    var pts = [], n = 12;
+    for (var k = 0; k < n * 2; k++) { var a = (k / (n * 2)) * Math.PI * 2, rr = k % 2 ? r * 0.82 : r; pts.push((Math.cos(a) * rr).toFixed(2) + " " + (Math.sin(a) * rr).toFixed(2)); }
+    return "M" + pts.join("L") + "Z";
+  }
+  $("capb").innerHTML = '<path d="' + chapaPath(6) + '" fill="#d4a62a" stroke="#6b4e0a" stroke-width=".8"/><circle r="3.4" fill="#f1cf62" stroke="#6b4e0a" stroke-width=".5"/>';
+
+  function setCap(x, y, z) {
+    $("capg").setAttribute("transform", "translate(" + x.toFixed(1) + " " + (y - (z || 0)).toFixed(1) + ")");
+    $("capsh").setAttribute("cy", (9 + (z || 0)).toFixed(1));
+    $("capsh").setAttribute("rx", (5 - Math.min(3, (z || 0) / 30)).toFixed(1));
+  }
+  function hideCap() { $("capg").setAttribute("transform", "translate(-60 -60)"); }
+
+  /* ---------- actores ---------- */
+  var poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" };
+  var batAngle = -18;
+  function batterTeam() { return S.half; }   /* 0 = Maní batea primero, 1 = Tostón */
+  function drawActors() {
+    var b = batterTeam(), d = 1 - b, bt = TEAMS[b], dt = TEAMS[d];
+    var batter = bt.players[S.bat[b]], waiter = bt.players[1 - S.bat[b]], pitcher = dt.players[0], catcher = dt.players[1];
+    var h = "";
+    h += kid({ x: 292, y: 412, tall: waiter.tall, skin: waiter.skin, hair: waiter.hair, shorts: bt.shorts, pose: poses.wait });
+    h += kid({ x: 180, y: 292, tall: pitcher.tall, skin: pitcher.skin, hair: pitcher.hair, shorts: dt.shorts, pose: poses.pitcher });
+    h += kid({ x: 180, y: 418, tall: catcher.tall, skin: catcher.skin, hair: catcher.hair, shorts: dt.shorts, pose: poses.catcher, crouch: true });
+    var bx = 142, by = 368;
+    h += kid({ x: bx, y: by, tall: batter.tall, skin: batter.skin, hair: batter.hair, shorts: bt.shorts, pose: poses.batter });
+    var bh = batter.tall ? 86 : 64, hx = bx + bh * 0.27 * 0.62, hy = by - bh * 0.74;
+    h += '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
+    $("actors").innerHTML = h;
+    $("actors").setAttribute("data-names", batter.n + "|" + pitcher.n);
+  }
+  function drawRunners() {
+    var h = "", col = TEAMS[batterTeam()].shorts;
+    S.bases.forEach(function (on, i) {
+      if (on) h += '<g transform="translate(' + BASEPOS[i].x + " " + (BASEPOS[i].y - 4) + ')"><circle r="8" fill="' + col + '" stroke="#fff" stroke-width="2"/><circle r="3" fill="rgba(0,0,0,.3)"/></g>';
+    });
+    $("runners").innerHTML = h;
+  }
+
+  /* ---------- marcador ---------- */
+  function renderLine() {
+    var n = Math.max(S.innings, S.inn), cols = "70px repeat(" + n + ", minmax(0, 1fr)) 34px", h = "";
+    h += '<div class="r h" style="grid-template-columns:' + cols + '"><span></span>';
+    for (var i = 1; i <= n; i++) h += "<span>" + i + "</span>";
+    h += "<span>C</span></div>";
+    [0, 1].forEach(function (t) {
+      h += '<div class="r" style="grid-template-columns:' + cols + '"><span class="' + TEAMS[t].cls + '">' + TEAMS[t].name + "</span>";
+      for (var i = 0; i < n; i++) {
+        var v = S.line[t][i], cur = !S.over && S.inn - 1 === i && S.half === t;
+        h += '<span class="' + (cur ? "cur" : "") + '">' + (v === undefined ? (cur ? S.halfRuns : "") : v) + "</span>";
+      }
+      h += '<span class="tot">' + S.runs[t] + "</span></div>";
+    });
+    $("line").innerHTML = h;
+  }
+  function dots(n, max, cls) { var h = '<span class="dots ' + (cls || "") + '">'; for (var i = 0; i < max; i++) h += '<i class="' + (i < n ? "on" : "") + '"></i>'; return h + "</span>"; }
+  function renderHud() {
+    var b = batterTeam(), bt = TEAMS[b], batter = bt.players[S.bat[b]];
+    $("hud").innerHTML =
+      '<span><span class="lbl">Inning</span><b>' + S.inn + (S.half === 0 ? " ▲" : " ▼") + "</b></span>" +
+      '<span><span class="lbl">Batea</span><b class="' + bt.cls + '" style="color:var(--' + (b ? "toston" : "mani") + ')">' + bt.name + "</b> · " + batter.n + "</span>" +
+      '<span><span class="lbl">Strikes</span>' + dots(S.strikes, 3) + "</span>" +
+      '<span><span class="lbl">Outs</span>' + dots(S.outs, S.outsMax, "out") + "</span>";
+  }
+  function say(html) { S.log.push(html); if (S.log.length > 3) S.log.shift(); $("log").innerHTML = S.log.map(function (l) { return "<div>" + l + "</div>"; }).join(""); }
+  function status(html) { $("status").innerHTML = "<span>" + html + "</span>"; }
+
+  function refresh() { renderLine(); renderHud(); drawActors(); drawRunners(); }
+
+  /* ---------- trayectorias ---------- */
+  function polar(theta, r) { var a = theta * Math.PI / 180; return { x: HOME.x + Math.sin(a) * r, y: HOME.y - Math.cos(a) * r }; }
+  function pitchPos(type, p) {
+    var pt = PITCHES[type], t = Math.pow(p, pt.k), sx = 190, sy = 244;
+    var x = sx + (HOME.x - sx) * t, y = sy + (HOME.y - sy) * t;
+    if (pt.curve) x += Math.sin(t * Math.PI) * 46 * (S.curveDir || 1);
+    return { x: x, y: y, z: Math.sin(t * Math.PI) * 10 };
+  }
+  function flyCap(from, to, ms, arc) {
+    return tween(ms, function (p) {
+      setCap(from.x + (to.x - from.x) * p, from.y + (to.y - from.y) * p, Math.sin(p * Math.PI) * arc);
+    });
+  }
+  function pop(text, x, y, color, size) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    el.setAttribute("class", "pop"); el.setAttribute("x", x); el.setAttribute("y", y); el.setAttribute("fill", color || "#fff"); el.setAttribute("font-size", size || 26);
+    el.textContent = text; $("fx").appendChild(el);
+    tween(1100, function (p) { el.setAttribute("y", y - p * 22); el.setAttribute("opacity", p < 0.7 ? 1 : (1 - p) / 0.3); }).then(function () { if (el.parentNode) el.parentNode.removeChild(el); });
+  }
+
+  /* ---------- resultado de cada lanzamiento ---------- */
+  async function playOutcome(kind, side, d) {
+    var catcherPt = { x: 180, y: 396 }, my = runId;
+    if (kind === "look") {
+      await flyCap(HOME, catcherPt, 160, 4);
+      poses.catcher = "catch"; pop("¡STRIKE!", 180, 300, "#f4b54a");
+    } else if (kind === "miss") {
+      await flyCap(HOME, catcherPt, 160, 4);
+      pop("¡STRIKE!", 180, 300, "#f4b54a");
+    } else if (kind === "foul") {
+      var f = polar(side * rnd(52, 78), rnd(90, 210));
+      await flyCap(HOME, f, 650, 40);
+      pop("¡FOUL!", Math.max(50, Math.min(310, f.x)), Math.max(80, f.y), "#ffd0a0");
+    } else if (kind === "hit") {
+      var h = polar(side * rnd(2, 34) + rnd(-6, 6), rnd(95, 195));
+      await flyCap(HOME, h, 780, 46);
+      pop("¡HIT!", h.x, h.y - 12, "#5fd39a");
+    } else if (kind === "hr") {
+      var hrp = polar(rnd(-32, 32), rnd(R_HR + 35, R_HR + 85));
+      await flyCap(HOME, hrp, 1250, 120);
+      pop("¡JONRÓN!", 180, 120, "#ffd34f", 34);
+    } else if (kind === "fly") {
+      var lp = polar(rnd(-16, 16), rnd(105, 150));
+      await flyCap(HOME, lp, 800, 90);
+      poses.pitcher = "cheer"; drawActors();
+      pop("¡ATRAPADA!", lp.x, lp.y - 18, "#ef7a6e");
+    }
+    if (my !== runId) return;
+    await sleep(kind === "hr" ? 700 : 420);
+    hideCap();
+    poses.pitcher = "idle"; poses.catcher = "catch"; poses.batter = "bat"; batAngle = -18;
+  }
+
+  function swingAnim() {
+    poses.batter = "swing";
+    return tween(170, function (p) { batAngle = -30 + p * 150; drawActorsLight(); });
+  }
+  var lastDraw = 0;
+  function drawActorsLight() { if (now() - lastDraw > 24 || FAST) { lastDraw = now(); drawActors(); } }
+
+  /* ---------- reglas del partido ---------- */
+  function commit(kind) {
+    var b = batterTeam(), name = TEAMS[b].players[S.bat[b]].n, txt = "", endBatter = false, out = false;
+    if (kind === "look" || kind === "miss") {
+      S.strikes++; txt = kind === "look" ? "Strike sin tirar" : "Strike, swing y falla";
+      if (S.strikes >= 3) { out = true; txt = "¡Ponchado! Tercer strike"; }
+    } else if (kind === "foul") {
+      if (S.strikes < 2) S.strikes++;
+      txt = "Foul, cuenta como strike";
+    } else if (kind === "fly") {
+      out = true; txt = "Atrapada en el aire: out";
+    } else if (kind === "hit") {
+      var sc = S.bases[2] ? 1 : 0;
+      S.bases = [true, S.bases[0], S.bases[1]];
+      S.runs[b] += sc; S.halfRuns += sc; endBatter = true;
+      txt = "¡Hit de <b>" + name + "</b>! Corredor en primera" + (sc ? ", anota 1 carrera" : "");
+    } else if (kind === "hr") {
+      var n = 1 + S.bases.filter(Boolean).length;
+      S.bases = [false, false, false]; S.runs[b] += n; S.halfRuns += n; endBatter = true;
+      txt = "¡Jonrón de <b>" + name + "</b>! Anotan " + n + (n === 1 ? " carrera" : " carreras");
+    }
+    if (out) { S.outs++; endBatter = true; }
+    if (endBatter) { S.strikes = 0; S.bat[b] = 1 - S.bat[b]; }
+    say(txt);
+    return { halfOver: S.outs >= S.outsMax };
+  }
+
+  async function endHalf() {
+    var b = batterTeam();
+    S.line[b][S.inn - 1] = S.halfRuns;
+    status("Se acabó la mitad. <b>" + TEAMS[b].name + "</b> hizo " + S.halfRuns + (S.halfRuns === 1 ? " carrera." : " carreras."));
+    say("Fin de la mitad: " + TEAMS[b].name + " " + S.halfRuns);
+    await sleep(1300);
+    S.outs = 0; S.strikes = 0; S.bases = [false, false, false]; S.halfRuns = 0;
+    if (S.half === 0) { S.half = 1; }
+    else {
+      if (S.inn >= S.innings && S.runs[0] !== S.runs[1]) return finish();
+      S.half = 0; S.inn++;
+      if (S.inn > S.innings) say("¡Empate! Hay inning extra.");
+    }
+    poses.pitcher = "idle"; poses.batter = "bat"; batAngle = -18;
+  }
+
+  function finish() {
+    S.over = true; refresh();
+    var w = S.runs[0] > S.runs[1] ? 0 : 1;
+    var h = '<div class="card"><h2 class="' + (w === 0 ? "win" : "lose") + '">' + (w === 0 ? "¡Ganó Maní, chamo!" : "Ganó Tostón") + "</h2>";
+    h += "<p>Final: <b style='color:var(--mani)'>Maní " + S.runs[0] + "</b> – <b style='color:var(--toston)'>Tostón " + S.runs[1] + "</b></p>";
+    h += '<button class="btn" id="again">Jugar otra vez</button></div>';
+    $("overlay").innerHTML = h; $("overlay").hidden = false;
+    $("again").onclick = function () { $("overlay").hidden = true; start(); };
+    $("again").focus();
+    $("controls").innerHTML = ""; $("hint").textContent = ""; status("Juego terminado");
+  }
+
+  /* ---------- turnos ---------- */
+  async function playLoop(id) {
+    while (id === runId && !S.over) {
+      refresh();
+      var halfOver;
+      if (batterTeam() === 0) halfOver = await humanBats(id);
+      else halfOver = await humanPitches(id);
+      if (id !== runId) return;
+      refresh();
+      if (halfOver) { await endHalf(); if (id !== runId) return; if (S.over) return; }
+      else await sleep(500);
+    }
+  }
+
+  function setControls(html) { $("controls").innerHTML = html; }
+
+  async function humanBats(id) {
+    var b = 0, batter = TEAMS[0].players[S.bat[0]], pitcher = TEAMS[1].players[0];
+    setControls('<button type="button" class="btn big" id="bat" disabled>¡Batear!</button>');
+    $("hint").textContent = "Toca ¡Batear! justo cuando la chapa llegue al plato.";
+    status("<b>" + pitcher.n + "</b> se prepara a lanzar…");
+    poses.pitcher = "windup"; poses.batter = "bat"; batAngle = -18; drawActors();
+    await sleep(1000);
+    if (id !== runId) return;
+    var type = pick(PKEYS), pt = PITCHES[type];
+    S.curveDir = Math.random() < 0.5 ? -1 : 1;
+    var T = FAST ? 240 : (REDUCE ? pt.T * 0.8 : pt.T);
+    status("<b>" + pitcher.n + "</b> lanza una <b>" + pt.label + "</b>");
+    poses.pitcher = "throw"; drawActors();
+    var start = now(), A = start + T;
+    var batBtn = $("bat");
+    batBtn.disabled = false; $("ring").setAttribute("class", "ring on");
+    var tapped = null;
+    swingReq = function () { if (tapped === null) { tapped = now(); batBtn.disabled = true; } };
+    var cap = tween(T, function (p) { var q = pitchPos(type, p); setCap(q.x, q.y, q.z); });
+    await new Promise(function (res) {
+      var iv = setInterval(function () {
+        if (id !== runId) { clearInterval(iv); res(); return; }
+        if (tapped !== null || now() > A + 330) { clearInterval(iv); res(); }
+      }, 8);
+    });
+    swingReq = null; $("ring").setAttribute("class", "ring");
+    if (id !== runId) return;
+    var d = tapped === null ? null : tapped - A;
+    if (tapped !== null) { await swingAnim(); }
+    await cap;
+    if (id !== runId) return;
+    poses.pitcher = "idle";
+    var kind = evalSwing(d, batter.tall), side = d !== null && d < 0 ? -1 : 1;
+    if (d === null && FAST === false) { /* sin tirar */ }
+    setControls(""); $("hint").textContent = "";
+    await playOutcome(kind, side, d);
+    if (id !== runId) return;
+    return commit(kind).halfOver;
+  }
+
+  function evalSwing(d, tall) {
+    if (d === null) return "look";
+    var a = Math.abs(d), r = Math.random();
+    if (a <= 70) return r < 0.3 + (tall ? 0.05 : 0) ? "hr" : (r < 0.8 ? "hit" : "fly");
+    if (a <= 140) return r < 0.06 ? "hr" : (r < 0.62 ? "hit" : (r < 0.84 ? "fly" : "foul"));
+    if (a <= 230) return r < 0.25 ? "hit" : (r < 0.5 ? "fly" : "foul");
+    if (a <= 330) return r < 0.7 ? "foul" : "miss";
+    return "miss";
+  }
+
+  function cpuSwing(pitch, tall) {
+    var guess = (S.lastPitch && Math.random() < 0.4) ? S.lastPitch : pick(PKEYS), match = guess === pitch;
+    var w = match ? { miss: 12, look: 3, foul: 15, fly: 10, hit: 40, hr: 20 } : { miss: 40, look: 8, foul: 17, fly: 15, hit: 17, hr: 3 };
+    if (tall) w.hr += 3;
+    var tot = 0, k; for (k in w) tot += w[k];
+    var r = Math.random() * tot;
+    for (k in w) { r -= w[k]; if (r <= 0) return { kind: k, match: match }; }
+    return { kind: "miss", match: match };
+  }
+
+  async function humanPitches(id) {
+    var b = 1, batter = TEAMS[1].players[S.bat[1]], pitcher = TEAMS[0].players[0];
+    $("hint").textContent = "El bateador intenta adivinar tu lanzamiento. Cambia de vez en cuando.";
+    status("Tú lanzas. Bateador: <b>" + batter.n + "</b>");
+    poses.pitcher = "idle"; poses.batter = "bat"; batAngle = -18; drawActors();
+    var choice = await new Promise(function (res) {
+      setControls('<div class="pitchrow">' + PKEYS.map(function (k) {
+        var sub = k === "rapida" ? "rápida y directa" : k === "curva" ? "se abre y vuelve" : "engaña al swing";
+        return '<button type="button" class="btn" data-p="' + k + '">' + PITCHES[k].label.charAt(0).toUpperCase() + PITCHES[k].label.slice(1) + "<small>" + sub + "</small></button>";
+      }).join("") + "</div>");
+      Array.prototype.forEach.call($("controls").querySelectorAll("button"), function (bt) { bt.onclick = function () { res(bt.getAttribute("data-p")); }; });
+      swingReq = null;
+    });
+    if (id !== runId) return;
+    setControls(""); $("hint").textContent = "";
+    var pt = PITCHES[choice], T = FAST ? 120 : (REDUCE ? pt.T * 0.8 : pt.T);
+    S.curveDir = Math.random() < 0.5 ? -1 : 1;
+    status("Lanzas una <b>" + pt.label + "</b>");
+    poses.pitcher = "windup"; drawActors(); await sleep(450);
+    poses.pitcher = "throw"; drawActors();
+    var res = cpuSwing(choice, batter.tall);
+    S.lastPitch = choice;
+    var cap = tween(T, function (p) { var q = pitchPos(choice, p); setCap(q.x, q.y, q.z); });
+    if (res.kind !== "look") { await sleep(Math.max(0, T - 170)); await swingAnim(); }
+    await cap;
+    if (id !== runId) return;
+    poses.pitcher = "idle";
+    var side = Math.random() < 0.5 ? -1 : 1;
+    if (res.match && (res.kind === "hit" || res.kind === "hr")) say("<b>" + batter.n + "</b> adivinó tu lanzamiento.");
+    await playOutcome(res.kind, side, 0);
+    if (id !== runId) return;
+    return commit(res.kind).halfOver;
+  }
+
+  /* ---------- inicio ---------- */
+  function start() {
+    runId++; timers.forEach(clearTimeout); timers = []; swingReq = null;
+    S = { innings: parseInt($("innings").value, 10), outsMax: parseInt($("outsMax").value, 10), inn: 1, half: 0, outs: 0, strikes: 0,
+      bases: [false, false, false], runs: [0, 0], line: [[], []], halfRuns: 0, bat: [0, 0], over: false, log: [], lastPitch: null, curveDir: 1 };
+    poses = { batter: "bat", pitcher: "idle", catcher: "catch", wait: "idle" }; batAngle = -18;
+    hideCap(); $("fx").innerHTML = ""; $("log").innerHTML = ""; $("overlay").hidden = true;
+    say("¡Empieza el juego! <b>Maní</b> bate primero.");
+    refresh();
+    if (FAST) window.__ch = { state: function () { return S; } };
+    playLoop(runId);
+  }
+
+  function onSwing() { if (swingReq) swingReq(); }
+  $("fieldWrap").addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("#controls")) return; onSwing(); });
+  document.addEventListener("click", function (e) { var t = e.target; if (t && t.id === "bat") onSwing(); });
+  document.addEventListener("keydown", function (e) { if ((e.key === " " || e.key === "Enter") && swingReq && !(document.activeElement && document.activeElement.tagName === "SELECT")) { e.preventDefault(); onSwing(); } });
+
+  $("rulesBtn").onclick = function () {
+    var r = $("rules"), open = r.hidden;
+    r.hidden = !open;
+    this.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  $("innings").onchange = start;
+  $("outsMax").onchange = start;
+  start();
+})();
+</script>
+</body>
+</html>

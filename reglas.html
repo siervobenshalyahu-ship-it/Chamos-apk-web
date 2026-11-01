@@ -48,7 +48,7 @@ button { font: inherit; color: inherit; }
 h1 { font-family: var(--font-serif); font-size: 32px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
 .sub { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
 
-.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
 .tabs button { background: none; border: 0; border-radius: 8px; padding: 10px 8px; font-weight: 800; color: var(--muted); cursor: pointer; }
 .tabs button:hover { color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--amber); color: #1a1205; }
@@ -90,7 +90,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <div class="app">
   <div class="top">
     <a href="index.html">← Volver a Chamos</a>
-    <span><a href="caida.html">Caída</a> · <a href="domino.html">Dominó</a> · <a href="ajilei.html">Ajilei</a></span>
+    <span><a href="caida.html">Caída</a> · <a href="domino.html">Dominó</a> · <a href="ajilei.html">Ajilei</a> · <a href="chapitas.html">Chapitas</a></span>
   </div>
 
   <header>
@@ -102,6 +102,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
     <button role="tab" id="tab-caida" aria-controls="p-caida" aria-selected="true">Caída</button>
     <button role="tab" id="tab-domino" aria-controls="p-domino" aria-selected="false" tabindex="-1">Dominó</button>
     <button role="tab" id="tab-ajilei" aria-controls="p-ajilei" aria-selected="false" tabindex="-1">Ajilei</button>
+    <button role="tab" id="tab-chapitas" aria-controls="p-chapitas" aria-selected="false" tabindex="-1">Chapitas</button>
   </div>
 
   <!-- ============ CAÍDA ============ -->
@@ -345,6 +346,86 @@ td small { display: block; color: var(--muted); font-size: 12px; }
       <div class="play" style="margin-top:12px"><a class="btn" href="ajilei.html">Jugar ajilei</a></div>
     </section>
   </div>
+
+  <!-- ============ CHAPITAS ============ -->
+  <div class="sheet" id="p-chapitas" role="tabpanel" aria-labelledby="tab-chapitas" hidden>
+
+    <section class="box">
+      <h2>Lo básico</h2>
+      <ul>
+        <li>Es el juego de la calle venezolana que imita al béisbol. Se juega por las tardes y los fines de semana, entre panas de la cuadra de todas las edades.</li>
+        <li>La <b>pelota es una chapa</b> de botella (de cerveza o de refresco) y el <b>bate es un palo de escoba</b>.</li>
+        <li>Se juega en una calle con poco tráfico o en una cancha.</li>
+        <li>Hacen falta dos equipos de uno o más jugadores. Lo normal es <b>dos por equipo</b>.</li>
+        <li>Se lleva una bolsa con chapas de sobra para toda la tarde: la chapa que se batea suele botarse.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>El campo</h2>
+      <ul>
+        <li>Se marcan con tiza el <b>plato</b> (home), la <b>primera</b> y la <b>tercera base</b>, y el <b>punto de lanzamiento</b>.</li>
+        <li>La <b>zona buena</b> es el área entre primera y tercera base, el punto de lanzamiento y el plato.</li>
+        <li>Nadie corre por las bases: los corredores son <b>imaginarios</b>.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Posiciones</h2>
+      <div class="tw"><table>
+        <tbody>
+          <tr><td class="nm">Pícher</td><td>Lanza la chapa.</td></tr>
+          <tr><td class="nm">Bateador</td><td>Le pega a la chapa con el palo de escoba.</td></tr>
+          <tr><td class="nm">Cácher</td><td>Atrapa la chapa detrás del plato.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note" style="margin-top:10px">Cada uno tiene su propio estilo.</p>
+    </section>
+
+    <section class="box">
+      <h2>Cómo se juega</h2>
+      <ul>
+        <li>Un juego dura <b>tres innings</b>, o los que acuerden los jugadores.</li>
+        <li>Cada inning tiene <b>dos outs</b> por equipo, o los que acuerden.</li>
+        <li>Gana el equipo con más carreras.</li>
+        <li>Si juegan tres equipos, el que pierde sale y el ganador juega contra el que esperaba.</li>
+        <li>Al terminar, el equipo que perdió recoge las chapas regadas por la calle, a veces con un imán.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Las jugadas</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Jugada</th><th>Qué es</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Strike</td><td>El bateador falla el swing. <b>Tres strikes son un out.</b></td></tr>
+          <tr><td class="nm">Foul</td><td>Chapa bateada fuera de la zona buena. Cuenta como strike, como en el béisbol.</td></tr>
+          <tr><td class="nm">Out</td><td>Tres strikes, o una chapa bateada que atrapan en el aire.</td></tr>
+          <tr><td class="nm">Hit</td><td>La chapa cae en la zona buena. Queda un corredor imaginario en base.</td></tr>
+          <tr><td class="nm">Jonrón</td><td>La chapa cae más allá de la zona buena. Anota <b>una carrera, más una por cada corredor en base</b>.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="box">
+      <h2>Palabras del juego</h2>
+      <p>chapa, pelota, bate, cancha, inning, swing, strike, foul, out, hit, jonrón, zona buena, cácher, bateador, pícher, home o plato, y <b>panas de la cuadra</b>.</p>
+    </section>
+
+    <section class="box">
+      <h2>En nuestra sala</h2>
+      <p>Las guías no explican qué son el <b>maní</b> ni el <b>tostón</b>. En la sala son los nombres de los dos equipos: tú juegas con <b>Maní</b> (Chucho y Carlitos) contra <b>Tostón</b> (Gabo y Yeyo), todos descalzos y sin camisa, como en la calle. Estas son las reglas de la casa:</p>
+      <ul>
+        <li><b>Bateando:</b> el pícher lanza una rápida, una curva o una lenta. Toca <b>¡Batear!</b> justo cuando la chapa llegue al plato: entre más justo, mejor el golpe. Si no tiras, es strike.</li>
+        <li><b>Lanzando:</b> tú eliges el lanzamiento. El bateador trata de adivinarlo: si lo adivina, pega más fuerte. Cambiar de lanzamiento te conviene.</li>
+        <li>Un <b>foul</b> cuenta como strike, pero no puede ser el tercero.</li>
+        <li>Un <b>hit</b> pone un corredor en primera y los que ya estaban avanzan una base. Si había alguien en tercera, anota.</li>
+        <li>Maní bate primero en cada inning. Si hay empate al final, se juega un inning extra.</li>
+        <li>Puedes cambiar los innings (1, 3 o 5) y los outs (2 o 3) antes de empezar.</li>
+      </ul>
+      <div class="play" style="margin-top:12px"><a class="btn" href="chapitas.html">Jugar chapitas</a></div>
+    </section>
+  </div>
 </div>
 
 <script src="cartas.js"></script>
@@ -364,9 +445,9 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <script>
 (function () {
   "use strict";
-  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino"), document.getElementById("tab-ajilei")];
-  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino"), document.getElementById("p-ajilei")];
-  var keys = ["caida", "domino", "ajilei"];
+  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino"), document.getElementById("tab-ajilei"), document.getElementById("tab-chapitas")];
+  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino"), document.getElementById("p-ajilei"), document.getElementById("p-chapitas")];
+  var keys = ["caida", "domino", "ajilei", "chapitas"];
 
   function show(i, focus) {
     tabs.forEach(function (t, j) {
@@ -380,8 +461,8 @@ td small { display: block; color: var(--muted); font-size: 12px; }
   tabs.forEach(function (t, i) {
     t.addEventListener("click", function () { show(i, false); window.scrollTo(0, 0); });
     t.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") { e.preventDefault(); show((i + 1) % 3, true); }
-      else if (e.key === "ArrowLeft") { e.preventDefault(); show((i + 2) % 3, true); }
+      if (e.key === "ArrowRight") { e.preventDefault(); show((i + 1) % 4, true); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); show((i + 3) % 4, true); }
     });
   });
   var h = (location.hash || "").replace("#", "");
