@@ -1,1 +1,15 @@
-{ "casos": [] }
+{
+  "casos": [
+    {
+      "titulo": "Apoyemos a Karelis",
+      "texto": "«Hola, soy Karelis. Me diagnosticaron con linfoma no Hodgkin y por eso perdí mi trabajo. Cualquier aporte me ayuda muchísimo. Si no puedes donar, compartir esta campaña también me ayuda. ¡Gracias de corazón!»",
+      "media": [
+        "ayuda/media/karelis-1.jpg",
+        "ayuda/media/karelis-2.mp4"
+      ],
+      "contacto": "Instagram @karecurvelo",
+      "desde": "2026-11-01",
+      "hasta": "2026-12-01"
+    }
+  ]
+}

@@ -152,9 +152,9 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .ayuda { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 6px 2px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .ayuda::-webkit-scrollbar { display: none; }
 .caso { flex: 0 0 min(86vw, 380px); scroll-snap-align: start; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
-.caso .med { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; aspect-ratio: 4 / 3; background: #000; scrollbar-width: none; }
+.caso .med { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; aspect-ratio: 3 / 4; background: #000; scrollbar-width: none; }
 .caso .med::-webkit-scrollbar { display: none; }
-.caso .med > * { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; display: block; }
+.caso .med > * { flex: 0 0 100%; width: 100%; height: 100%; object-fit: contain; scroll-snap-align: start; display: block; }
 .caso .txt { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 8px; }
 .caso h3 { font-family: var(--font-serif); font-size: 22px; margin: 0; color: var(--amber); text-wrap: balance; }
 .caso p { margin: 0; color: #d3d9e6; white-space: pre-line; }
