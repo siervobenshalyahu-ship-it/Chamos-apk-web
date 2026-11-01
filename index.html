@@ -459,7 +459,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (x) {
         if (x.ok && x.d.respuesta) { espera.textContent = x.d.respuesta; historial.push({ rol: "assistant", texto: x.d.respuesta }); }
-        else { espera.textContent = x.d.error || "No pude responder ahora. Intenta otra vez."; historial.pop(); }
+        else { espera.textContent = (x.d.error || "No pude responder ahora. Intenta otra vez.") + (x.d.detalle ? "\n\n[detalle: " + x.d.detalle + "]" : ""); historial.pop(); }
       })
       .catch(function () { espera.textContent = "Se cortó la conexión. Intenta otra vez."; historial.pop(); })
       .then(function () { ocupado = false; enviarBtn.disabled = false; lista.scrollTop = lista.scrollHeight; campo.focus(); });
