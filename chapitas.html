@@ -42,7 +42,7 @@ body {
 a { color: var(--amber); }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-.app { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.app { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 
 header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
 h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
@@ -77,6 +77,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 .lbl { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-right: 4px; }
 
 .field { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); background: #3b3e47; touch-action: manipulation; }
+@media (max-width: 560px) { .field { margin-inline: -12px; border-radius: 0; } }
 .field svg { display: block; width: 100%; height: auto; }
 .chalk { fill: none; stroke: rgba(255, 255, 255, .85); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: url(#tiza); }
 .chalk-f { fill: rgba(255, 255, 255, .06); stroke: none; }
@@ -133,7 +134,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     <h2>Cómo se juega</h2>
     <ul>
       <li>La pelota es una <b>chapa de botella</b> y el bate es un <b>palo de escoba</b>. Se juega en una calle asfaltada, como el béisbol pero con la zona marcada con tiza.</li>
-      <li>Son dos equipos de siete: <b>Maní</b> (tú) y <b>Tostón</b>. Cada mitad termina con <b>2 outs</b>. <b>El primero que llegue a 10 carreras gana</b> (puedes cambiar la meta a 5 o 15).</li>
+      <li>Son dos equipos de siete: <b>Maní</b> (tú) y <b>Tostón</b>. Cada mitad termina con <b>3 outs</b>, y entonces cambian los equipos al bate. <b>El primero que llegue a 10 carreras gana</b> (puedes cambiar la meta a 5 o 15).</li>
       <li><b>Bateando:</b> el pícher lanza la chapa y tú tocas <b>¡Batear!</b> justo cuando llega al plato. Entre más justo el tiempo, mejor el golpe.</li>
       <li><b>Lanzando:</b> tú eliges el lanzamiento (rápida, curva o lenta). El bateador trata de adivinarlo: si lo adivina, pega más fuerte.</li>
       <li><b>Defensa:</b> pícher, cácher, un jugador en cada base y dos en el fondo (jardín izquierdo y jardín derecho). El más cercano sale corriendo a atrapar la chapa.</li>
@@ -148,7 +149,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   <div class="opts">
     <label>Carreras para ganar <select id="meta"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></label>
-    <label>Outs <select id="outsMax"><option value="2" selected>2</option><option value="3">3</option></select></label>
+    <label>Sonido <input type="checkbox" id="snd" checked></label>
+    <label>Outs <select id="outsMax"><option value="2">2</option><option value="3" selected>3</option></select></label>
   </div>
 
   <div class="board" aria-live="polite">
@@ -267,7 +269,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 (function () {
   "use strict";
   var FAST = !!window.__fast;
-  var ESC = 0.7;   /* tamaño de los jugadores */
+  var ESC = 0.56;   /* tamaño de los jugadores */
   var REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   var HOME = { x: 180, y: 352 }, PITCH = { x: 180, y: 270 };
   var BASEPOS = [{ x: 262, y: 270 }, { x: 180, y: 188 }, { x: 98, y: 270 }];
@@ -324,6 +326,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     var scy = o.crouch ? 0.82 : 1;
     g += '<g transform="translate(' + o.x + " " + o.y + ") rotate(" + (o.rot || 0) + ") scale(" + (o.flip ? -ESC : ESC) + " " + (scy * ESC) + ')">';
     g += '<ellipse cx="0" cy="1" rx="' + (w * 0.95) + '" ry="4" fill="rgba(0,0,0,.35)"/>';
+    g += '<g transform="translate(0 ' + (-(o.lift || 0)) + ')">';
     /* piernas y calzado */
     var lw = H * 0.1 * (0.8 + ancho * 0.2), lx = w * 0.38, fx = w * 0.34 + (ancho > 1.2 ? 2 : 0);
     g += '<rect x="' + (-lx) + '" y="' + sh + '" width="' + lw + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
@@ -367,6 +370,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     else if (o.pose === "run") { arm(-w / 2 + 2, sy, -w * 0.95, neck + H * 0.3); arm(w / 2 - 2, sy, w * 0.95, hip - 4); }
     else if (o.pose === "ready") { arm(-w / 2 + 2, sy, -w * 0.85, hip + H * 0.06); arm(w / 2 - 2, sy, w * 0.85, hip + H * 0.06); }
     else if (o.pose === "dive") { arm(-w / 2 + 2, sy, -w * 0.5, -H * 1.08); arm(w / 2 - 2, sy, w * 0.5, -H * 1.08); }
+    else if (o.pose === "clap") { var co = o.clapOpen ? w * 0.55 : w * 0.1; arm(-w / 2 + 2, sy, co, neck + H * 0.25); arm(w / 2 - 2, sy, -co, neck + H * 0.25); }
+    else if (o.pose === "lament") { arm(-w / 2 + 2, sy, -hr * 0.85, headCy + hr * 0.1); arm(w / 2 - 2, sy, hr * 0.85, headCy + hr * 0.1); }
     else if (o.pose === "cheer") { arm(-w / 2 + 2, sy, -w * 1.1, -H * 1.02); arm(w / 2 - 2, sy, w * 1.1, -H * 1.02); }
     else { arm(-w / 2 + 2, sy, -w * 0.7, hip + 2); arm(w / 2 - 2, sy, w * 0.7, hip + 2); }
     g += arms;
@@ -377,7 +382,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     if (o.gorra) g += '<path d="M' + (-hr * 1.05) + " " + (headCy - hr * 0.2) + "Q" + (-hr * 1.05) + " " + (headCy - hr * 1.3) + " 0 " + (headCy - hr * 1.28) + "Q" + (hr * 1.05) + " " + (headCy - hr * 1.3) + " " + (hr * 1.05) + " " + (headCy - hr * 0.2) + "L" + (hr * 1.8) + " " + (headCy - hr * 0.1) + "L" + (hr * 1.05) + " " + (headCy - hr * 0.45) + 'Z" fill="#2d6a4f" stroke="rgba(0,0,0,.3)" stroke-width=".7"/>';
     g += '<circle cx="' + (-hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/><circle cx="' + (hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/>';
     g += '<path d="M' + (-hr * 0.35) + " " + (headCy + hr * 0.45) + "Q0 " + (headCy + hr * 0.8) + " " + (hr * 0.35) + " " + (headCy + hr * 0.45) + '" fill="none" stroke="#1a1210" stroke-width=".9" stroke-linecap="round"/>';
-    g += "</g>";
+    if (o.shout) g += '<ellipse cx="0" cy="' + (headCy + hr * 0.55) + '" rx="' + (hr * 0.3) + '" ry="' + (hr * 0.4) + '" fill="#3a0d0d"/>';
+    g += "</g></g>";
     return g;
   }
 
@@ -408,7 +414,83 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function aspecto(p, team, extra) {
     var o = { tall: p.tall, alto: p.alto, ancho: p.ancho, camisa: p.camisa, colCamisa: p.colCamisa, calzado: p.calzado, gorra: p.gorra, skin: p.skin, hair: p.hair, shorts: team.shorts };
     for (var k in extra) o[k] = extra[k];
+    var e = emoFor(team, p, o);
+    if (e) { o.pose = e.pose; o.lift = e.lift; o.shout = e.shout; o.clapOpen = e.open; }
     return o;
+  }
+  /* ---------- emociones: saltos, manos arriba, aplausos y gritos ---------- */
+  var emo = null;
+  function emoFor(team, p, o) {
+    if (!emo) return null;
+    var party = team === TEAMS[emo.party], sad = emo.sad !== null && team === TEAMS[emo.sad];
+    if (!party && !sad) return null;
+    if (o.crouch || { run: 1, dive: 1, throw: 1, windup: 1, swing: 1, bat: 1 }[o.pose]) return null;
+    var idx = team.all.indexOf(p), t = (now() - emo.t0) / 1000, ph = t * 6 + idx * 1.7;
+    if (sad) return { pose: "lament", lift: 0, shout: Math.sin(t * 5 + idx) > 0.6, open: false };
+    var up = idx % 3 !== 1;
+    return { pose: up ? "cheer" : "clap", lift: Math.abs(Math.sin(ph)) * (emo.big ? 15 : 10), shout: idx % 2 === 0 && Math.sin(ph * 0.8) > -0.3, open: Math.sin(t * 16 + idx) > 0 };
+  }
+  var SND = { on: true, ctx: null };
+  function ac() {
+    if (FAST || !SND.on) return null;
+    try {
+      if (!SND.ctx) SND.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (SND.ctx.state === "suspended") SND.ctx.resume();
+      return SND.ctx;
+    } catch (e) { return null; }
+  }
+  function noiseBurst(c, t, len, gain, f0, f1, type) {
+    var n = Math.floor(c.sampleRate * len), buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, type === "clap" ? 3 : 1);
+    var src = c.createBufferSource(); src.buffer = buf;
+    var fl = c.createBiquadFilter(); fl.type = type === "clap" ? "highpass" : "bandpass"; fl.frequency.setValueAtTime(f0, t);
+    if (f1) fl.frequency.linearRampToValueAtTime(f1, t + len);
+    var g = c.createGain();
+    if (type === "clap") g.gain.setValueAtTime(gain, t);
+    else { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(gain, t + len * 0.3); g.gain.linearRampToValueAtTime(0.0001, t + len); }
+    src.connect(fl); fl.connect(g); g.connect(c.destination); src.start(t);
+  }
+  function yell(c, t, f0, f1, len, gain) {
+    var o = c.createOscillator(), g = c.createGain(), fl = c.createBiquadFilter();
+    o.type = "sawtooth"; o.frequency.setValueAtTime(f0, t); o.frequency.linearRampToValueAtTime(f1, t + len);
+    fl.type = "lowpass"; fl.frequency.value = 1100;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(gain, t + len * 0.2); g.gain.linearRampToValueAtTime(0.0001, t + len);
+    o.connect(fl); fl.connect(g); g.connect(c.destination); o.start(t); o.stop(t + len + 0.05);
+  }
+  function sfx(kind) {
+    var c = ac(); if (!c) return;
+    var t = c.currentTime + 0.02, i;
+    if (kind === "sad") { yell(c, t, 330, 170, 0.7, 0.05); yell(c, t + 0.08, 280, 150, 0.7, 0.04); noiseBurst(c, t, 0.7, 0.03, 600, 300, "crowd"); return; }
+    var big = kind === "big", n = big ? 10 : 5;
+    for (i = 0; i < n; i++) noiseBurst(c, t + i * 0.11 + Math.random() * 0.03, 0.07, big ? 0.3 : 0.22, 1500, 0, "clap");
+    noiseBurst(c, t, big ? 1.6 : 0.8, big ? 0.14 : 0.09, 900, 1500, "crowd");
+    yell(c, t, 300, 520, big ? 0.9 : 0.5, 0.05); yell(c, t + 0.05, 380, 640, big ? 0.9 : 0.5, 0.04);
+    if (big) yell(c, t + 0.5, 340, 600, 0.8, 0.05);
+  }
+  var SH = {
+    party: ["¡Eso, mi pana!", "¡Dale, chamo!", "¡Wepa!", "¡Así se hace!", "¡Vamo'!", "¡Qué golpe!"],
+    big: ["¡Wooow!", "¡Qué batazo!", "¡Épale!", "¡Se fue!", "¡Eso, chamo!"],
+    out: ["¡Fuera!", "¡Out, chamo!", "¡Así se atrapa!", "¡Wepa!"],
+    sad: ["¡Ay, no!", "¡Qué vaina!", "¡Aaay!", "¡Se nos fue!"]
+  };
+  function shouts(team, pool, color, n) {
+    var spots = team === V.team ? WAIT.slice(0, 4).concat(RSTAND) : FL.map(function (f) { return { x: f.hx, y: f.hy }; }).concat([{ x: 180, y: 292 }]);
+    for (var i = 0; i < n; i++) {
+      (function (k) {
+        var sp = spots[Math.floor(Math.random() * spots.length)], txt = pool[Math.floor(Math.random() * pool.length)];
+        var tm = setTimeout(function () { if (S) pop(txt, Math.max(50, Math.min(310, sp.x)), sp.y - 40, color, 14); }, FAST ? 0 : k * 260);
+        timers.push(tm);
+      })(i);
+    }
+  }
+  function emote(party, sad, ms, big, extraText) {
+    var cols = ["#f0a860", "#ffd34f"], e = { party: party, sad: sad, t0: now(), big: !!big };
+    emo = e;
+    var kind = sad === null ? "cheer" : (big ? "big" : "cheer");
+    sfx(kind); if (sad !== null) timers.push(setTimeout(function () { sfx("sad"); }, FAST ? 0 : 200));
+    shouts(party, extraText || (big ? SH.big : SH.party), cols[party], big ? 4 : 3);
+    if (sad !== null) shouts(sad, SH.sad, "#cfd6e6", 1);
+    return tween(ms, function () { drawActorsLight(); }).then(function () { if (emo === e) emo = null; drawActors(); });
   }
   var V = { team: 0, batter: 0, bases: [null, null, null] };
   var ov = {};
@@ -609,11 +691,18 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       pop("¡ATRAPADA!", lp.x, lp.y - 18, "#ef7a6e");
     }
     if (rp) await rp;
+    if (!res) res = commit(kind);
     if (my !== runId) return { halfOver: false };
-    await Promise.all([sleep(kind === "hr" ? 700 : 420), (kind === "fly" || kind === "foul") ? pararse(FL.reduce(function (a, f) { return Math.abs(f.rot) > Math.abs(a.rot) ? f : a; }, FL[0])).then(volverTodos) : volverTodos()]);
+    var bt = batterTeam(), ep = null;
+    if ((kind === "hit" || kind === "double" || kind === "hr") && !res.thrown) {
+      ep = { party: bt, sad: 1 - bt, ms: kind === "hr" ? 2300 : (kind === "double" ? 1600 : 1200), big: kind !== "hit" || res.scored > 0 };
+      if (res.scored > 0 && kind !== "hr") shouts(bt, [res.scored > 1 ? "¡" + res.scored + " carreras!" : "¡Una carrera!"], "#ffd34f", 1);
+    } else if (res.out) ep = { party: 1 - bt, sad: bt, ms: 1000, big: false, text: SH.out };
+    var finMs = ep ? ep.ms : (kind === "hr" ? 700 : 420);
+    await Promise.all([ep ? emote(ep.party, ep.sad, ep.ms, ep.big, ep.text) : sleep(finMs), (kind === "fly" || kind === "foul") ? pararse(FL.reduce(function (a, f) { return Math.abs(f.rot) > Math.abs(a.rot) ? f : a; }, FL[0])).then(volverTodos) : volverTodos()]);
     hideCap();
     poses.pitcher = "idle"; poses.catcher = "catch"; poses.batter = "bat"; batAngle = -18;
-    return res || commit(kind);
+    return res;
   }
 
   function swingAnim() {
@@ -657,14 +746,14 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     } else if (kind === "hr") {
       for (i = 2; i >= 0; i--) if (S.bases[i] !== null) plan.push({ pid: S.bases[i], f: i, t: 3 });
       plan.push({ pid: cur, f: -1, t: 3 });
-      var nr = plan.length;
+      var nr = plan.length; scored = nr;
       S.bases = [null, null, null]; S.runs[b] += nr; S.halfRuns += nr; endBatter = true;
       txt = "¡Jonrón de <b>" + name + "</b>! Anotan " + nr + (nr === 1 ? " carrera" : " carreras");
     }
     if (out) { S.outs++; endBatter = true; }
     if (endBatter) { S.strikes = 0; S.bat[b] = nextBatter(b); }
     say(txt);
-    return { halfOver: S.outs >= S.outsMax || S.runs[b] >= S.target, plan: plan };
+    return { halfOver: S.outs >= S.outsMax || S.runs[b] >= S.target, plan: plan, scored: scored, out: out, kind: kind, thrown: !!thrown };
   }
 
   async function endHalf() {
@@ -825,6 +914,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     this.setAttribute("aria-expanded", open ? "true" : "false");
   };
   $("meta").onchange = start;
+  $("snd").onchange = function () { SND.on = this.checked; };
   $("outsMax").onchange = start;
   start();
 })();
