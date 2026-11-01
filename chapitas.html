@@ -133,12 +133,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     <h2>Cómo se juega</h2>
     <ul>
       <li>La pelota es una <b>chapa de botella</b> y el bate es un <b>palo de escoba</b>. Se juega en una calle asfaltada, como el béisbol pero con la zona marcada con tiza.</li>
-      <li>Son dos equipos de cinco: <b>Maní</b> (tú) y <b>Tostón</b>. Cada mitad termina con <b>2 outs</b>. <b>El primero que llegue a 10 carreras gana</b> (puedes cambiar la meta a 5 o 15).</li>
+      <li>Son dos equipos de siete: <b>Maní</b> (tú) y <b>Tostón</b>. Cada mitad termina con <b>2 outs</b>. <b>El primero que llegue a 10 carreras gana</b> (puedes cambiar la meta a 5 o 15).</li>
       <li><b>Bateando:</b> el pícher lanza la chapa y tú tocas <b>¡Batear!</b> justo cuando llega al plato. Entre más justo el tiempo, mejor el golpe.</li>
       <li><b>Lanzando:</b> tú eliges el lanzamiento (rápida, curva o lenta). El bateador trata de adivinarlo: si lo adivina, pega más fuerte.</li>
-      <li><b>Defensa:</b> pícher, cácher y tres jugadores, uno en cada base. El más cercano sale corriendo a atrapar la chapa.</li>
+      <li><b>Defensa:</b> pícher, cácher, un jugador en cada base y dos en el fondo (jardín izquierdo y jardín derecho). El más cercano sale corriendo a atrapar la chapa.</li>
       <li><b>Strike:</b> fallas el swing o no tiras. <b>Tres strikes</b> son un out. Un <b>foul</b> cuenta como strike, pero no puede ser el tercero.</li>
-      <li><b>Out:</b> tres strikes, o una chapa bateada que atrapan en el aire.</li>
+      <li><b>Out:</b> tres strikes, una chapa bateada que atrapan en el aire, o un hit en el que la chapa llega a la base antes que el corredor.</li>
       <li><b>Sencillo:</b> la chapa cae en la zona cercana: el bateador llega a primera y los corredores avanzan una base.</li>
       <li><b>Doblete:</b> cae en la zona marcada DOBLETE: el bateador llega a segunda y los corredores avanzan dos bases.</li>
       <li><b>Jonrón:</b> cae más allá de la línea: anotan el bateador y todos los corredores.</li>
@@ -274,8 +274,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   var R_HR = 225;
 
   var TEAMS = [
-    { name: "Maní", cls: "m", extras: [{ n: "Pelón", alto: 60, ancho: 1.3, camisa: "franela", colCamisa: "#2f6fc2", calzado: "cholas", skin: "#b9774a", hair: "#1a1210" }, { n: "Flaco", alto: 92, ancho: 0.7, camisa: "no", calzado: "rotos", gorra: true, skin: "#8a5636", hair: "#14100d" }, { n: "Catire", alto: 72, ancho: 1.0, camisa: "no", calzado: "descalzo", skin: "#e0b48c", hair: "#c9a44a" }], shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
-    { name: "Tostón", cls: "t", extras: [{ n: "Moncho", alto: 62, ancho: 1.6, camisa: "no", calzado: "rotos", skin: "#6f4429", hair: "#0e0b09" }, { n: "Zurdo", alto: 88, ancho: 0.8, camisa: "franela", colCamisa: "#3aa86b", calzado: "descalzo", gorra: true, skin: "#c28a5c", hair: "#2a1a10" }, { n: "Pipo", alto: 70, ancho: 1.1, camisa: "no", calzado: "cholas", skin: "#a86f48", hair: "#1a1210" }], shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
+    { name: "Maní", cls: "m", extras: [{ n: "Pelón", alto: 60, ancho: 1.3, camisa: "franela", colCamisa: "#2f6fc2", calzado: "cholas", skin: "#b9774a", hair: "#1a1210" }, { n: "Flaco", alto: 92, ancho: 0.7, camisa: "no", calzado: "rotos", gorra: true, skin: "#8a5636", hair: "#14100d" }, { n: "Catire", alto: 72, ancho: 1.0, camisa: "no", calzado: "descalzo", skin: "#e0b48c", hair: "#c9a44a" }, { n: "Mono", alto: 76, ancho: 1.2, camisa: "no", calzado: "descalzo", skin: "#d29a6c", hair: "#3a2516" }, { n: "Tuti", alto: 58, ancho: 1.0, camisa: "no", calzado: "cholas", gorra: true, skin: "#9a6340", hair: "#1c140e" }], shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
+    { name: "Tostón", cls: "t", extras: [{ n: "Moncho", alto: 62, ancho: 1.6, camisa: "no", calzado: "rotos", skin: "#6f4429", hair: "#0e0b09" }, { n: "Zurdo", alto: 88, ancho: 0.8, camisa: "franela", colCamisa: "#3aa86b", calzado: "descalzo", gorra: true, skin: "#c28a5c", hair: "#2a1a10" }, { n: "Pipo", alto: 70, ancho: 1.1, camisa: "no", calzado: "cholas", skin: "#a86f48", hair: "#1a1210" }, { n: "Nené", alto: 84, ancho: 1.35, camisa: "no", calzado: "rotos", skin: "#b9774a", hair: "#1a1210" }, { n: "Cacao", alto: 66, ancho: 0.75, camisa: "no", calzado: "descalzo", skin: "#6e4129", hair: "#120d0a" }], shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
   ];
   TEAMS.forEach(function (t) {
     t.all = t.players.concat(t.extras);
@@ -283,7 +283,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   });
   var RSTAND = [{ x: 250, y: 278 }, { x: 158, y: 198 }, { x: 110, y: 278 }];
   var HOMEPT = { x: 190, y: 366 }, STANCE = { x: 142, y: 368 };
-  var WAIT = [{ x: 262, y: 416 }, { x: 296, y: 408 }, { x: 330, y: 418 }, { x: 236, y: 424 }];
+  var WAIT = [{ x: 262, y: 416 }, { x: 296, y: 408 }, { x: 330, y: 418 }, { x: 236, y: 424 }, { x: 70, y: 420 }, { x: 104, y: 412 }, { x: 38, y: 410 }];
   var PITCHES = {
     rapida: { label: "rápida", T: 720, k: 0.8, curve: 0 },
     curva: { label: "curva", T: 1150, k: 1, curve: 1 },
@@ -402,7 +402,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   /* defensores: uno cubriendo cada base (primera, segunda y tercera) */
   var FL = [];
   function initFielders() {
-    FL = [{ hx: 286, hy: 288 }, { hx: 208, hy: 206 }, { hx: 72, hy: 288 }].map(function (f) { return { x: f.hx, y: f.hy, hx: f.hx, hy: f.hy, pose: "ready", rot: 0, flip: false }; });
+    FL = [{ hx: 286, hy: 288 }, { hx: 208, hy: 206 }, { hx: 72, hy: 288 }, { hx: 84, hy: 150 }, { hx: 276, hy: 150 }].map(function (f) { return { x: f.hx, y: f.hy, hx: f.hx, hy: f.hy, pose: "ready", rot: 0, flip: false }; });
   }
   initFielders();
   function aspecto(p, team, extra) {
@@ -424,7 +424,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     used[V.batter] = 1;
     if (ov[V.batter]) {
       var q = ov[V.batter];
-      specs.push({ y: q.y, o: aspecto(batter, bt, { x: q.x, y: q.y, pose: q.pose, flip: q.flip }), extra: "" });
+      if (!q.hide) specs.push({ y: q.y, o: aspecto(batter, bt, { x: q.x, y: q.y, pose: q.pose, flip: q.flip }), extra: "" });
     } else {
       var bx = STANCE.x, by = STANCE.y, bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62 * ESC, hy = by - bh * 0.74 * ESC;
       var bate = '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ") scale(" + ESC + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
@@ -434,12 +434,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       if (pid === null) return;
       used[pid] = 1;
       var o = ov[pid] || { x: RSTAND[k].x, y: RSTAND[k].y, pose: "idle" };
-      specs.push({ y: o.y, o: aspecto(bp[pid], bt, { x: o.x, y: o.y, pose: o.pose, flip: o.flip }), extra: "" });
+      if (!o.hide) specs.push({ y: o.y, o: aspecto(bp[pid], bt, { x: o.x, y: o.y, pose: o.pose, flip: o.flip }), extra: "" });
     });
     for (var pid in ov) {
       if (used[pid]) continue;
       used[pid] = 1; var o2 = ov[pid];
-      specs.push({ y: o2.y, o: aspecto(bp[pid], bt, { x: o2.x, y: o2.y, pose: o2.pose, flip: o2.flip }), extra: "" });
+      if (!o2.hide) specs.push({ y: o2.y, o: aspecto(bp[pid], bt, { x: o2.x, y: o2.y, pose: o2.pose, flip: o2.flip }), extra: "" });
     }
     var w = 0;
     for (var k2 = 0; k2 < bp.length; k2++) {
@@ -549,17 +549,18 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
 
   function ptOf(k) { return (k < 0 || k > 2) ? HOMEPT : RSTAND[k]; }
-  function runPlan(plan) {
+  function runPlan(plan, T) {
     return Promise.all(plan.map(function (m) {
       var pts = [], k;
       for (k = m.f; k <= m.t; k++) pts.push(ptOf(k));
       if (pts.length < 2) return Promise.resolve();
-      var legs = pts.length - 1, last = pts[legs];
-      return tween(legs * 330, function (p) {
-        var u = p * legs, i = Math.min(legs - 1, Math.floor(u)), q = u - i, a = pts[i], c = pts[i + 1];
+      var legs = pts.length - 1, last = pts[legs], tot = m.out ? legs - 0.15 : legs;
+      var ms = Math.max(legs * 330, (T || 0) * (m.out ? 1 : 0.88));
+      return tween(ms, function (p) {
+        var u = p * tot, i = Math.min(legs - 1, Math.floor(u)), q = u - i, a = pts[i], c = pts[i + 1];
         ov[m.pid] = { x: a.x + (c.x - a.x) * q, y: a.y + (c.y - a.y) * q - Math.abs(Math.sin(u * Math.PI * 3)) * 3, pose: "run", flip: c.x < a.x };
         drawActorsLight();
-      }).then(function () { ov[m.pid] = { x: last.x, y: last.y, pose: "idle" }; });
+      }).then(function () { ov[m.pid] = m.out ? { x: 0, y: 0, hide: true } : { x: last.x, y: last.y, pose: "idle" }; });
     })).then(function () { drawActors(); });
   }
 
@@ -577,20 +578,24 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       await Promise.all([flyCap(HOME, f, 650, 40), cf.p]);
       pop("¡FOUL!", Math.max(50, Math.min(310, f.x)), Math.max(80, f.y), "#ffd0a0");
     } else if (kind === "hit" || kind === "double") {
-      res = commit(kind); rp = runPlan(res.plan);
-      var dbl = kind === "double", ms = dbl ? 950 : 780;
+      var dbl = kind === "double", ms = dbl ? 950 : 780, ti = dbl ? 1 : 0;
       var h = dbl ? polar(side * rnd(8, 40) + rnd(-6, 6), rnd(162, 214)) : polar(side * rnd(2, 34) + rnd(-6, 6), rnd(88, 146));
+      var rr = Math.hypot(h.x - HOME.x, h.y - HOME.y);
+      var pOut = dbl ? 0.1 : Math.max(0.08, 0.34 - (rr - 88) / 58 * 0.26);
+      var thrown = Math.random() < pOut;
+      res = commit(kind, thrown); rp = runPlan(res.plan, ms + 160 + 420);
       var ch = perseguir(h, ms, false);
       await Promise.all([flyCap(HOME, h, ms, dbl ? 70 : 46), ch.p]);
       pop(dbl ? "¡DOBLETE!" : "¡HIT!", h.x, h.y - 12, dbl ? "#7fe0e8" : "#5fd39a", dbl ? 28 : 26);
-      /* recoge la chapa y la manda a una base */
+      /* recoge la chapa y la manda a la base antes de que llegue el corredor */
       ch.f.pose = "throw"; drawActors();
-      var otro = FL[ch.i === 0 ? 1 : 0];
+      var otro = FL[ti];
       await sleep(160);
-      await flyCap(h, { x: otro.x, y: otro.y - 14 }, 420, 24);
+      if (ch.i !== ti) await flyCap(h, { x: otro.x, y: otro.y - 14 }, 420, 24); else await sleep(420);
       otro.pose = "catch"; ch.f.pose = "ready"; drawActors();
+      if (thrown) pop("¡OUT!", BASEPOS[ti].x, BASEPOS[ti].y - 24, "#ef7a6e", 30);
     } else if (kind === "hr") {
-      res = commit(kind); rp = runPlan(res.plan);
+      res = commit(kind); rp = runPlan(res.plan, 0);
       var hrp = polar(rnd(-32, 32), rnd(R_HR + 35, R_HR + 85));
       var cr = FL[masCerca({ x: hrp.x, y: 20 })];
       var corre = mover(cr, Math.max(30, Math.min(330, hrp.x)), 60, 1000, "run").then(function () { cr.pose = "cheer"; drawActors(); });
@@ -620,11 +625,11 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   /* ---------- reglas del partido ---------- */
   function nextBatter(b) {
-    var i = (S.bat[b] + 1) % 5;
-    while (S.bases.indexOf(i) !== -1) i = (i + 1) % 5;
+    var nn = TEAMS[b].all.length, i = (S.bat[b] + 1) % nn;
+    while (S.bases.indexOf(i) !== -1) i = (i + 1) % nn;
     return i;
   }
-  function commit(kind) {
+  function commit(kind, thrown) {
     var b = batterTeam(), cur = S.bat[b], name = TEAMS[b].all[cur].n, txt = "", endBatter = false, out = false, plan = [], scored = 0, i;
     if (kind === "look" || kind === "miss") {
       S.strikes++; txt = kind === "look" ? "Strike sin tirar" : "Strike, swing y falla";
@@ -635,16 +640,20 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     } else if (kind === "fly") {
       out = true; txt = "Atrapada en el aire: out";
     } else if (kind === "hit" || kind === "double") {
-      var n = kind === "hit" ? 1 : 2, nb = [null, null, null];
-      for (i = 2; i >= 0; i--) {
+      var n = kind === "hit" ? 1 : 2, nb = [null, null, null], base = n === 1 ? "primera" : "segunda";
+      var lastOut = thrown && S.outs + 1 >= S.outsMax;
+      if (lastOut) nb = S.bases.slice();
+      else for (i = 2; i >= 0; i--) {
         if (S.bases[i] === null) continue;
         var t = i + n;
         plan.push({ pid: S.bases[i], f: i, t: Math.min(t, 3) });
         if (t >= 3) scored++; else nb[t] = S.bases[i];
       }
-      plan.push({ pid: cur, f: -1, t: n - 1 }); nb[n - 1] = cur;
+      if (thrown) { plan.push({ pid: cur, f: -1, t: n - 1, out: true }); out = true; }
+      else { plan.push({ pid: cur, f: -1, t: n - 1 }); nb[n - 1] = cur; }
       S.bases = nb; S.runs[b] += scored; S.halfRuns += scored; endBatter = true;
-      txt = (kind === "hit" ? "¡Hit de <b>" : "¡Doblete de <b>") + name + "</b>!" + (scored ? " Anota" + (scored > 1 ? "n " + scored + " carreras" : " 1 carrera") : "");
+      if (thrown) txt = (kind === "hit" ? "Hit de <b>" : "Doblete de <b>") + name + "</b>, pero la chapa llega a " + base + " antes: ¡out!" + (scored ? " Anota" + (scored > 1 ? "n " + scored + " carreras" : " 1 carrera") : "");
+      else txt = (kind === "hit" ? "¡Hit de <b>" : "¡Doblete de <b>") + name + "</b>!" + (scored ? " Anota" + (scored > 1 ? "n " + scored + " carreras" : " 1 carrera") : "");
     } else if (kind === "hr") {
       for (i = 2; i >= 0; i--) if (S.bases[i] !== null) plan.push({ pid: S.bases[i], f: i, t: 3 });
       plan.push({ pid: cur, f: -1, t: 3 });
