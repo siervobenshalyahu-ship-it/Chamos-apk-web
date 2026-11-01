@@ -148,6 +148,19 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .dict-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 4px; }
 .dict-nav button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 20px; cursor: pointer; }
 .dict-nav span { color: var(--muted); font-size: 13px; min-width: 64px; text-align: center; }
+/* Ayuda a quien lo necesita */
+.ayuda { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 6px 2px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.ayuda::-webkit-scrollbar { display: none; }
+.caso { flex: 0 0 min(86vw, 380px); scroll-snap-align: start; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.caso .med { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; aspect-ratio: 4 / 3; background: #000; scrollbar-width: none; }
+.caso .med::-webkit-scrollbar { display: none; }
+.caso .med > * { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; display: block; }
+.caso .txt { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+.caso h3 { font-family: var(--font-serif); font-size: 22px; margin: 0; color: var(--amber); text-wrap: balance; }
+.caso p { margin: 0; color: #d3d9e6; white-space: pre-line; }
+.caso .hasta { font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; font-weight: 700; }
+.caso .cont { font-size: 14px; color: var(--ink); }
+.ayuda-vacio { color: var(--muted); text-align: center; padding: 22px 8px; }
 .note { margin-top: 20px; color: var(--muted); font-size: 14px; }
 
 /* Reproductor */
@@ -360,6 +373,21 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   </div>
 </section>
 
+<section id="ayuda" class="alt">
+  <div class="wrap">
+    <div class="head">
+      <p class="kicker">Ayudemos</p>
+      <h2>Una mano para quien <em>lo necesita</em></h2>
+    </div>
+    <div class="dict-car" id="ayuda-car" hidden>
+      <div class="ayuda" id="ayuda-lista" tabindex="0" aria-label="Personas que necesitan ayuda"></div>
+      <div class="dict-nav"><button type="button" id="aprev" aria-label="Anterior">‹</button><span id="acont"></span><button type="button" id="anext" aria-label="Siguiente">›</button></div>
+    </div>
+    <p class="ayuda-vacio" id="ayuda-vacio" hidden>Por ahora no hay casos publicados. Cuando alguien necesite una mano, aparecerá aquí.</p>
+    <p class="note">Publicamos cada caso con el permiso de la persona o de su familia, solo durante un tiempo; al terminar el periodo se retira solo, con sus fotos y videos. Chamos no administra dinero ni donaciones: la ayuda se coordina directamente con el contacto de cada caso.</p>
+  </div>
+</section>
+
 <section id="diccionario">
   <div class="wrap">
     <div class="head">
@@ -413,6 +441,52 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <div id="ia-msgs" class="ia-msgs" aria-live="polite"></div>
   <form id="ia-form" class="ia-form"><input id="ia-campo" maxlength="500" autocomplete="off" placeholder="Escríbele a Chamos IA…" aria-label="Tu mensaje"><button id="ia-enviar" type="submit">Enviar</button></form>
 </div>
+<script>
+/* Ayuda a quien lo necesita: casos con fotos o videos que se retiran solos al terminar su periodo. */
+(function () {
+  var lista = document.getElementById("ayuda-lista");
+  if (!lista) return;
+  var car = document.getElementById("ayuda-car"), vacio = document.getElementById("ayuda-vacio");
+  function hoyVE() { return new Date(Date.now() - 4 * 3600 * 1000).toISOString().slice(0, 10); }
+  function fecha(s) { var p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+  function paso() { var c = lista.firstElementChild; return c ? c.getBoundingClientRect().width + 16 : 300; }
+  function render(casos) {
+    if (!casos.length) { vacio.hidden = false; return; }
+    casos.forEach(function (c) {
+      var a = el("article", "caso");
+      var m = c.media; if (typeof m === "string") m = [m];
+      m = (m || []).filter(function (x) { return typeof x === "string" && x.indexOf("ayuda/media/") === 0 && x.indexOf("..") < 0; });
+      if (m.length) {
+        var med = el("div", "med");
+        m.forEach(function (src) {
+          if (/\.(mp4|webm|mov)$/i.test(src)) { var v = document.createElement("video"); v.src = src; v.controls = true; v.playsInline = true; v.preload = "metadata"; med.appendChild(v); }
+          else { var i = document.createElement("img"); i.src = src; i.alt = c.titulo || "Caso de ayuda"; i.loading = "lazy"; med.appendChild(i); }
+        });
+        a.appendChild(med);
+      }
+      var t = el("div", "txt");
+      if (c.titulo) t.appendChild(el("h3", "", c.titulo));
+      if (c.texto) t.appendChild(el("p", "", c.texto));
+      if (c.contacto) t.appendChild(el("div", "cont", "Contacto: " + c.contacto));
+      if (c.hasta) t.appendChild(el("div", "hasta", "Hasta el " + fecha(c.hasta)));
+      a.appendChild(t); lista.appendChild(a);
+    });
+    car.hidden = false;
+    function act() { document.getElementById("acont").textContent = (Math.min(casos.length, Math.round(lista.scrollLeft / paso()) + 1)) + " / " + casos.length; }
+    lista.addEventListener("scroll", act, { passive: true }); window.addEventListener("resize", act); act();
+    document.getElementById("aprev").addEventListener("click", function () { lista.scrollBy({ left: -paso(), behavior: "smooth" }); });
+    document.getElementById("anext").addEventListener("click", function () { lista.scrollBy({ left: paso(), behavior: "smooth" }); });
+  }
+  fetch("ayuda/casos.json?d=" + hoyVE(), { cache: "no-cache" })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var hoy = hoyVE();
+      render((d.casos || []).filter(function (c) { return (!c.desde || c.desde <= hoy) && (!c.hasta || c.hasta >= hoy); }));
+    })
+    .catch(function () { vacio.hidden = false; });
+})();
+</script>
 <script>
 /* Chamos IA: chat público que solo conversa. Habla con el Worker de Cloudflare. */
 (function () {
