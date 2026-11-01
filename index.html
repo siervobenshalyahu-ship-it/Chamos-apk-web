@@ -408,6 +408,11 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   </div>
 </footer>
 
+<div id="ia-panel" class="ia-panel" hidden role="dialog" aria-label="Chamos IA">
+  <div class="ia-cab"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px"><b>Chamos IA</b><small>modo prueba</small><button type="button" id="ia-cerrar" aria-label="Cerrar">✕</button></div>
+  <div id="ia-msgs" class="ia-msgs" aria-live="polite"></div>
+  <form id="ia-form" class="ia-form"><input id="ia-campo" maxlength="500" autocomplete="off" placeholder="Escríbele a Chamos IA…" aria-label="Tu mensaje"><button id="ia-enviar" type="submit">Enviar</button></form>
+</div>
 <script>
 /* Chamos IA: chat público que solo conversa. Habla con el Worker de Cloudflare. */
 (function () {
@@ -461,11 +466,6 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   });
 })();
 </script>
-<div id="ia-panel" class="ia-panel" hidden role="dialog" aria-label="Chamos IA">
-  <div class="ia-cab"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px"><b>Chamos IA</b><small>modo prueba</small><button type="button" id="ia-cerrar" aria-label="Cerrar">✕</button></div>
-  <div id="ia-msgs" class="ia-msgs" aria-live="polite"></div>
-  <form id="ia-form" class="ia-form"><input id="ia-campo" maxlength="500" autocomplete="off" placeholder="Escríbele a Chamos IA…" aria-label="Tu mensaje"><button id="ia-enviar" type="submit">Enviar</button></form>
-</div>
 <script>
 /* Estadísticas anónimas de Chamos: visitas y toques en "Descargar". */
 (function () {
