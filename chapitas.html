@@ -78,9 +78,13 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
 .field { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); background: #3b3e47; touch-action: manipulation; }
 .field svg { display: block; width: 100%; height: auto; }
-.chalk { fill: none; stroke: rgba(255, 255, 255, .72); stroke-width: 2; stroke-linecap: round; }
+.chalk { fill: none; stroke: rgba(255, 255, 255, .85); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: url(#tiza); }
 .chalk-f { fill: rgba(255, 255, 255, .06); stroke: none; }
+.cuadro { fill: rgba(255, 255, 255, .07); stroke: rgba(255, 255, 255, .9); stroke-width: 3.4; stroke-linejoin: round; filter: url(#tiza); }
 .base { fill: #f4f1e6; stroke: rgba(0, 0, 0, .25); stroke-width: 1; }
+.roca { fill: #8d8b86; stroke: #3d3b38; stroke-width: 1.6; stroke-linejoin: round; }
+.roca-l { fill: #b4b1aa; stroke: none; }
+.roca-s { fill: none; stroke: rgba(0, 0, 0, .35); stroke-width: 1; stroke-linecap: round; }
 .ctext { fill: rgba(255, 255, 255, .5); font-family: var(--font-sans); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-anchor: middle; }
 .ring { fill: none; stroke: var(--amber); stroke-width: 2; stroke-dasharray: 4 4; opacity: 0; }
 .ring.on { opacity: 1; animation: spin 2.4s linear infinite; transform-origin: 180px 352px; }
@@ -152,8 +156,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   <div class="hud" id="hud"></div>
 
   <div class="field" id="fieldWrap">
-    <svg id="field" viewBox="0 0 360 430" role="img" aria-label="Calle con la zona de juego marcada con tiza: plato, primera, segunda y tercera base, punto de lanzamiento y línea de jonrón. Cuatro niños y jóvenes descalzos y sin camisa juegan.">
+    <svg id="field" viewBox="0 0 360 430" role="img" aria-label="Calle con la zona de juego marcada con tiza: plato, primera, segunda y tercera base, punto de lanzamiento y línea de jonrón. Cuatro niños y jóvenes de distintos tamaños, unos sin camisa, descalzos, con cholas o con zapatos rotos, juegan.">
       <defs>
+        <filter id="tiza" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="r"/>
+          <feDisplacementMap in="SourceGraphic" in2="r" scale="2.6"/>
+        </filter>
         <pattern id="asf" width="24" height="24" patternUnits="userSpaceOnUse">
           <rect width="24" height="24" fill="#3b3e47"/>
           <circle cx="4" cy="6" r="1" fill="#464a54"/><circle cx="15" cy="3" r=".8" fill="#2f323a"/><circle cx="20" cy="14" r="1.1" fill="#464a54"/>
@@ -171,12 +179,15 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       <text class="ctext" x="180" y="160" style="font-size:9px">ZONA BUENA</text>
       <text class="ctext" x="52" y="372" style="font-size:9px">FOUL</text>
       <text class="ctext" x="308" y="372" style="font-size:9px">FOUL</text>
-      <!-- bases -->
-      <rect class="base" x="255" y="263" width="14" height="14" transform="rotate(45 262 270)"/>
-      <rect class="base" x="173" y="181" width="14" height="14" transform="rotate(45 180 188)"/>
-      <rect class="base" x="91" y="263" width="14" height="14" transform="rotate(45 98 270)"/>
-      <circle class="chalk" cx="180" cy="270" r="5"/>
-      <path class="base" d="M170 346H190V354L180 362L170 354Z"/>
+      <!-- cuadro pintado con tiza -->
+      <path class="cuadro" d="M180 352L262 270L180 188L98 270Z"/>
+      <path class="chalk" stroke-dasharray="3 5" d="M180 352L180 270" opacity=".6"/>
+      <circle class="chalk" cx="180" cy="270" r="9"/>
+      <!-- bases: piedras grandes -->
+      <g transform="translate(262 270)"><ellipse cx="2" cy="9" rx="17" ry="6" fill="rgba(0,0,0,.4)"/><path class="roca" d="M-14 5L-17 -4L-9 -12L3 -14L14 -8L17 2L10 10L-5 11Z"/><path class="roca-l" d="M-9 -10L3 -12L10 -6L0 -4L-10 -4Z"/><path class="roca-s" d="M-3 -1L4 3M6 -5L9 0"/></g>
+      <g transform="translate(180 188)"><ellipse cx="2" cy="9" rx="17" ry="6" fill="rgba(0,0,0,.4)"/><path class="roca" d="M-15 3L-12 -8L-2 -14L10 -11L17 -2L13 8L0 11L-10 9Z"/><path class="roca-l" d="M-10 -6L-2 -12L8 -9L2 -3L-9 -2Z"/><path class="roca-s" d="M2 2L9 5M-7 4L-3 8"/></g>
+      <g transform="translate(98 270)"><ellipse cx="2" cy="9" rx="17" ry="6" fill="rgba(0,0,0,.4)"/><path class="roca" d="M-16 0L-8 -11L5 -14L15 -6L16 4L7 11L-8 10Z"/><path class="roca-l" d="M-7 -9L5 -12L12 -6L2 -3L-8 -4Z"/><path class="roca-s" d="M-2 3L5 1M8 -2L11 3"/></g>
+      <g transform="translate(180 352)"><ellipse cx="2" cy="8" rx="15" ry="5" fill="rgba(0,0,0,.4)"/><path class="roca" d="M-13 -4L-5 -11L8 -10L14 -2L11 7L-4 9L-12 4Z"/><path class="roca-l" d="M-5 -9L7 -8L11 -3L0 -3Z"/><path class="roca-s" d="M-3 2L4 4"/></g>
       <circle class="ring" id="ring" cx="180" cy="352" r="17"/>
       <g id="runners"></g>
       <g id="actors"></g>
@@ -206,8 +217,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   var R_HR = 225;
 
   var TEAMS = [
-    { name: "Maní", cls: "m", shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, skin: "#c98a5e", hair: "#2a1a10" }] },
-    { name: "Tostón", cls: "t", shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, skin: "#d49a6a", hair: "#3a2314" }] }
+    { name: "Maní", cls: "m", shorts: "#8a5a2b", players: [{ n: "Chucho", tall: true, alto: 96, ancho: 0.72, camisa: "no", calzado: "descalzo", skin: "#a0663f", hair: "#1a1210" }, { n: "Carlitos", tall: false, alto: 56, ancho: 1.7, camisa: "no", calzado: "cholas", skin: "#c98a5e", hair: "#2a1a10" }] },
+    { name: "Tostón", cls: "t", shorts: "#e8b93a", players: [{ n: "Gabo", tall: true, alto: 82, ancho: 1.45, camisa: "franela", calzado: "rotos", skin: "#7d4d31", hair: "#14100d" }, { n: "Yeyo", tall: false, alto: 68, ancho: 0.82, camisa: "no", calzado: "rotos", gorra: true, skin: "#d49a6a", hair: "#3a2314" }] }
   ];
   var PITCHES = {
     rapida: { label: "rápida", T: 720, k: 0.8, curve: 0 },
@@ -243,19 +254,41 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   /* ---------- dibujo: niños y jóvenes descalzos y sin camisa ---------- */
   function kid(o) {
-    var H = o.tall ? 86 : 64, hr = H * 0.14, w = H * 0.27;
+    var H = o.alto || (o.tall ? 86 : 64), ancho = o.ancho || 1, hr = H * 0.14 * (0.9 + ancho * 0.1), w = H * 0.27 * ancho;
     var headCy = -H + hr + 2, neck = headCy + hr - 1, hip = -H * 0.42, sh = hip + H * 0.2;
     var skin = o.skin, shade = "rgba(0,0,0,.18)", g = "";
     var scy = o.crouch ? 0.82 : 1;
     g += '<g transform="translate(' + o.x + " " + o.y + ") scale(" + (o.flip ? -1 : 1) + " " + scy + ')">';
     g += '<ellipse cx="0" cy="1" rx="' + (w * 0.95) + '" ry="4" fill="rgba(0,0,0,.35)"/>';
-    /* piernas y pies descalzos */
-    g += '<rect x="' + (-w * 0.38) + '" y="' + sh + '" width="' + (H * 0.1) + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
-    g += '<rect x="' + (w * 0.38 - H * 0.1) + '" y="' + sh + '" width="' + (H * 0.1) + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
-    g += '<ellipse cx="' + (-w * 0.34) + '" cy="-1.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.03) + '" fill="' + skin + '"/><ellipse cx="' + (w * 0.34) + '" cy="-1.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.03) + '" fill="' + skin + '"/>';
-    g += '<ellipse cx="' + (-w * 0.34) + '" cy="-.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.018) + '" fill="' + shade + '"/><ellipse cx="' + (w * 0.34) + '" cy="-.5" rx="' + (H * 0.075) + '" ry="' + (H * 0.018) + '" fill="' + shade + '"/>';
+    /* piernas y calzado */
+    var lw = H * 0.1 * (0.8 + ancho * 0.2), lx = w * 0.38, fx = w * 0.34 + (ancho > 1.2 ? 2 : 0);
+    g += '<rect x="' + (-lx) + '" y="' + sh + '" width="' + lw + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
+    g += '<rect x="' + (lx - lw) + '" y="' + sh + '" width="' + lw + '" height="' + (-sh - 2) + '" rx="' + (H * 0.04) + '" fill="' + skin + '"/>';
+    [-1, 1].forEach(function (s) {
+      var cx = s * fx, rx = H * 0.075, ry = H * 0.03;
+      if (o.calzado === "cholas") {
+        g += '<ellipse cx="' + cx + '" cy="-1" rx="' + (rx * 1.15) + '" ry="' + (ry * 1.1) + '" fill="#2a8fd0" stroke="#145a86" stroke-width=".6"/>';
+        g += '<ellipse cx="' + cx + '" cy="-2.2" rx="' + rx + '" ry="' + ry + '" fill="' + skin + '"/>';
+        g += '<path d="M' + (cx - rx * 0.7) + " -1.5L" + cx + " -4.5L" + (cx + rx * 0.7) + ' -1.5" fill="none" stroke="#e8e8e8" stroke-width="1.2" stroke-linecap="round"/>';
+      } else if (o.calzado === "rotos") {
+        g += '<path d="M' + (cx - rx * 1.25) + " 0Q" + (cx - rx * 1.3) + " -" + (H * 0.09) + " " + (cx - rx * 0.2) + " -" + (H * 0.1) + "L" + (cx + rx * 1.35) + " -" + (H * 0.04) + "L" + (cx + rx * 1.4) + ' 0Z" fill="#5a4a3c" stroke="#2b221a" stroke-width=".7"/>';
+        g += '<ellipse cx="' + (cx + rx * 1.0) + '" cy="-' + (H * 0.035) + '" rx="' + (rx * 0.38) + '" ry="' + (H * 0.022) + '" fill="' + skin + '" stroke="#2b221a" stroke-width=".5"/>';
+        g += '<path d="M' + (cx - rx * 0.6) + " -" + (H * 0.075) + "l" + (rx * 0.5) + " 1.2m" + (rx * 0.3) + ' 0l' + (rx * 0.5) + ' 1.2" stroke="#d8d2c4" stroke-width=".9" stroke-linecap="round" fill="none"/>';
+        g += '<path d="M' + (cx - rx * 1.25) + " 0H" + (cx + rx * 1.4) + '" stroke="#ddd" stroke-width="1.4" stroke-dasharray="3 2"/>';
+      } else {
+        g += '<ellipse cx="' + cx + '" cy="-1.5" rx="' + rx + '" ry="' + ry + '" fill="' + skin + '"/>';
+        g += '<ellipse cx="' + cx + '" cy="-.5" rx="' + rx + '" ry="' + (H * 0.018) + '" fill="' + shade + '"/>';
+      }
+    });
     /* torso sin camisa */
     g += '<path d="M' + (-w / 2) + " " + (neck + 3) + "Q" + (-w / 2 - 1) + " " + hip + " " + (-w / 2 + 1) + " " + hip + "H" + (w / 2 - 1) + "Q" + (w / 2 + 1) + " " + hip + " " + (w / 2) + " " + (neck + 3) + 'Z" fill="' + skin + '"/>';
+    if (ancho > 1.2 && o.camisa === "no") g += '<ellipse cx="0" cy="' + (hip - H * 0.06) + '" rx="' + (w * 0.62) + '" ry="' + (H * 0.1) + '" fill="' + skin + '" stroke="rgba(0,0,0,.15)" stroke-width=".8"/><circle cx="0" cy="' + (hip - H * 0.05) + '" r=".9" fill="rgba(0,0,0,.35)"/>';
+    if (o.camisa === "franela") {
+      var fw = w * 0.62 + 2;
+      g += '<path d="M' + (-fw) + " " + (neck + 2) + "L" + (-fw - 4) + " " + (neck + H * 0.17) + "L" + (-fw + 1) + " " + (neck + H * 0.2) + "L" + (-fw + 1) + " " + (hip - 1) + "Q0 " + (hip + 4) + " " + (fw - 1) + " " + (hip - 1) + "L" + (fw - 1) + " " + (neck + H * 0.2) + "L" + (fw + 4) + " " + (neck + H * 0.17) + "L" + fw + " " + (neck + 2) + "Q0 " + (neck + 7) + " " + (-fw) + " " + (neck + 2) + 'Z" fill="#c2402f" stroke="rgba(0,0,0,.3)" stroke-width=".8"/>';
+      g += '<path d="M' + (-fw + 3) + " " + (hip - 2) + "l3 -4l3 4l3 -4l3 4" + '" stroke="rgba(0,0,0,.25)" stroke-width=".9" fill="none"/>';
+      g += '<circle cx="' + (fw * 0.3) + '" cy="' + (hip - H * 0.12) + '" r="2.2" fill="' + skin + '"/>';
+    }
     /* short */
     g += '<path d="M' + (-w / 2 - 1) + " " + hip + "H" + (w / 2 + 1) + "L" + (w / 2 + 3) + " " + sh + "H" + (-w / 2 - 3) + 'Z" fill="' + o.shorts + '" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>';
     g += '<path d="M' + (-w / 2 - 1) + " " + (hip + 1.5) + "H" + (w / 2 + 1) + '" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>';
@@ -274,6 +307,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     g += '<rect x="' + (-hr * 0.35) + '" y="' + (headCy + hr * 0.6) + '" width="' + (hr * 0.7) + '" height="' + (hr * 0.8) + '" fill="' + skin + '"/>';
     g += '<circle cx="0" cy="' + headCy + '" r="' + hr + '" fill="' + skin + '"/>';
     g += '<path d="M' + (-hr) + " " + (headCy - 1) + "Q" + (-hr) + " " + (headCy - hr * 1.15) + " 0 " + (headCy - hr * 1.12) + "Q" + hr + " " + (headCy - hr * 1.15) + " " + hr + " " + (headCy - 1) + "Q" + (hr * 0.5) + " " + (headCy - hr * 0.55) + " 0 " + (headCy - hr * 0.5) + "Q" + (-hr * 0.5) + " " + (headCy - hr * 0.55) + " " + (-hr) + " " + (headCy - 1) + 'Z" fill="' + o.hair + '"/>';
+    if (o.gorra) g += '<path d="M' + (-hr * 1.05) + " " + (headCy - hr * 0.2) + "Q" + (-hr * 1.05) + " " + (headCy - hr * 1.3) + " 0 " + (headCy - hr * 1.28) + "Q" + (hr * 1.05) + " " + (headCy - hr * 1.3) + " " + (hr * 1.05) + " " + (headCy - hr * 0.2) + "L" + (hr * 1.8) + " " + (headCy - hr * 0.1) + "L" + (hr * 1.05) + " " + (headCy - hr * 0.45) + 'Z" fill="#2d6a4f" stroke="rgba(0,0,0,.3)" stroke-width=".7"/>';
     g += '<circle cx="' + (-hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/><circle cx="' + (hr * 0.38) + '" cy="' + (headCy + 1) + '" r="1" fill="#1a1210"/>';
     g += '<path d="M' + (-hr * 0.35) + " " + (headCy + hr * 0.45) + "Q0 " + (headCy + hr * 0.8) + " " + (hr * 0.35) + " " + (headCy + hr * 0.45) + '" fill="none" stroke="#1a1210" stroke-width=".9" stroke-linecap="round"/>';
     g += "</g>";
@@ -302,12 +336,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     var b = batterTeam(), d = 1 - b, bt = TEAMS[b], dt = TEAMS[d];
     var batter = bt.players[S.bat[b]], waiter = bt.players[1 - S.bat[b]], pitcher = dt.players[0], catcher = dt.players[1];
     var h = "";
-    h += kid({ x: 292, y: 412, tall: waiter.tall, skin: waiter.skin, hair: waiter.hair, shorts: bt.shorts, pose: poses.wait });
-    h += kid({ x: 180, y: 292, tall: pitcher.tall, skin: pitcher.skin, hair: pitcher.hair, shorts: dt.shorts, pose: poses.pitcher });
-    h += kid({ x: 180, y: 418, tall: catcher.tall, skin: catcher.skin, hair: catcher.hair, shorts: dt.shorts, pose: poses.catcher, crouch: true });
+    h += kid({ x: 292, y: 412, tall: waiter.tall, alto: waiter.alto, ancho: waiter.ancho, camisa: waiter.camisa, calzado: waiter.calzado, gorra: waiter.gorra, skin: waiter.skin, hair: waiter.hair, shorts: bt.shorts, pose: poses.wait });
+    h += kid({ x: 180, y: 292, tall: pitcher.tall, alto: pitcher.alto, ancho: pitcher.ancho, camisa: pitcher.camisa, calzado: pitcher.calzado, gorra: pitcher.gorra, skin: pitcher.skin, hair: pitcher.hair, shorts: dt.shorts, pose: poses.pitcher });
+    h += kid({ x: 180, y: 418, tall: catcher.tall, alto: catcher.alto, ancho: catcher.ancho, camisa: catcher.camisa, calzado: catcher.calzado, gorra: catcher.gorra, skin: catcher.skin, hair: catcher.hair, shorts: dt.shorts, pose: poses.catcher, crouch: true });
     var bx = 142, by = 368;
-    h += kid({ x: bx, y: by, tall: batter.tall, skin: batter.skin, hair: batter.hair, shorts: bt.shorts, pose: poses.batter });
-    var bh = batter.tall ? 86 : 64, hx = bx + bh * 0.27 * 0.62, hy = by - bh * 0.74;
+    h += kid({ x: bx, y: by, tall: batter.tall, alto: batter.alto, ancho: batter.ancho, camisa: batter.camisa, calzado: batter.calzado, gorra: batter.gorra, skin: batter.skin, hair: batter.hair, shorts: bt.shorts, pose: poses.batter });
+    var bh = batter.alto, hx = bx + bh * 0.27 * (batter.ancho || 1) * 0.62, hy = by - bh * 0.74;
     h += '<g transform="translate(' + hx + " " + hy + ") rotate(" + batAngle + ')"><line x1="0" y1="8" x2="0" y2="-62" stroke="#a9773c" stroke-width="4.5" stroke-linecap="round"/><line x1="0" y1="-62" x2="0" y2="-52" stroke="#7b5226" stroke-width="4.5" stroke-linecap="round"/></g>';
     $("actors").innerHTML = h;
     $("actors").setAttribute("data-names", batter.n + "|" + pitcher.n);
