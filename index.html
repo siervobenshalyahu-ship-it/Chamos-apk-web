@@ -431,7 +431,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <code>7C:13:B8:F2:8E:A5:11:A3:8E:CE:5B:DE:FD:F9:10:72:E8:A5:84:CD:E9:2B:96:A7:16:29:07:A4:8F:EE:69:31</code>
       <p>Si una copia muestra el aviso "Copia no oficial", bórrala y descarga la oficial aquí.</p>
     </details>
-    <p style="opacity:.75;font-size:.85em">Contamos las visitas y las descargas sin cookies. Guardamos la dirección IP y el país de quien entra, solo para saber cuánta gente usa Chamos.</p>
+    <p style="opacity:.75;font-size:.85em">Contamos las visitas y las descargas sin cookies. Guardamos la dirección IP, el país, el modelo del teléfono o el navegador de quien entra, solo para saber cuánta gente usa Chamos.</p>
     <p id="credits">Chamos es una aplicación de código abierto construida sobre Element X Android (licencia AGPL-3.0). No está afiliada a Element, Meta ni a otras aplicaciones de mensajería.</p>
   </div>
 </footer>
@@ -551,11 +551,20 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       return a;
     } catch (e) { return "sin-id"; }
   }
+  /* Modelo del teléfono: Chrome ya no lo pone en el user-agent, hay que pedirlo aparte. */
+  var DISP = {};
+  var listo = (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues)
+    ? navigator.userAgentData.getHighEntropyValues(["model", "platformVersion"]).then(function (h) {
+        DISP = { m: h.model || "", o: (navigator.userAgentData.platform === "Windows" ? "" : "") + (h.platformVersion || "") };
+      }).catch(function () {})
+    : Promise.resolve();
   function enviar(t) {
-    try {
-      fetch(URL_E, { method: "POST", keepalive: true, headers: { "content-type": "text/plain" },
-        body: JSON.stringify({ t: t, id: anon(), p: location.pathname }) }).catch(function () {});
-    } catch (e) {}
+    listo.then(function () {
+      try {
+        fetch(URL_E, { method: "POST", keepalive: true, headers: { "content-type": "text/plain" },
+          body: JSON.stringify({ t: t, id: anon(), p: location.pathname, m: DISP.m || "", o: DISP.o || "" }) }).catch(function () {});
+      } catch (e) {}
+    });
   }
   enviar("visita");
   document.addEventListener("click", function (ev) {
