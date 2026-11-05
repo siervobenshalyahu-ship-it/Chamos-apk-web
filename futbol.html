@@ -71,7 +71,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
 .field { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); background: #3b3e47; line-height: 0; }
 .field { text-align: center; }
-.field canvas { width: min(100%, calc(72vh * 360 / 560)); height: auto; aspect-ratio: 360 / 560; margin-inline: auto; display: block; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+.field canvas { width: min(100%, calc(72vh * 452 / 560)); height: auto; aspect-ratio: 452 / 560; margin-inline: auto; display: block; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
 .status { position: absolute; left: 8px; right: 8px; top: 12px; text-align: center; background: rgba(8, 12, 24, .72); border: 1px solid var(--line); border-radius: 10px; padding: 5px 10px; font-size: 13px; line-height: 1.4; pointer-events: none; }
 .status b { color: var(--amber); }
 .gol { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font-family: var(--font-serif); font-weight: 700; font-size: 64px; color: var(--amber); text-shadow: 0 4px 0 #000, 0 0 24px rgba(244,181,74,.6); letter-spacing: .04em; line-height: 1; opacity: 0; transform: scale(.6); transition: opacity .15s, transform .25s; text-align: center; padding: 0 10px; }
@@ -104,7 +104,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   <header>
     <div>
       <h1>Fútbol callejero</h1>
-      <p class="sub">Dos contra dos, descalzos, con arcos de cauchos viejos.</p>
+      <p class="sub">Hasta cinco por equipo, descalzos, con arcos de cauchos viejos y gradas llenas.</p>
     </div>
     <button class="rulesbtn" id="rulesBtn" aria-expanded="false" aria-controls="rules">Reglas</button>
   </header>
@@ -112,7 +112,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   <section class="panel" id="rules" hidden>
     <h2>Cómo se juega</h2>
     <ul>
-      <li>Son <b>dos contra dos</b>: tú con <b>Maní</b> (azul, atacas hacia arriba) contra <b>Tostón</b> (amarillo, ataca hacia abajo). Tu compañero juega solo.</li>
+      <li>Puedes jugar de <b>1 hasta 5 por equipo</b> (lo eliges arriba). Por defecto son dos contra dos: tú con <b>Maní</b> (azul, atacas hacia arriba) contra <b>Tostón</b> (amarillo, ataca hacia abajo). Tus compañeros juegan solos.</li>
+      <li>A los lados de la calle hay <b>gradas llenas de gente</b>: cuando hay un gol saltan, gritan y tiran confeti.</li>
       <li>Cada arco son <b>dos cauchos</b>: el gol vale cuando la pelota pasa <b>por el medio</b> de los dos cauchos. Si pega en un caucho, rebota.</li>
       <li><b>Moverte:</b> arrastra el dedo sobre la cancha (o usa las flechas / WASD). Siempre manejas al jugador más cercano a la pelota.</li>
       <li><b>Patear:</b> toca la cancha o el botón <b>¡Patear!</b> (o la barra espaciadora). Patea hacia donde miras, y si apuntas más o menos al arco, la pelota se va al arco.</li>
@@ -124,6 +125,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   <div class="opts">
     <label>Goles para ganar <select id="meta"><option value="3">3</option><option value="5" selected>5</option><option value="7">7</option></select></label>
+    <label>Jugadores por equipo <select id="jug"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5 (máx.)</option></select></label>
     <label>Nivel <select id="nivel"><option value="0">Fácil</option><option value="1" selected>Normal</option><option value="2">Difícil</option></select></label>
     <label>Sonido <input type="checkbox" id="snd" checked></label>
   </div>
@@ -154,10 +156,11 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   var REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- medidas de la cancha (la pantalla se escala) ---------- */
-  var W = 360, H = 560;
-  var L = 14, R = 346;                 /* aceras: de ahí para afuera no se juega */
+  var OFF = 46;                        /* ancho de cada grada a los lados de la calle */
+  var W = 360 + OFF * 2, H = 560;
+  var L = 14 + OFF, R = 346 + OFF;     /* aceras: de ahí para afuera no se juega */
   var GT = 50, GB = 510;               /* línea de gol de arriba y de abajo */
-  var CX = 180;
+  var CX = 180 + OFF;
   var TIRE_R = 14, TIRE_DX = 56;       /* cada arco: dos cauchos a CX±56 */
   var BR = 7, PR = 11;                 /* radio de la pelota y de los jugadores */
   var MOUTH = TIRE_DX - TIRE_R;        /* mitad del hueco entre los cauchos: 42 */
@@ -194,12 +197,28 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
   function sKick() { tono(170, 0.1, "triangle", 0.22, 70); }
   function sPost() { tono(300, 0.12, "square", 0.08, 150); }
+  function sBulla() {
+    var a = audio(); if (!a) return;
+    try {
+      var n = Math.floor(a.sampleRate * 2.2), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+      var src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+      f.type = "bandpass"; f.frequency.value = 1100; f.Q.value = 0.5;
+      g.gain.setValueAtTime(0.0001, a.currentTime); g.gain.exponentialRampToValueAtTime(0.5, a.currentTime + 0.25); g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 2.1);
+      src.buffer = buf; src.connect(f); f.connect(g); g.connect(a.destination); src.start();
+    } catch (e) {}
+    /* corneta de aire */
+    tono(440, 0.7, "sawtooth", 0.07, 430); setTimeout(function () { tono(330, 0.7, "sawtooth", 0.06, 322); }, 20);
+  }
   function sGol(mio) { [523, 659, 784, 1047].forEach(function (f, i) { setTimeout(function () { tono(mio ? f : f / 2, 0.22, "triangle", 0.16); }, i * 110); }); }
 
   /* ---------- fondo (se dibuja una sola vez) ---------- */
   var bg = document.createElement("canvas"); bg.width = W * 2; bg.height = H * 2;
   function dibujarFondo() {
     var c = bg.getContext("2d"); c.setTransform(2, 0, 0, 2, 0, 0);
+    c.fillStyle = "#23252c"; c.fillRect(0, 0, bg.width, bg.height);
+    c.save(); c.translate(OFF, 0);
+    var W = 360, L = 14, R = 346, CX = 180;
     var seed = 11; function r() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
     /* asfalto */
     c.fillStyle = "#3b3e47"; c.fillRect(0, 0, W, H);
@@ -248,16 +267,76 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     c.fillText("ARCO", CX, GT + 112); c.fillText("ARCO", CX, GB - 104);
     /* cauchos */
     TIRES.forEach(function (t) {
-      c.fillStyle = "rgba(0,0,0,.4)"; c.beginPath(); c.ellipse(t.x + 2, t.y + 4, TIRE_R + 1, TIRE_R - 2, 0, 0, 6.3); c.fill();
-      c.fillStyle = "#17181c"; c.beginPath(); c.arc(t.x, t.y, TIRE_R, 0, 6.3); c.fill();
-      c.strokeStyle = "#2c2e35"; c.lineWidth = 2; c.setLineDash([3, 3]); c.beginPath(); c.arc(t.x, t.y, TIRE_R - 3, 0, 6.3); c.stroke(); c.setLineDash([]);
-      c.fillStyle = "#25272e"; c.beginPath(); c.arc(t.x, t.y, 6, 0, 6.3); c.fill();
-      c.strokeStyle = "rgba(255,255,255,.22)"; c.lineWidth = 1.4; c.beginPath(); c.arc(t.x, t.y, TIRE_R - 1.5, 3.6, 4.6); c.stroke();
-      c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 2; c.beginPath(); c.arc(t.x, t.y, TIRE_R + 0.5, 0.5, 1.4); c.stroke();
+      c.fillStyle = "rgba(0,0,0,.4)"; c.beginPath(); c.ellipse(t.x - OFF + 2, t.y + 4, TIRE_R + 1, TIRE_R - 2, 0, 0, 6.3); c.fill();
+      var tx0 = t.x - OFF; c.fillStyle = "#17181c"; c.beginPath(); c.arc(tx0, t.y, TIRE_R, 0, 6.3); c.fill();
+      c.strokeStyle = "#2c2e35"; c.lineWidth = 2; c.setLineDash([3, 3]); c.beginPath(); c.arc(tx0, t.y, TIRE_R - 3, 0, 6.3); c.stroke(); c.setLineDash([]);
+      c.fillStyle = "#25272e"; c.beginPath(); c.arc(tx0, t.y, 6, 0, 6.3); c.fill();
+      c.strokeStyle = "rgba(255,255,255,.22)"; c.lineWidth = 1.4; c.beginPath(); c.arc(tx0, t.y, TIRE_R - 1.5, 3.6, 4.6); c.stroke();
+      c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 2; c.beginPath(); c.arc(tx0, t.y, TIRE_R + 0.5, 0.5, 1.4); c.stroke();
     });
     /* viñeta */
     var gr = c.createRadialGradient(CX, H / 2, 160, CX, H / 2, 430); gr.addColorStop(0, "rgba(0,0,0,0)"); gr.addColorStop(1, "rgba(0,0,0,.4)");
     c.fillStyle = gr; c.fillRect(0, 0, W, H);
+    c.restore();
+    gradas(c);
+  }
+  /* gradas de cemento a cada lado, con escalones y una baranda hacia la calle */
+  function gradas(c) {
+    [0, 1].forEach(function (lado) {
+      var x0 = lado === 0 ? 0 : W - OFF, dir = lado === 0 ? 1 : -1;
+      c.fillStyle = "#4a4c55"; c.fillRect(x0, 0, OFF, H);
+      for (var k = 0; k < 3; k++) {
+        var gx = lado === 0 ? k * 14 : W - (k + 1) * 14;
+        c.fillStyle = ["#6f717a", "#62646d", "#565861"][k]; c.fillRect(gx, 0, 14, H);
+        c.fillStyle = "rgba(0,0,0,.3)"; c.fillRect(lado === 0 ? gx + 12 : gx, 0, 2, H);
+        c.fillStyle = "rgba(255,255,255,.12)"; c.fillRect(lado === 0 ? gx : gx + 12, 0, 1.4, H);
+      }
+      c.fillStyle = "#2a2b30"; c.fillRect(lado === 0 ? OFF - 4 : W - OFF, 0, 4, H);
+      c.fillStyle = "#c8202f"; for (var y = 10; y < H; y += 70) c.fillRect(lado === 0 ? OFF - 6 : W - OFF + 4, y, 2, 30);
+    });
+  }
+
+  /* ---------- la gente de las gradas ---------- */
+  var GENTE = [], CONF = [];
+  (function () {
+    var sd = 5; function rr() { sd = (sd * 16807) % 2147483647; return sd / 2147483647; }
+    var cams = ["#f2c230", "#1d3f9e", "#c8202f", "#f4f1e6", "#2f6fc2", "#e8b93a", "#5fa58a", "#b5517a", "#d9722a", "#1b1d25"];
+    var pieles = ["#b9774a", "#8a5a37", "#6f4429", "#c98f63", "#e0b08a"], pelos = ["#1a1210", "#0e0b09", "#2a1a10", "#3a2412", "#6b5a3a", "#8a8a8a"];
+    for (var lado = 0; lado < 2; lado++) for (var col = 0; col < 3; col++) for (var y = 12 + col * 6; y < H - 8; y += 17) {
+      GENTE.push({ x: lado === 0 ? 7 + col * 14 : W - 7 - col * 14, y: y, lado: lado, cam: cams[Math.floor(rr() * cams.length)], piel: pieles[Math.floor(rr() * pieles.length)], pelo: pelos[Math.floor(rr() * pelos.length)], ph: rr() * 6.3, grita: rr() < 0.18 });
+    }
+  })();
+  function celebrando() { return !!S && (S.fase === "gol" || (S.fase === "fin" && S.marc[0] > S.marc[1])); }
+  function confeti() {
+    for (var i = 0; i < 90; i++) CONF.push({ x: Math.random() < 0.5 ? rnd(0, OFF) : rnd(W - OFF, W), y: rnd(-20, H * 0.5), vx: rnd(-30, 30), vy: rnd(40, 110), c: ["#f2c230", "#1d3f9e", "#c8202f", "#fff", "#5fd39a"][i % 5], r: rnd(0, 6.3), life: rnd(1.4, 2.6) });
+  }
+  function dibujarGente(c, t, cel) {
+    for (var i = 0; i < GENTE.length; i++) {
+      var g = GENTE[i], x = g.x, y = g.y, alzado = 0;
+      if (cel) { alzado = Math.abs(Math.sin(t * 9 + g.ph)) * 5; x += Math.sin(t * 7 + g.ph) * 1.2; } else { x += Math.sin(t * 1.4 + g.ph) * 0.7; }
+      y -= alzado;
+      c.fillStyle = g.cam; c.beginPath(); c.ellipse(x, y + 1, 6, 4.4, 0, 0, 6.3); c.fill();
+      if (cel) {
+        c.fillStyle = g.piel;
+        var br = Math.sin(t * 12 + g.ph) * 1.5;
+        c.beginPath(); c.arc(x - 6.2, y - 4 + br, 2, 0, 6.3); c.fill(); c.beginPath(); c.arc(x + 6.2, y - 4 - br, 2, 0, 6.3); c.fill();
+        c.strokeStyle = g.piel; c.lineWidth = 1.8; c.beginPath(); c.moveTo(x - 5, y); c.lineTo(x - 6.2, y - 4 + br); c.moveTo(x + 5, y); c.lineTo(x + 6.2, y - 4 - br); c.stroke();
+      }
+      c.fillStyle = g.piel; c.beginPath(); c.arc(x, y - 1, 3.8, 0, 6.3); c.fill();
+      c.fillStyle = g.pelo; c.beginPath(); c.arc(x, y - 1.4, 3.9, Math.PI * 0.95, Math.PI * 2.05); c.closePath(); c.fill();
+      if (cel && g.grita) { c.fillStyle = "#3a0d0d"; c.beginPath(); c.ellipse(x, y + 0.6, 1.3, 1.6, 0, 0, 6.3); c.fill(); }
+    }
+    if (cel) {
+      c.font = "900 10px Manrope, sans-serif"; c.textAlign = "center"; c.lineWidth = 3; c.strokeStyle = "rgba(0,0,0,.7)"; c.fillStyle = "#ffd84a";
+      for (var k = 0; k < GENTE.length; k += 11) {
+        var q = GENTE[k]; if (!q.grita && k % 22) continue;
+        var ty = q.y - 12 - Math.abs(Math.sin(t * 9 + q.ph)) * 5, tx = q.lado === 0 ? q.x + 14 : q.x - 14;
+        c.strokeText(k % 3 ? "¡GOL!" : "¡¡GOOOL!!", tx, ty); c.fillText(k % 3 ? "¡GOL!" : "¡¡GOOOL!!", tx, ty);
+      }
+    }
+  }
+  function pasoConfeti(dt) {
+    for (var i = CONF.length - 1; i >= 0; i--) { var p = CONF[i]; p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.r += dt * 8; if (p.life <= 0) CONF.splice(i, 1); }
   }
 
   /* ---------- estado ---------- */
@@ -276,11 +355,15 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function nuevoJugador(eq, rol, x, y, i) {
     return { eq: eq, rol: rol, x: x, y: y, vx: 0, vy: 0, face: eq === 0 ? -Math.PI / 2 : Math.PI / 2, cd: 0, step: rnd(0, 6), want: 0, piel: PIEL[i % 4], pelo: PELO[(i + 1) % 4], salto: 0 };
   }
+  /* puestos de cada jugador (relativos al centro de la cancha, vistos desde el equipo de abajo) */
+  var PUESTOS = [[-38, 58], [16, 172], [-92, 118], [92, 118], [0, 92]];
   function posiciones() {
-    var p = S.jug;
-    function set(j, x, y) { j.x = x; j.y = y; j.vx = j.vy = 0; j.cd = 0; j.want = 0; }
-    set(p[0], CX - 38, 338); set(p[1], CX + 16, 452); set(p[2], CX + 38, 222); set(p[3], CX - 16, 108);
-    p[0].face = p[1].face = -Math.PI / 2; p[2].face = p[3].face = Math.PI / 2;
+    var p = S.jug, n = S.n;
+    for (var i = 0; i < p.length; i++) {
+      var j = p[i], pu = PUESTOS[j.rol], sg = j.eq === 0 ? 1 : -1;
+      j.x = CX + pu[0] * sg; j.y = H / 2 + pu[1] * sg; j.vx = j.vy = 0; j.cd = 0; j.want = 0;
+      j.face = j.eq === 0 ? -Math.PI / 2 : Math.PI / 2;
+    }
     S.bola.x = CX; S.bola.y = H / 2; S.bola.vx = S.bola.vy = 0; S.bola.rot = 0;
   }
   function nuevoPartido() {
@@ -288,9 +371,10 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     S = {
       nivel: NIVELES[nv], meta: +$("meta").value, marc: [0, 0], fase: "juego", t: 0, faseT: 0,
       bola: { x: CX, y: H / 2, vx: 0, vy: 0, rot: 0 },
-      jug: [nuevoJugador(0, 0, 0, 0, 0), nuevoJugador(0, 1, 0, 0, 1), nuevoJugador(1, 0, 0, 0, 2), nuevoJugador(1, 1, 0, 0, 3)],
+      n: +$("jug").value, jug: [],
       ctrl: 0, ctrlLock: 0, saca: 0, ultimo: -1, msg: "", quieta: 0
     };
+    for (var e = 0; e < 2; e++) for (var q = 0; q < S.n; q++) S.jug.push(nuevoJugador(e, q, 0, 0, e * 5 + q));
     posiciones();
     pintarMarcador();
     $("metaTxt").textContent = "Primero a " + S.meta + " goles";
@@ -418,6 +502,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       var yy = propioY - adelante * (cerrarArco ? 30 : 84);
       obj = { x: clamp(CX + (b.x - CX) * 0.55, CX - 44, CX + 44), y: yy };
       if (cerrarArco && Math.abs(b.y - propioY) < 120 && len(b.x - p.x, b.y - p.y) < 90) obj = { x: b.x, y: b.y };
+    } else if (p.rol >= 2) {
+      /* mediocampistas: se reparten por los carriles y aprietan la pelota si pasa cerca */
+      var carril = p.rol === 2 ? -92 : (p.rol === 3 ? 92 : 0);
+      obj = { x: clamp(CX + carril + (b.x - CX) * 0.35, L + 30, R - 30), y: clamp(b.y + adelante * (p.rol === 4 ? 70 : 30), GT + 60, GB - 60) };
+      rap = vel * 0.9;
+      if (len(b.x - p.x, b.y - p.y) < 80) obj = { x: b.x, y: b.y - adelante * 6 };
     } else {
       /* delantero: se ofrece para pase, un poco más adelante que la pelota */
       obj = { x: clamp(CX + (CX - b.x) * 0.6, L + 36, R - 36), y: clamp(b.y + adelante * 110, GT + 80, GB - 80) };
@@ -432,15 +522,14 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   /* ---------- paso de simulación ---------- */
   function paso(dt) {
     if (!S) return;
-    S.t += dt; S.faseT += dt;
+    S.t += dt; S.faseT += dt; pasoConfeti(dt);
     var b = S.bola;
     if (S.fase === "juego") {
       /* a quién maneja el humano: al más cercano a la pelota, sin cambiar a cada rato */
       S.ctrlLock -= dt;
-      var a0 = S.jug[0], a1 = S.jug[1];
-      var d0 = len(b.x - a0.x, b.y - a0.y), d1 = len(b.x - a1.x, b.y - a1.y);
-      var mejor = d0 <= d1 ? 0 : 1;
-      if (mejor !== S.ctrl && S.ctrlLock <= 0 && Math.abs(d0 - d1) > 16) { S.ctrl = mejor; S.ctrlLock = 0.45; }
+      var mejor = 0, dm = 1e9, dact = 1e9;
+      for (var h0 = 0; h0 < S.n; h0++) { var dd = len(b.x - S.jug[h0].x, b.y - S.jug[h0].y); if (dd < dm) { dm = dd; mejor = h0; } if (h0 === S.ctrl) dact = dd; }
+      if (mejor !== S.ctrl && S.ctrlLock <= 0 && dact - dm > 16) { S.ctrl = mejor; S.ctrlLock = 0.45; }
       var inp = inputVec();
       if (kickAsk > 0) kickAsk -= dt;
       for (var i = 0; i < S.jug.length; i++) {
@@ -524,7 +613,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     pintarMarcador();
     var mio = eq === 0;
     var g = $("gol"); g.innerHTML = "<div>¡GOL!<small>" + EQUIPOS[eq].nombre + (S.marc[eq] >= S.meta ? " gana el partido" : " anota") + "</small></div>";
-    g.classList.add("on"); sGol(mio);
+    g.classList.add("on"); sGol(mio); sBulla(); confeti();
     S.saca = 1 - eq;
     setStatus("");
   }
@@ -587,9 +676,11 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function dibujar() {
     if (!S) return;
     ctx.drawImage(bg, 0, 0, W, H);
+    dibujarGente(ctx, S.t, celebrando());
     var orden = S.jug.slice().sort(function (a, b) { return a.y - b.y; });
     dibujarBola(ctx, S.bola);
     orden.forEach(function (p) { dibujarJugador(ctx, p, p === S.jug[S.ctrl] && S.fase === "juego"); });
+    CONF.forEach(function (p) { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-2.5, -1.5, 5, 3); ctx.restore(); });
     if (joy && joy.moved > 6) {
       ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(joy.cx, joy.cy, 24, 0, 6.3); ctx.stroke();
       ctx.fillStyle = "rgba(244,181,74,.55)"; ctx.beginPath(); ctx.arc(joy.cx + joy.dx * 0.6 * 0, joy.cy, 6, 0, 6.3); ctx.fill();
@@ -608,6 +699,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   });
   $("meta").addEventListener("change", function () { if (S) { nuevoPartido(); } });
   $("nivel").addEventListener("change", function () { if (S) { nuevoPartido(); } });
+  $("jug").addEventListener("change", function () { if (S) { nuevoPartido(); } });
 
   function inicio() {
     var o = $("overlay");
