@@ -126,6 +126,11 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .gcard .acts a.go { background: var(--amber); color: #1a1205; }
 .gcard .acts a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 .rail-wrap.games .arrow { top: 76px; }
+.cartas-par { position: relative; width: 120px; height: 104px; }
+.cartas-par .cp { position: absolute; top: 0; width: 66px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+.cartas-par .cp svg { display: block; width: 100%; height: auto; }
+.cartas-par .cp:nth-child(1) { left: 4px; transform: rotate(-9deg); transform-origin: 50% 90%; }
+.cartas-par .cp:nth-child(2) { right: 4px; transform: rotate(9deg); transform-origin: 50% 90%; }
 .hero-body > * { min-width: 0; }
 .hero-juegos { margin-top: 4px; max-width: 100%; }
 .gcard.rcard { background: linear-gradient(170deg, #121a30, #0b101b); border-color: var(--amber-soft); }
@@ -138,6 +143,7 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .gcard .art.a2 { background: radial-gradient(circle at 50% 40%, #5a2a36, #1d0e16); }
 .gcard .art.a3 { background: radial-gradient(circle at 50% 40%, #2f5a45, #0c1d15); }
 .gcard .art.a4 { background: radial-gradient(circle at 50% 40%, #5a4a22, #1d170a); }
+.gcard .art.a5b { background: radial-gradient(circle at 50% 40%, #5a3a22, #1d120a); }
 .gcard .art.a5 { background: radial-gradient(circle at 50% 40%, #3b3e47, #17181d); }
 
 /* Portada con la bandera */
@@ -287,10 +293,11 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       </div>
       <div class="rail-wrap games hero-juegos"><div class="rail" id="track-juegos" role="region" aria-label="Carrusel de juegos: desliza con el dedo o usa las flechas" tabindex="0">
       <article class="shot gcard"><div class="art a1" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-18 50 50)"><rect x="22" y="14" width="56" height="72" rx="8" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><path d="M22 50H78" stroke="#1b1c20" stroke-width="3"/><g fill="#1b1c20"><circle cx="38" cy="30" r="5"/><circle cx="62" cy="30" r="5"/><circle cx="50" cy="30" r="0"/><circle cx="38" cy="70" r="5"/><circle cx="62" cy="70" r="5"/><circle cx="50" cy="70" r="5"/></g></g></svg></div><div class="txt"><b>Dominó</b><small>Dominó venezolano de mesa, en parejas.</small></div><div class="acts"><a class="go" href="domino.html">Jugar</a></div></article>
-      <article class="shot gcard"><div class="art a2" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-14 50 50)"><rect x="22" y="14" width="40" height="58" rx="7" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><text x="42" y="52" font-size="30" font-weight="700" text-anchor="middle" fill="#b3261e" font-family="serif">7</text></g><g transform="rotate(12 50 50)"><rect x="38" y="24" width="40" height="58" rx="7" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><circle cx="58" cy="53" r="12" fill="#d4a62a" stroke="#6b4e0a" stroke-width="3"/></g></svg></div><div class="txt"><b>Caída</b><small>Juego de cartas de la mesa venezolana, con baraja española.</small></div><div class="acts"><a class="go" href="caida.html">Jugar</a></div></article>
-      <article class="shot gcard"><div class="art a3" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-10 50 50)"><rect x="20" y="16" width="40" height="58" rx="7" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><path d="M40 26l5 10h11l-9 7l4 11l-11-7l-11 7l4-11l-9-7h11z" fill="#b3261e"/></g><g transform="rotate(10 50 50)"><rect x="40" y="22" width="40" height="58" rx="7" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><path d="M60 34c8 0 12 6 12 12s-8 14-12 18c-4-4-12-12-12-18s4-12 12-12z" fill="#2f6b45"/></g></svg></div><div class="txt"><b>Ajilei</b><small>Combinaciones de cartas para armar la mejor jugada.</small></div><div class="acts"><a class="go" href="ajilei.html">Jugar</a></div></article>
+      <article class="shot gcard"><div class="art a2" aria-hidden="true"><div class="cartas-par" data-cartas="1:oros,7:copas"></div></div><div class="txt"><b>Caída</b><small>Juego de cartas de la mesa venezolana, con baraja española.</small></div><div class="acts"><a class="go" href="caida.html">Jugar</a></div></article>
+      <article class="shot gcard"><div class="art a3" aria-hidden="true"><div class="cartas-par" data-cartas="11:espadas,12:bastos"></div></div><div class="txt"><b>Ajilei</b><small>Combinaciones de cartas para armar la mejor jugada.</small></div><div class="acts"><a class="go" href="ajilei.html">Jugar</a></div></article>
       <article class="shot gcard"><div class="art a4" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 12l7 6l9-3l4 9l9 3l-1 10l7 7l-5 8l3 9l-9 5l-2 10l-10 0l-6 7l-8-5l-9 3l-5-9l-9-3l1-10l-7-7l5-8l-3-9l9-5l2-10l10 0l6-7z" fill="#d4a62a" stroke="#6b4e0a" stroke-width="3" stroke-linejoin="round" transform="translate(0 0) scale(.96) translate(2 2)"/><circle cx="50" cy="50" r="22" fill="#f1cf62" stroke="#6b4e0a" stroke-width="2.5"/><path d="M38 50h24M50 38v24" stroke="#6b4e0a" stroke-width="3" stroke-linecap="round"/></svg></div><div class="txt"><b>Chapitas</b><small>Béisbol de calle con chapas de botella y bate de escoba.</small></div><div class="acts"><a class="go" href="chapitas.html">Jugar</a></div></article>
       <article class="shot gcard"><div class="art a5" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="24" cy="78" r="15" fill="#17181c"/><circle cx="24" cy="78" r="6" fill="#3b3e47"/><circle cx="76" cy="78" r="15" fill="#17181c"/><circle cx="76" cy="78" r="6" fill="#3b3e47"/><circle cx="50" cy="38" r="24" fill="#f4f1e6" stroke="#2a2a2e" stroke-width="3"/><path d="M50 28l9 6l-3 11h-12l-3-11z" fill="#2a2a2e"/><path d="M50 14v14M59 34l14-4M56 45l9 12M44 45l-9 12M41 34l-14-4" stroke="#2a2a2e" stroke-width="2.5" fill="none"/></svg></div><div class="txt"><b>Fútbol callejero</b><small>Dos contra dos, con arcos de dos cauchos viejos.</small></div><div class="acts"><a class="go" href="futbol.html">Jugar</a></div></article>
+      <article class="shot gcard"><div class="art a5b" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="14" width="72" height="72" rx="8" fill="#fff8e6" stroke="#6b3a12" stroke-width="3"/><g fill="#c23a22" font-family="serif" font-weight="700" font-size="11" text-anchor="middle"><text x="26" y="30">B</text><text x="38" y="30">I</text><text x="50" y="30">N</text><text x="62" y="30">G</text><text x="74" y="30">O</text></g><g fill="#2b2118" font-family="serif" font-weight="700" font-size="10" text-anchor="middle"><text x="26" y="45">7</text><text x="38" y="45">22</text><text x="50" y="45">41</text><text x="62" y="45">52</text><text x="74" y="45">70</text><text x="26" y="59">12</text><text x="38" y="59">19</text><text x="62" y="59">48</text><text x="74" y="59">66</text><text x="26" y="73">3</text><text x="38" y="73">30</text><text x="50" y="73">38</text><text x="62" y="73">58</text></g><circle cx="38" cy="42" r="6.5" fill="none" stroke="#2f9a5e" stroke-width="2.5"/><circle cx="50" cy="56" r="7" fill="#e3a824" stroke="#7a560a" stroke-width="2"/><circle cx="74" cy="70" r="6.5" fill="none" stroke="#2f9a5e" stroke-width="2.5"/></svg></div><div class="txt"><b>Bingo familiar</b><small>Cuatro mesas, una señora con el globo y un solo grito: ¡BINGO!</small></div><div class="acts"><a class="go" href="bingo.html">Jugar</a></div></article>
       </div></div>
       <div class="points"><span>Mensajes cifrados</span><span>Grupos</span><span>Llamadas y videos</span></div>
     </div>
@@ -831,5 +838,13 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 })();
 </script>
 
+<script src="cartas.js"></script>
+<script>
+(function(){ if(!window.Cartas) return;
+  document.querySelectorAll(".cartas-par").forEach(function(el){
+    el.innerHTML = el.getAttribute("data-cartas").split(",").map(function(p){ var a=p.split(":"); return '<span class="cp">'+Cartas.svg(+a[0],a[1])+'</span>'; }).join("");
+  });
+})();
+</script>
 </body>
 </html>
