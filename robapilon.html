@@ -34,7 +34,8 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 .carta { width:54px; flex:none; border:0; background:none; padding:0; border-radius:8px; cursor:default; }
 .carta svg { display:block; width:100%; height:auto; filter:drop-shadow(0 3px 5px rgba(0,0,0,.45)); }
 .carta.sel { transform:translateY(-12px); }
-.carta.btn { cursor:pointer; }
+.carta.clic { cursor:pointer; } .carta { position:relative; }
+.carta .jk { position:absolute; top:-5px; right:-5px; background:var(--amber); color:#1a1205; font-size:9px; font-weight:800; padding:1px 5px; border-radius:8px; letter-spacing:.02em; pointer-events:none; }
 .carta.obj svg { filter:drop-shadow(0 0 7px #f4b54a) drop-shadow(0 0 3px #f4b54a); }
 .carta.obj { outline:2px solid var(--amber); outline-offset:2px; }
 .manito { display:flex; justify-content:center; gap:3px; margin-top:4px; }
@@ -54,34 +55,35 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 <body>
 <div class="app">
   <header>
-    <div><h1>Robapilón</h1><p class="sub">Junta cartas y róbale el pilón a los demás. Tú contra Doña Carmen y Don Pedro.</p></div>
+    <div><h1>Robapilón</h1><p class="sub">Junta cartas y róbale la casita a los demás. Tú contra Doña Carmen y Don Pedro.</p></div>
     <button class="rulesbtn" id="rulesBtn" aria-expanded="false" aria-controls="rules">Reglas</button>
   </header>
 
   <section class="panel" id="rules" hidden>
     <h2>Cómo se juega</h2>
     <ul>
-      <li>Se juega con la baraja española de 40 cartas. Cada jugador recibe 3 cartas y se ponen 4 boca arriba en el centro (el pozo).</li>
-      <li>En tu turno juegas una carta de tu mano. Si tiene el <b>mismo número</b> que una carta del pozo, te llevas las dos y las pones boca arriba frente a ti: ese es tu <b>pilón</b>.</li>
-      <li>Si tu carta tiene el mismo número que la carta de <b>arriba del pilón de otro jugador</b>, le robas todo el pilón y lo pones sobre el tuyo.</li>
-      <li>También puedes sumar a tu propio pilón si la carta de arriba tiene tu mismo número.</li>
-      <li>Si la carta que escoges no puede capturar nada, tienes que soltarla en el pozo. Si puede capturar, tienes que capturar.</li>
-      <li>Cuando todos se quedan sin cartas, se reparten 3 más a cada uno. El pozo no se vuelve a repartir.</li>
-      <li>Termina cuando se acaba el mazo y las manos. Gana quien tenga <b>más cartas</b> en su pilón (el valor del número no cuenta).</li>
+      <li>Se juega con la <b>baraja española de 40 cartas</b>. Al empezar, <b>4 cartas boca arriba</b> en la mesa y <b>3 cartas</b> para cada jugador. Cuando todos se quedan sin cartas, se reparten otras 3 a cada uno, y así hasta acabar el mazo.</li>
+      <li>En tu turno <b>tiras una carta</b>. Si tiene el <b>mismo número</b> que una carta de la mesa, te llevas esa carta (y las demás iguales) junto con la tuya a tu <b>casita</b>, boca arriba para que todos la vean.</li>
+      <li>También puedes <b>robar la casita de otro jugador</b> si tu carta tiene el mismo número que la que está <b>arriba</b> de su casita: te llevas todas sus cartas. O sumar a tu propia casita si la de arriba es de tu número.</li>
+      <li>Los <b>reyes son comodines</b> (★): sirven como cualquier número para llevarte una carta de la mesa o robar una casita.</li>
+      <li>Si puedes llevarte algo, <b>no estás obligado</b>: puedes tirar la carta a la mesa si es parte de tu estrategia. Pero ojo: <b>si tiras una carta con la que pudiste llevarte algo, otro jugador que se dé cuenta la levanta</b> y hace la jugada para él.</li>
+      <li>Entre llevarte una carta de la mesa o robar una casita, <b>solo puedes escoger una cosa</b>, no las dos.</li>
+      <li>Si no tienes con qué llevarte nada, <b>tienes que tirar una carta</b> a la mesa. <b>No se puede tirar un comodín encima de otro comodín.</b></li>
+      <li>Gana al acabarse las cartas el que tenga la <b>casita más grande</b>: cuentan las cartas, no el número que vale cada una.</li>
     </ul>
   </section>
 
   <div class="mesa">
     <div class="rivales" id="rivales"></div>
-    <div class="centro"><small>El pozo</small><div class="fila" id="pozo"></div></div>
+    <div class="centro"><small>La mesa</small><div class="fila" id="pozo"></div></div>
     <div class="tuyo">
-      <div class="mio" id="mio"><div><b>Tu pilón</b><div class="pila" id="miPila"></div></div></div>
+      <div class="mio" id="mio"><div><b>Tu casita</b><div class="pila" id="miPila"></div></div></div>
       <small style="margin-top:10px">Tu mano · mazo: <span id="mazoN">0</span></small><div class="fila" id="mano"></div>
     </div>
   </div>
 
   <div class="msg" id="msg"></div>
-  <div class="acc"><button class="btn" id="bSoltar" disabled>Soltar al pozo</button></div>
+  <div class="acc"><button class="btn" id="bSoltar" disabled>Tirar a la mesa</button></div>
   <div class="panel res" id="res" hidden></div>
   <div class="acc"><button class="btn alt" id="bNueva" hidden>Jugar otra vez</button></div>
 </div>
@@ -90,9 +92,12 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 (function () {
   "use strict";
   var $ = function (i) { return document.getElementById(i); };
+  var FAST = !!window.__fast;
+  var COMODIN = 12;   /* los reyes son comodines */
   var NOMBRES = ["Tú", "Doña Carmen", "Don Pedro"];
-  var jug, pozo, mazo, turno, sel, ocupado, fin;
+  var jug, pozo, mazo, turno, sel, ocupado, fin, ventana = null, tok = 0;
 
+  function esp(ms) { return new Promise(function (r) { setTimeout(r, FAST ? 4 : ms); }); }
   function baraja() {
     var m = [];
     Cartas.suits.forEach(function (s) { Cartas.ranks.forEach(function (r) { m.push({ r: r, s: s }); }); });
@@ -101,11 +106,15 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
   }
   function msg(t) { $("msg").textContent = t; }
   function tope(p) { return p.pila.length ? p.pila[p.pila.length - 1] : null; }
-  function nom(c) { return Cartas.nombre(c.r) + " de " + c.s; }
+  function nom(c) { var n = c.r === 10 ? "la sota" : (c.r === 11 ? "el caballo" : (c.r === 12 ? "el rey" : (c.r === 1 ? "el as" : "el " + c.r))); return n + " de " + c.s; }
+  function esCom(c) { return c.r === COMODIN; }
+  function coincide(c, x) { return esCom(c) || x.r === c.r; }
+  function hayComEnMesa() { return pozo.some(esCom); }
 
   function empezar() {
+    tok++;
     jug = NOMBRES.map(function (n) { return { nombre: n, mano: [], pila: [] }; });
-    mazo = baraja(); pozo = [];
+    mazo = baraja(); pozo = []; ventana = null;
     for (var i = 0; i < 4; i++) pozo.push(mazo.pop());
     sel = -1; fin = false; ocupado = false; turno = Math.floor(Math.random() * 3);
     $("res").hidden = true; $("bNueva").hidden = true;
@@ -118,25 +127,27 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
   }
   function carta(c, cls, fn) {
     var b = document.createElement("button");
-    b.type = "button"; b.className = "carta " + (cls || ""); b.innerHTML = Cartas.svg(c.r, c.s);
-    b.setAttribute("aria-label", nom(c));
-    if (fn) { b.classList.add("btn"); b.addEventListener("click", fn); } else b.tabIndex = -1;
+    b.type = "button"; b.className = "carta " + (cls || ""); b.innerHTML = Cartas.svg(c.r, c.s) + (esCom(c) ? '<span class="jk">★ comodín</span>' : "");
+    b.setAttribute("aria-label", nom(c) + (esCom(c) ? " (comodín)" : ""));
+    if (fn) { b.classList.add("clic"); b.addEventListener("click", fn); } else b.tabIndex = -1;
     return b;
   }
-  /* objetivos posibles para la carta seleccionada */
-  function objetivos() {
+  /* lo que puede llevarse una carta: cartas de la mesa y casitas de otros jugadores (o la propia) */
+  function objetivosDe(c, excluidaMesa) {
     var o = { pozo: [], pilas: [] };
-    if (sel < 0) return o;
-    var c = jug[0].mano[sel];
-    pozo.forEach(function (x, i) { if (x.r === c.r) o.pozo.push(i); });
-    jug.forEach(function (p, i) { var t = tope(p); if (t && t.r === c.r) o.pilas.push(i); });
+    pozo.forEach(function (x, i) { if (x !== excluidaMesa && coincide(c, x)) o.pozo.push(i); });
+    jug.forEach(function (p, i) { var t = tope(p); if (t && coincide(c, t)) o.pilas.push(i); });
     return o;
+  }
+  function objetivos() {
+    if (sel < 0) return { pozo: [], pilas: [] };
+    return objetivosDe(jug[0].mano[sel], null);
   }
   function pilaEl(p, idx, esObj) {
     var d = document.createElement("div"); d.className = "pila";
     var t = tope(p);
     if (t) d.appendChild(carta(t, esObj ? "obj" : "", esObj ? function () { capturarPila(0, sel, idx); } : null));
-    else { var v = document.createElement("div"); v.className = "vacia"; v.textContent = "vacío"; d.appendChild(v); }
+    else { var v = document.createElement("div"); v.className = "vacia"; v.textContent = "vacía"; d.appendChild(v); }
     var s = document.createElement("small"); s.textContent = p.pila.length + (p.pila.length === 1 ? " carta" : " cartas"); d.appendChild(s);
     return d;
   }
@@ -152,30 +163,37 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
       rv.appendChild(d);
     }
     var pz = $("pozo"); pz.innerHTML = "";
-    pozo.forEach(function (c, i) { var esO = mi && ob.pozo.indexOf(i) >= 0; pz.appendChild(carta(c, esO ? "obj" : "", esO ? function () { capturarPozo(0, sel, i); } : null)); });
+    pozo.forEach(function (c, i) {
+      var esO = mi && ob.pozo.indexOf(i) >= 0;
+      var levanta = ventana && ventana.carta === c && ventana.parausuario;
+      pz.appendChild(carta(c, (esO || levanta) ? "obj" : "", esO ? function () { capturarPozo(0, sel, i); } : (levanta ? function () { levantar(0); } : null)));
+    });
     var mp = $("miPila"); mp.innerHTML = ""; mp.appendChild(pilaEl(jug[0], 0, mi && ob.pilas.indexOf(0) >= 0));
     $("mio").classList.toggle("turno", turno === 0 && !fin);
     var ma = $("mano"); ma.innerHTML = "";
     jug[0].mano.forEach(function (c, i) { ma.appendChild(carta(c, i === sel ? "sel" : "", mi ? function () { sel = (sel === i ? -1 : i); mensajeSel(); dibujar(); } : null)); });
     $("mazoN").textContent = mazo.length;
-    var sinObj = sel >= 0 && !ob.pozo.length && !ob.pilas.length;
-    $("bSoltar").disabled = !(mi && sinObj);
+    $("bSoltar").disabled = !(mi && sel >= 0 && puedeTirar(jug[0].mano[sel]));
   }
+  function puedeTirar(c) { return !(esCom(c) && hayComEnMesa()); }
   function mensajeSel() {
     if (sel < 0) { msg("Tu turno: escoge una carta de tu mano."); return; }
-    var o = objetivos();
-    if (o.pozo.length || o.pilas.length) msg("Toca la carta iluminada que quieres capturar.");
-    else msg("Esa carta no captura nada: suéltala al pozo.");
+    var c = jug[0].mano[sel], o = objetivos();
+    if (!puedeTirar(c)) { msg("No se puede tirar un comodín encima de otro: tienes que llevarte algo."); return; }
+    if (o.pozo.length || o.pilas.length) msg("Toca la carta iluminada que quieres llevarte (la mesa o una casita), o tírala a la mesa.");
+    else msg("Esa carta no se lleva nada: tírala a la mesa.");
   }
   function capturarPozo(i, h, z) {
-    var p = jug[i], c = p.mano.splice(h, 1)[0], x = pozo.splice(z, 1)[0];
-    p.pila.push(x, c);
-    msg((i === 0 ? "Capturaste el " : p.nombre + " capturó el ") + nom(x) + ".");
+    var p = jug[i], c = p.mano.splice(h, 1)[0], x = pozo[z], n = x.r;
+    var llevadas = pozo.filter(function (q) { return q.r === n; });
+    pozo = pozo.filter(function (q) { return q.r !== n; });
+    p.pila.push.apply(p.pila, llevadas); p.pila.push(c);
+    msg((i === 0 ? "Te llevaste " : p.nombre + " se llevó ") + (llevadas.length > 1 ? llevadas.length + " cartas" : nom(x)) + (esCom(c) ? " con un comodín." : "."));
     sel = -1; fin_turno();
   }
   function capturarPila(i, h, de) {
     var p = jug[i], c = p.mano.splice(h, 1)[0];
-    if (de === i) { p.pila.push(c); msg((i === 0 ? "Sumaste" : p.nombre + " sumó") + " una carta a su pilón."); }
+    if (de === i) { p.pila.push(c); msg((i === 0 ? "Sumaste" : p.nombre + " sumó") + " una carta a su casita."); }
     else {
       var rob = jug[de].pila; jug[de].pila = [];
       p.pila = rob.concat(p.pila, [c]);
@@ -183,13 +201,52 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
     }
     sel = -1; fin_turno();
   }
-  function soltar(i, h) {
-    var p = jug[i], c = p.mano.splice(h, 1)[0];
-    pozo.push(c);
-    msg((i === 0 ? "Soltaste el " : p.nombre + " soltó el ") + nom(c) + " al pozo.");
-    sel = -1; fin_turno();
+  /* tirar una carta a la mesa; si pudo llevarse algo, los demás pueden levantarla */
+  async function soltar(i, h) {
+    var p = jug[i], c = p.mano[h];
+    var ob = objetivosDe(c, null);
+    var pudo = ob.pozo.length > 0 || ob.pilas.length > 0;
+    p.mano.splice(h, 1); pozo.push(c);
+    msg((i === 0 ? "Tiraste " : p.nombre + " tiró ") + nom(c) + " a la mesa.");
+    sel = -1;
+    if (!pudo) { fin_turno(); return; }
+    var mi = tok; ocupado = true;
+    ventana = { carta: c, por: i, parausuario: i !== 0 };
+    if (i !== 0) { msg(p.nombre + " tiró " + nom(c) + " y pudo llevarse algo. ¡Toca esa carta para levantarla antes que siga el juego!"); dibujar(); await esp(3400); if (mi !== tok) return; }
+    else {
+      dibujar(); await esp(900); if (mi !== tok) return;
+      var otros = [1, 2].sort(function () { return Math.random() - 0.5; });
+      for (var k = 0; k < otros.length; k++) {
+        if (Math.random() < 0.55) { levantar(otros[k]); return; }
+      }
+    }
+    if (ventana && ventana.carta === c) { ventana = null; fin_turno(); }
+  }
+  /* alguien levanta la carta tirada y hace la jugada que el otro dejó pasar */
+  function levantar(j) {
+    if (!ventana) return;
+    var c = ventana.carta; ventana = null; tok++;
+    var ob = objetivosDe(c, c);
+    var mejorPila = -1, nP = 0;
+    ob.pilas.forEach(function (d) { if (d !== j && jug[d].pila.length > nP) { nP = jug[d].pila.length; mejorPila = d; } });
+    var idx = pozo.indexOf(c); if (idx >= 0) pozo.splice(idx, 1);
+    var p = jug[j], quien = j === 0 ? "Tú levantaste" : p.nombre + " levantó";
+    var nMesa = 0, n = null;
+    ob.pozo.forEach(function (z) { var x = pozo[z]; if (x && (n === null)) n = x.r; });
+    var enMesa = n === null ? [] : pozo.filter(function (q) { return q.r === n || (esCom(c) && q === pozo[ob.pozo[0]]); });
+    if (mejorPila >= 0 && nP >= enMesa.length) {
+      var rob = jug[mejorPila].pila; jug[mejorPila].pila = [];
+      p.pila = rob.concat(p.pila, [c]);
+      msg("¡" + quien + " la carta y le robó " + rob.length + " cartas a " + (mejorPila === 0 ? "ti" : jug[mejorPila].nombre) + "!");
+    } else if (enMesa.length) {
+      pozo = pozo.filter(function (q) { return enMesa.indexOf(q) < 0; });
+      p.pila.push.apply(p.pila, enMesa); p.pila.push(c);
+      msg("¡" + quien + " la carta y se llevó " + enMesa.length + (enMesa.length === 1 ? " carta" : " cartas") + " de la mesa!");
+    } else { p.pila.push(c); msg(quien + " la carta."); }
+    fin_turno();
   }
   function fin_turno() {
+    ocupado = false; ventana = null;
     dibujar();
     if (jug.every(function (p) { return !p.mano.length; })) {
       if (mazo.length) { repartir(); msg($("msg").textContent + " Se reparten 3 cartas más."); }
@@ -200,29 +257,43 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
   }
   function siguiente() {
     if (fin) return;
-    if (turno === 0) { ocupado = false; if (sel < 0) msg($("msg").textContent && /captur|sum|solt|rob|reparten|Empie/.test($("msg").textContent) ? $("msg").textContent + " · Tu turno." : "Tu turno: escoge una carta de tu mano."); dibujar(); return; }
-    ocupado = true; dibujar(); setTimeout(botJuega, 1200);
+    if (turno === 0) { ocupado = false; if (sel < 0) msg(($("msg").textContent && /llev|sum|tir|rob|reparten|Empie|levant/.test($("msg").textContent) ? $("msg").textContent + " · " : "") + "Tu turno."); dibujar(); return; }
+    ocupado = true; dibujar(); var mi = tok; setTimeout(function () { if (mi === tok) botJuega(); }, FAST ? 4 : 1200);
   }
   function botJuega() {
     if (fin) return;
     var p = jug[turno], i = turno, mejor = null;
     p.mano.forEach(function (c, h) {
+      var pen = esCom(c) ? 25 : 0;
       jug.forEach(function (q, d) {
         var t = tope(q);
-        if (t && t.r === c.r) { var v = d === i ? 3 : 100 + q.pila.length; if (!mejor || v > mejor.v) mejor = { v: v, h: h, pila: d }; }
+        if (t && coincide(c, t)) { var v = (d === i ? 3 : 100 + q.pila.length) - pen; if (!mejor || v > mejor.v) mejor = { v: v, h: h, pila: d }; }
       });
-      pozo.forEach(function (x, z) { if (x.r === c.r) { var v = 10; if (!mejor || v > mejor.v) mejor = { v: v, h: h, pozo: z }; } });
+      pozo.forEach(function (x, z) {
+        if (coincide(c, x)) {
+          var cuantas = pozo.filter(function (q) { return q.r === x.r; }).length;
+          var v = 10 * cuantas - pen; if (!mejor || v > mejor.v) mejor = { v: v, h: h, pozo: z };
+        }
+      });
     });
-    if (mejor) {
+    /* de vez en cuando se le pasa una jugada (así tú puedes levantarla) */
+    var descuido = mejor && mejor.v < 40 && Math.random() < 0.12;
+    var libres = [];
+    p.mano.forEach(function (c, k) { if (puedeTirar(c)) libres.push(k); });
+    if (mejor && !(descuido && libres.length)) {
       if (mejor.pozo !== undefined) capturarPozo(i, mejor.h, mejor.pozo); else capturarPila(i, mejor.h, mejor.pila);
       return;
     }
-    // soltar la carta que menos deje robar
+    if (!libres.length) { /* solo comodines y ya hay uno en la mesa: tiene que llevárselo */
+      var z = pozo.findIndex(esCom); capturarPozo(i, 0, z); return;
+    }
     var tops = jug.filter(function (q, d) { return d !== i; }).map(tope).filter(Boolean);
-    var h = 0, peor = 99;
-    p.mano.forEach(function (c, k) {
+    var h = libres[0], peor = 99;
+    libres.forEach(function (k) {
+      var c = p.mano[k];
       var riesgo = pozo.some(function (x) { return x.r === c.r; }) ? 5 : 0;
       riesgo += tops.some(function (t) { return t.r === c.r; }) ? 8 : 0;
+      riesgo += esCom(c) ? 6 : 0;
       riesgo += Math.random();
       if (riesgo < peor) { peor = riesgo; h = k; }
     });
@@ -238,9 +309,10 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
     msg(ganan.length > 1 ? "Empate entre " + ganan.map(function (p) { return p.nombre; }).join(" y ") + "." : (ganan[0].nombre === "Tú" ? "🎉 ¡Ganaste, chamo!" : "Ganó " + ganan[0].nombre + "."));
     $("bNueva").hidden = false; $("bSoltar").disabled = true;
   }
-  $("bSoltar").addEventListener("click", function () { if (turno === 0 && !fin && !ocupado && sel >= 0) soltar(0, sel); });
+  $("bSoltar").addEventListener("click", function () { if (turno === 0 && !fin && !ocupado && sel >= 0 && puedeTirar(jug[0].mano[sel])) soltar(0, sel); });
   $("bNueva").addEventListener("click", empezar);
   $("rulesBtn").addEventListener("click", function () { var r = $("rules"), a = r.hidden; r.hidden = !a; this.setAttribute("aria-expanded", String(a)); });
+  if (window.__fast) window.__rp = { jug: function () { return jug; }, pozo: function () { return pozo; }, mazo: function () { return mazo.length; }, fin: function () { return fin; } };
   empezar();
 })();
 </script>
