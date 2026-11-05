@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Reglas, cantos y puntos de los juegos de Chamos: Caída y Dominó.">
+<meta name="description" content="Reglas, cantos y puntos de los juegos de Chamos: Caída, Dominó, Ajilei, Chapitas y Fútbol callejero.">
 <title>Reglas Chamos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,8 +48,9 @@ button { font: inherit; color: inherit; }
 h1 { font-family: var(--font-serif); font-size: 32px; line-height: 1.1; margin: 0; font-weight: 700; text-wrap: balance; }
 .sub { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
 
-.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
-.tabs button { background: none; border: 0; border-radius: 8px; padding: 10px 8px; font-weight: 800; color: var(--muted); cursor: pointer; }
+.tabs { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px; position: sticky; top: 8px; z-index: 5; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { flex: 1 0 auto; min-width: 84px; scroll-snap-align: center; background: none; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 800; color: var(--muted); cursor: pointer; }
 .tabs button:hover { color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--amber); color: #1a1205; }
 
@@ -90,7 +91,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <div class="app">
   <div class="top">
     <a href="index.html">← Volver a Chamos</a>
-    <span><a href="caida.html">Caída</a> · <a href="domino.html">Dominó</a> · <a href="ajilei.html">Ajilei</a> · <a href="chapitas.html">Chapitas</a></span>
+    <span><a href="caida.html">Caída</a> · <a href="domino.html">Dominó</a> · <a href="ajilei.html">Ajilei</a> · <a href="chapitas.html">Chapitas</a> · <a href="futbol.html">Fútbol</a></span>
   </div>
 
   <header>
@@ -103,6 +104,7 @@ td small { display: block; color: var(--muted); font-size: 12px; }
     <button role="tab" id="tab-domino" aria-controls="p-domino" aria-selected="false" tabindex="-1">Dominó</button>
     <button role="tab" id="tab-ajilei" aria-controls="p-ajilei" aria-selected="false" tabindex="-1">Ajilei</button>
     <button role="tab" id="tab-chapitas" aria-controls="p-chapitas" aria-selected="false" tabindex="-1">Chapitas</button>
+    <button role="tab" id="tab-futbol" aria-controls="p-futbol" aria-selected="false" tabindex="-1">Fútbol</button>
   </div>
 
   <!-- ============ CAÍDA ============ -->
@@ -431,6 +433,61 @@ td small { display: block; color: var(--muted); font-size: 12px; }
       <div class="play" style="margin-top:12px"><a class="btn" href="chapitas.html">Jugar chapitas</a></div>
     </section>
   </div>
+
+  <!-- ============ FÚTBOL CALLEJERO ============ -->
+  <div class="sheet" id="p-futbol" role="tabpanel" aria-labelledby="tab-futbol" hidden>
+
+    <section class="box">
+      <h2>Lo básico</h2>
+      <ul>
+        <li>Es el fútbol de la calle: <b>pocos jugadores, poco espacio y cero árbitros</b>. Se juega en la cuadra, entre las aceras, con una pelota de goma o de trapo y descalzos o con chola.</li>
+        <li>Se juega por equipos, <b>dos contra dos</b> en nuestra sala. No hay portero fijo: todos defienden y atacan.</li>
+        <li>Las aceras hacen de paredes: la pelota <b>rebota en el borde</b> y sigue en juego.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>El arco de cauchos</h2>
+      <p>Cada arco son <b>dos cauchos viejos</b> puestos en el piso, uno a cada lado, y el hueco entre ellos es la portería. No hay travesaño: <b>si la pelota pasa por el medio de los cauchos, es gol</b>.</p>
+      <ul>
+        <li>Si la pelota <b>pega en un caucho, rebota</b> y el juego sigue.</li>
+        <li>Si pasa por fuera de los cauchos, no es gol: rebota en la línea del arco.</li>
+        <li>Los jugadores no pueden atravesar los cauchos, hay que rodearlos.</li>
+      </ul>
+    </section>
+
+    <section class="box">
+      <h2>Las jugadas</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Jugada</th><th>Qué es</th></tr></thead>
+        <tbody>
+          <tr><td class="nm">Gol</td><td>La pelota pasa por el hueco entre los dos cauchos. Suma <b>un gol</b> al equipo que atacaba ese arco.</td></tr>
+          <tr><td class="nm">Saque</td><td>Después de un gol, la pelota va al centro y <b>saca el equipo que lo recibió</b>.</td></tr>
+          <tr><td class="nm">Rebote</td><td>La pelota rebota en las aceras y en los cauchos, y el juego no se detiene.</td></tr>
+          <tr><td class="nm">Pelota pegada</td><td>Si corres con ella, la llevas <b>pegada al pie</b> y la puedes soltar con un pase o un tiro.</td></tr>
+          <tr><td class="nm">Tiro</td><td>Si miras más o menos hacia el arco, la pelota sale directo hacia el hueco de los cauchos.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="box">
+      <h2>Palabras del juego</h2>
+      <p>pelota, caucho, arco, gol, golazo, tiro, pase, rebote, cuadra, acera, dribleo, quiebre, la mancha, y <b>¡ese es mío!</b></p>
+    </section>
+
+    <section class="box">
+      <h2>En nuestra sala</h2>
+      <p>Tú juegas con <b>Maní</b> (azul) contra <b>Tostón</b> (amarillo). Tu compañero juega solo y lo maneja la computadora.</p>
+      <ul>
+        <li><b>Moverte:</b> arrastra el dedo sobre la cancha, o usa las flechas o WASD. Siempre manejas al jugador más cercano a la pelota (lo marca un aro naranja).</li>
+        <li><b>Patear:</b> toca la cancha, toca el botón <b>¡Patear!</b> o usa la barra espaciadora. Patea hacia donde miras.</li>
+        <li><b>Meta:</b> gana el primero en llegar a <b>3, 5 o 7 goles</b>, como elijas antes de empezar.</li>
+        <li><b>Nivel:</b> Fácil, Normal o Difícil cambia lo rápido que corre y lo bien que apunta Tostón.</li>
+        <li>Tu equipo ataca el <b>arco de arriba</b> y defiende el de abajo.</li>
+      </ul>
+      <div class="play" style="margin-top:12px"><a class="btn" href="futbol.html">Jugar fútbol callejero</a></div>
+    </section>
+  </div>
 </div>
 
 <script src="cartas.js"></script>
@@ -450,10 +507,11 @@ td small { display: block; color: var(--muted); font-size: 12px; }
 <script>
 (function () {
   "use strict";
-  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino"), document.getElementById("tab-ajilei"), document.getElementById("tab-chapitas")];
-  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino"), document.getElementById("p-ajilei"), document.getElementById("p-chapitas")];
-  var keys = ["caida", "domino", "ajilei", "chapitas"];
+  var tabs = [document.getElementById("tab-caida"), document.getElementById("tab-domino"), document.getElementById("tab-ajilei"), document.getElementById("tab-chapitas"), document.getElementById("tab-futbol")];
+  var panels = [document.getElementById("p-caida"), document.getElementById("p-domino"), document.getElementById("p-ajilei"), document.getElementById("p-chapitas"), document.getElementById("p-futbol")];
+  var keys = ["caida", "domino", "ajilei", "chapitas", "futbol"];
 
+  var cur = 0, N = tabs.length;
   function show(i, focus) {
     tabs.forEach(function (t, j) {
       t.setAttribute("aria-selected", j === i ? "true" : "false");
@@ -461,15 +519,30 @@ td small { display: block; color: var(--muted); font-size: 12px; }
       panels[j].hidden = j !== i;
     });
     if (focus) tabs[i].focus();
+    try { tabs[i].scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); } catch (e) {}
+    cur = i;
     try { history.replaceState(null, "", "#" + keys[i]); } catch (e) {}
   }
   tabs.forEach(function (t, i) {
     t.addEventListener("click", function () { show(i, false); window.scrollTo(0, 0); });
     t.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") { e.preventDefault(); show((i + 1) % 4, true); }
-      else if (e.key === "ArrowLeft") { e.preventDefault(); show((i + 3) % 4, true); }
+      if (e.key === "ArrowRight") { e.preventDefault(); show((i + 1) % N, true); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); show((i + N - 1) % N, true); }
     });
   });
+  /* deslizar con el dedo a la izquierda o a la derecha cambia de juego, como un carrusel */
+  var sx = 0, sy = 0, st = 0, okSwipe = false;
+  document.addEventListener("touchstart", function (e) {
+    var t = e.touches[0]; sx = t.clientX; sy = t.clientY; st = Date.now();
+    okSwipe = e.touches.length === 1 && !e.target.closest(".tw, .strip, .tabs, input, select, textarea");
+  }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (!okSwipe) return; var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6 && Date.now() - st < 700) {
+      var n = dx < 0 ? cur + 1 : cur - 1;
+      if (n >= 0 && n < N) { show(n, false); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    }
+  }, { passive: true });
   var h = (location.hash || "").replace("#", "");
   var hi = keys.indexOf(h);
   if (hi > 0) show(hi, false);

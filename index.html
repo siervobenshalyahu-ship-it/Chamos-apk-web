@@ -113,6 +113,25 @@ section { padding-block: clamp(60px, 9vw, 104px); }
 .arrow.next { right: max(8px, env(safe-area-inset-right, 0px)); }
 .arrow[disabled] { opacity: .25; cursor: default; }
 
+
+/* Carrusel de juegos: cada tarjeta lleva a jugar y a las reglas */
+.gcard { aspect-ratio: auto; width: min(78vw, 290px); display: flex; flex-direction: column; background: var(--panel); }
+.gcard .art { height: 128px; display: grid; place-items: center; border-bottom: 1px solid var(--line); }
+.gcard .art svg { width: 100px; height: 100px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.45)); }
+.gcard .txt { padding: 14px 16px 6px; display: grid; gap: 4px; flex: 1; }
+.gcard .txt b { font-family: var(--font-serif); font-weight: 400; font-size: 22px; line-height: 1.15; }
+.gcard .txt small { color: var(--muted); font-size: 13.5px; line-height: 1.4; }
+.gcard .acts { display: flex; gap: 8px; padding: 10px 16px 16px; }
+.gcard .acts a { flex: 1; text-align: center; padding: 10px 8px; font-size: 14px; border-radius: 6px; text-decoration: none; font-weight: 800; border: 1px solid var(--amber); color: var(--amber); }
+.gcard .acts a.go { background: var(--amber); color: #1a1205; }
+.gcard .acts a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.rail-wrap.games .arrow { top: 76px; }
+.gcard .art.a1 { background: radial-gradient(circle at 50% 40%, #243d6e, #0e1830); }
+.gcard .art.a2 { background: radial-gradient(circle at 50% 40%, #5a2a36, #1d0e16); }
+.gcard .art.a3 { background: radial-gradient(circle at 50% 40%, #2f5a45, #0c1d15); }
+.gcard .art.a4 { background: radial-gradient(circle at 50% 40%, #5a4a22, #1d170a); }
+.gcard .art.a5 { background: radial-gradient(circle at 50% 40%, #3b3e47, #17181d); }
+
 /* Portada con la bandera */
 .cover { position: relative; height: clamp(300px, 50vw, 460px); overflow: hidden; background: #0a1020; }
 .cover svg.flagsvg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -261,6 +280,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         <a class="btn" href="caida.html">Jugar caída</a>
         <a class="btn" href="ajilei.html">Jugar ajilei</a>
         <a class="btn" href="chapitas.html">Jugar chapitas</a>
+        <a class="btn" href="futbol.html">Jugar fútbol callejero</a>
         <a class="btn" href="reglas.html">Reglas de los juegos</a>
       </div>
       <div class="points"><span>Mensajes cifrados</span><span>Grupos</span><span>Llamadas y videos</span></div>
@@ -288,7 +308,14 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <p>De la ere y el escondite al dominó de la esquina. Chamos guarda la memoria de cómo jugamos. <a href="reglas.html">Mira las reglas, los cantos y los puntos.</a></p>
     </div>
   </div>
-  <div class="rail-wrap"><div class="rail" id="track2" role="region" aria-label="Galería de juegos tradicionales venezolanos (desliza o usa las flechas)" tabindex="0"></div></div>
+  <div class="rail-wrap games"><div class="rail" id="track-juegos" role="region" aria-label="Carrusel de juegos para jugar: desliza con el dedo o usa las flechas" tabindex="0">
+      <article class="shot gcard"><div class="art a1" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-18 50 50)"><rect x="22" y="14" width="56" height="72" rx="8" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><path d="M22 50H78" stroke="#1b1c20" stroke-width="3"/><g fill="#1b1c20"><circle cx="38" cy="30" r="5"/><circle cx="62" cy="30" r="5"/><circle cx="50" cy="30" r="0"/><circle cx="38" cy="70" r="5"/><circle cx="62" cy="70" r="5"/><circle cx="50" cy="70" r="5"/></g></g></svg></div><div class="txt"><b>Dominó</b><small>Dominó venezolano de mesa, en parejas.</small></div><div class="acts"><a class="go" href="domino.html">Jugar</a><a href="reglas.html#domino">Reglas</a></div></article>
+      <article class="shot gcard"><div class="art a2" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-14 50 50)"><rect x="24" y="12" width="46" height="70" rx="6" fill="#f4f1e6" stroke="#2b1d12" stroke-width="2.5"/><circle cx="47" cy="47" r="15" fill="#e8b93a" stroke="#6b4e0a" stroke-width="2"/><text x="47" y="53" text-anchor="middle" font-size="16" font-weight="900" fill="#6b4e0a" font-family="serif">7</text></g><g transform="rotate(12 60 56)"><rect x="42" y="22" width="46" height="70" rx="6" fill="#f4f1e6" stroke="#2b1d12" stroke-width="2.5"/><path d="M65 40c-8 8-10 20 0 32c10-12 8-24 0-32z" fill="#c8202f"/></g></svg></div><div class="txt"><b>Caída</b><small>El juego de cartas venezolano, con sus cantos y puntos.</small></div><div class="acts"><a class="go" href="caida.html">Jugar</a><a href="reglas.html#caida">Reglas</a></div></article>
+      <article class="shot gcard"><div class="art a3" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-10 50 50)"><rect x="18" y="16" width="44" height="66" rx="6" fill="#f4f1e6" stroke="#2b1d12" stroke-width="2.5"/><path d="M40 34l7 14l15 2l-11 11l3 15l-14-8l-14 8l3-15l-11-11l15-2z" fill="#1d3f9e"/></g><g transform="rotate(14 62 54)"><rect x="40" y="22" width="44" height="66" rx="6" fill="#f4f1e6" stroke="#2b1d12" stroke-width="2.5"/><circle cx="62" cy="55" r="14" fill="#c8202f"/><circle cx="62" cy="55" r="6" fill="#f4f1e6"/></g></svg></div><div class="txt"><b>Ajilei</b><small>El juego de cartas venezolano de apuestas.</small></div><div class="acts"><a class="go" href="ajilei.html">Jugar</a><a href="reglas.html#ajilei">Reglas</a></div></article>
+      <article class="shot gcard"><div class="art a4" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M50 12l7 6l9-3l4 9l9 3l-1 10l7 7l-5 8l3 9l-9 5l-2 10l-10 0l-6 7l-8-5l-9 3l-5-9l-9-3l1-10l-7-7l5-8l-3-9l9-5l2-10l10 0l6-7z" fill="#d4a62a" stroke="#6b4e0a" stroke-width="3" stroke-linejoin="round" transform="translate(0 0) scale(.96) translate(2 2)"/><circle cx="50" cy="50" r="22" fill="#f1cf62" stroke="#6b4e0a" stroke-width="2.5"/><path d="M38 50h24M50 38v24" stroke="#6b4e0a" stroke-width="3" stroke-linecap="round"/></svg></div><div class="txt"><b>Chapitas</b><small>Béisbol de calle con chapas de botella y bate de escoba.</small></div><div class="acts"><a class="go" href="chapitas.html">Jugar</a><a href="reglas.html#chapitas">Reglas</a></div></article>
+      <article class="shot gcard"><div class="art a5" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="24" cy="78" r="15" fill="#17181c"/><circle cx="24" cy="78" r="6" fill="#3b3e47"/><circle cx="76" cy="78" r="15" fill="#17181c"/><circle cx="76" cy="78" r="6" fill="#3b3e47"/><circle cx="50" cy="38" r="24" fill="#f4f1e6" stroke="#2a2a2e" stroke-width="3"/><path d="M50 28l9 6l-3 11h-12l-3-11z" fill="#2a2a2e"/><path d="M50 14v14M59 34l14-4M56 45l9 12M44 45l-9 12M41 34l-14-4" stroke="#2a2a2e" stroke-width="2.5" fill="none"/></svg></div><div class="txt"><b>Fútbol callejero</b><small>Dos contra dos, con arcos de dos cauchos viejos.</small></div><div class="acts"><a class="go" href="futbol.html">Jugar</a><a href="reglas.html#futbol">Reglas</a></div></article>
+  </div></div>
+  <div class="rail-wrap" style="margin-top:18px"><div class="rail" id="track2" role="region" aria-label="Galería de juegos tradicionales venezolanos (desliza o usa las flechas)" tabindex="0"></div></div>
 </section>
 
 <section id="mesa" class="alt">
@@ -662,6 +689,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     ["touchstart", "wheel", "focusin", "pointerenter"].forEach(function (ev) { rail.addEventListener(ev, pause, { passive: true }); });
     /* arrastrar con el mouse */
     var down = false, sx = 0, sl = 0, moved = false;
+    rail.addEventListener("click", function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
     rail.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft; pause(); });
     window.addEventListener("pointermove", function (e) { if (!down) return; var dx = e.clientX - sx; if (Math.abs(dx) > 4) { moved = true; rail.classList.add("drag"); } if (moved) rail.scrollLeft = sl - dx; });
     window.addEventListener("pointerup", function () { if (!down) return; down = false; rail.classList.remove("drag"); if (moved) { var st = step(); rail.scrollTo({ left: Math.round(rail.scrollLeft / st) * st, behavior: "smooth" }); } });
@@ -698,6 +726,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     ["Monte Roraima", "Gran Sabana", "roraima.jpg"],
     ["Choroní", "Aragua", "choroni.jpg"]
   ]);
+  setupRail(document.getElementById("track-juegos"));
   gallery("track2", [
     ["La ere", "Juego de calle", "la-ere.jpg"],
     ["Cero contra cero", "Juego de calle", "cero-contra-cero.jpg"],
