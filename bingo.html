@@ -97,6 +97,19 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 .banner { background: linear-gradient(135deg, #7a1d17, #c23a22); border: 2px solid var(--amber); border-radius: 12px; padding: 12px 14px; text-align: center; }
 .banner b { font-family: var(--font-serif); font-size: 28px; display: block; line-height: 1.1; }
 .banner span { font-size: 14px; }
+.pote { background: linear-gradient(135deg, #3a2a06, #6b4e0a); border: 1px solid var(--amber); border-radius: 10px; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; justify-content: space-between; font-size: 13px; }
+.pote b { color: var(--amber); } .pote .pp { font-family: var(--font-serif); font-size: 20px; color: #ffe08a; }
+.pote .mf { display: flex; gap: 10px; width: 100%; font-size: 12px; color: #e8d9ad; flex-wrap: wrap; }
+.pote .mf span.tu { color: #fff; font-weight: 800; }
+.pool { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 8px 0; }
+.pc { background: #fff8e6; border: 3px solid transparent; border-radius: 6px; padding: 3px; cursor: pointer; color: #2b2118; position: relative; }
+.pc.sel { border-color: #2f9a5e; box-shadow: 0 0 0 2px #5fd39a; }
+.pc.sel::after { content: "✓"; position: absolute; top: -7px; right: -5px; background: #2f9a5e; color: #fff; border-radius: 50%; width: 17px; height: 17px; font-size: 11px; display: grid; place-items: center; font-weight: 800; }
+.pc table { width: 100%; border-collapse: separate; border-spacing: 1px; table-layout: fixed; }
+.pc th { font-size: 8px; background: #b3261e; color: #fff; border-radius: 2px; }
+.pc td { font-size: 9px; text-align: center; background: #fff; border-radius: 2px; font-weight: 700; padding: 1px 0; }
+.pc td.l { background: #e3a824; font-size: 6px; }
+.eslog { font-size: 13px; color: #cdd4e3; display: grid; gap: 2px; margin-top: 6px; }
 .marc { display: flex; gap: 8px; justify-content: space-between; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
 .marc b { color: var(--amber); }
 </style>
@@ -119,25 +132,40 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       <li>Cada cartón marca solo el número que salió. Abajo ves los cartones uno por uno, en cola, y los que están cerca de cantar llevan un 🔥.</li>
       <li>Escoge el canto antes de empezar: <b>Línea</b> (fila, columna o diagonal), <b>Cuatro esquinas</b> o <b>Cartón lleno</b>.</li>
       <li>El primer cartón que complete el canto grita ¡BINGO! y toda su mesa se para gritando. Si dos cartones cantan con la misma ficha, ganan los dos.</li>
-      <li>Toca una mesa para apostar por esa familia: si gana, ¡ganó tu mesa!</li>
+      <li>Al empezar la partida <b>toca una mesa para sentarte</b> (tú tomas el lugar de uno de la familia). Antes de cada ronda cada mesa <b>escoge sus 4 cartones</b> entre 8 que le ofrecen: en tu mesa los escoges tú y en las otras mesas los escoge uno de los cuatro de la familia.</li>
+      <li>En cada ronda cada mesa pone <b>100 fichas</b> (empiezan con 1000). De esas 400, el <b>10% (40 fichas) va al pote</b> y el resto se lo lleva la mesa que cante bingo. Si cantan dos mesas a la vez, se reparte.</li>
+      <li>El <b>pote</b> se acumula ronda tras ronda y se lo lleva la mesa que gane la <b>última ronda</b> de la partida.</li>
     </ul>
   </section>
 
   <div class="ctrl">
     <button class="btn" id="go">Empezar</button>
-    <button class="btn alt" id="nuevo">Nueva ronda</button>
+    <button class="btn alt" id="nuevo">Nueva partida</button>
     <label>Canto
       <select id="canto"><option value="linea">Línea</option><option value="esquinas">Cuatro esquinas</option><option value="lleno">Cartón lleno</option></select>
     </label>
     <label>Velocidad
       <select id="vel"><option value="4500">Tranquila</option><option value="2800" selected>Normal</option><option value="1400">Rápida</option></select>
     </label>
+    <label>Rondas
+      <select id="rondas"><option value="3">3 rondas</option><option value="5" selected>5 rondas</option><option value="10">10 rondas</option></select>
+    </label>
     <label>Voz
       <select id="voz"><option value="1" selected>Con voz</option><option value="0">Sin voz</option></select>
     </label>
   </div>
 
-  <div class="marc"><span>Tu mesa: <b id="tuMesa">ninguna (toca una)</b></span><span>Fichas: <b id="cuenta">0</b>/75</span></div>
+  <div class="marc"><span>Tu mesa: <b id="tuMesa">toca una mesa para sentarte</b></span><span>Fichas: <b id="cuenta">0</b>/75</span></div>
+
+  <div class="pote" id="pote"></div>
+
+  <section class="panel" id="escoger" hidden>
+    <h2 id="escTit">Escoge los cartones de la mesa</h2>
+    <p style="margin:0;color:var(--muted);font-size:13px" id="escSub"></p>
+    <div class="pool" id="pool"></div>
+    <div class="ctrl"><button class="btn" id="escOk" disabled>Confirmar 4 cartones</button></div>
+    <div class="eslog" id="escLog" aria-live="polite"></div>
+  </section>
 
   <div class="cancha pausado" id="cancha">
     <svg viewBox="0 0 360 400" id="escena" role="img" aria-label="Cancha con cuatro mesas de familias y una mesa central con el globo del bingo"></svg>
@@ -173,7 +201,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   ];
   var DICHOS = { 1: "el solito", 7: "la suerte", 11: "los palitos", 13: "la mala suerte", 15: "la quinceañera", 22: "los patitos", 33: "la edad de Cristo", 44: "las sillas", 55: "las manitos", 66: "el par de sextas", 69: "ay mijo", 77: "las banderitas", 88: "los gorditos", 90: "el abuelo" };
   var $ = function (id) { return document.getElementById(id); };
-  var cartones = [], bolas = [], bombo = [], timer = null, corriendo = false, terminado = false, mesaElegida = -1, actual = 0, rot = null;
+  var cartones = [], bolas = [], bombo = [], timer = null, corriendo = false, terminado = false, mesaElegida = -1, actual = 0, fase = "sentar", ronda = 0, fichas = [1000, 1000, 1000, 1000], pote = 0, pool = [], seleccion = {}, miembros = [], ANTE = 100, rot = null;
 
   function barajar(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function nuevoCarton() {
@@ -277,9 +305,83 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     }
   }
   function elegir(i) {
+    if (fase !== "sentar") return;
     mesaElegida = i;
+    miembros = FAMILIAS.map(function (F, m) { var g = F.g.slice(); if (m === i) g[0] = "Tú"; return g; });
     for (var k = 0; k < 4; k++) $("mesa" + k).classList.toggle("elegida", k === i);
     $("tuMesa").textContent = FAMILIAS[i].n + " (Mesa " + (i + 1) + ")";
+    iniciarRonda();
+  }
+  function totalRondas() { return +$("rondas").value; }
+  function pintaPote() {
+    var h = '<span>Ronda <b>' + Math.max(1, ronda) + '</b> de <b>' + totalRondas() + '</b></span><span>Pote: <b class="pp">' + pote + '</b> fichas</span><div class="mf">';
+    for (var m = 0; m < 4; m++) h += '<span class="' + (m === mesaElegida ? "tu" : "") + '">Mesa ' + (m + 1) + (m === mesaElegida ? " (tú)" : "") + ': ' + fichas[m] + '</span>';
+    $("pote").innerHTML = h + '</div>';
+  }
+  function minicarton(f) {
+    var h = "<table><tr>" + LET.map(function (l) { return "<th>" + l + "</th>"; }).join("") + "</tr>";
+    for (var r = 0; r < 5; r++) { h += "<tr>"; for (var c = 0; c < 5; c++) h += f[r][c] === 0 ? '<td class="l">LIBRE</td>' : "<td>" + f[r][c] + "</td>"; h += "</tr>"; }
+    return h + "</table>";
+  }
+  function iniciarRonda() {
+    ronda++;
+    fase = "escoger"; terminado = false; parar();
+    if ("speechSynthesis" in window) try { speechSynthesis.cancel(); } catch (e) {}
+    bombo = barajar(Array.apply(null, { length: 75 }).map(function (_, i) { return i + 1; }));
+    bolas = []; actual = 0; cartones = [];
+    for (var i = 0; i < 4; i++) { $("mesa" + i).classList.remove("up"); fichas[i] -= ANTE; }
+    pote += Math.round(ANTE * 4 * 0.1);
+    $("banner").hidden = true; $("hist").innerHTML = ""; $("cuenta").textContent = 0;
+    $("ultima").innerHTML = "<div><small>—</small><b>?</b></div>";
+    $("go").textContent = "Empezar"; $("go").disabled = true; $("canto").disabled = false; $("rondas").disabled = true;
+    pintaPote();
+    pool = []; seleccion = {};
+    for (var m = 0; m < 4; m++) { pool[m] = []; for (var k = 0; k < 8; k++) pool[m].push(nuevoCarton()); }
+    $("escoger").hidden = false;
+    $("escTit").textContent = "Ronda " + ronda + ": escoge los 4 cartones de tu mesa";
+    $("escSub").textContent = "Cada mesa pone " + ANTE + " fichas: " + Math.round(ANTE * 4 * 0.1) + " van al pote y " + (ANTE * 4 - Math.round(ANTE * 4 * 0.1)) + " al ganador. Escoges tú, " + FAMILIAS[mesaElegida].n + ".";
+    $("escLog").innerHTML = "";
+    $("pool").innerHTML = pool[mesaElegida].map(function (f, i) { return '<div class="pc" data-i="' + i + '" role="button" tabindex="0" aria-label="Cartón ' + (i + 1) + '">' + minicarton(f) + "</div>"; }).join("");
+    Array.prototype.forEach.call($("pool").children, function (el) {
+      var al = function () {
+        var i = +el.getAttribute("data-i"), n = Object.keys(seleccion).length;
+        if (seleccion[i]) delete seleccion[i]; else if (n < 4) seleccion[i] = 1;
+        el.classList.toggle("sel", !!seleccion[i]);
+        var q = Object.keys(seleccion).length;
+        $("escOk").disabled = q !== 4; $("escOk").textContent = q === 4 ? "Confirmar 4 cartones" : "Escoge " + (4 - q) + " más";
+      };
+      el.addEventListener("click", al);
+      el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); al(); } });
+    });
+    $("escOk").disabled = true; $("escOk").textContent = "Escoge 4 cartones";
+    $("dicho").textContent = "Escoge los cartones de tu mesa para empezar.";
+    dibujarCarton(); dibujarCola();
+  }
+  function confirmarCartones() {
+    $("escOk").disabled = true;
+    var elegidos = {};
+    elegidos[mesaElegida] = Object.keys(seleccion).map(Number);
+    var orden = [0, 1, 2, 3].filter(function (m) { return m !== mesaElegida; });
+    var log = $("escLog");
+    log.innerHTML = "<div>Mesa " + (mesaElegida + 1) + ": escogiste tus 4 cartones.</div>";
+    orden.forEach(function (m, k) {
+      setTimeout(function () {
+        var idx = barajar([0, 1, 2, 3, 4, 5, 6, 7]).slice(0, 4);
+        elegidos[m] = idx;
+        var quien = miembros[m][Math.floor(Math.random() * 4)];
+        log.innerHTML += "<div>Mesa " + (m + 1) + ": " + quien + " escogió los cartones de la familia.</div>";
+        if (k === orden.length - 1) setTimeout(function () { cerrarEscogencia(elegidos); }, 600);
+      }, 700 * (k + 1));
+    });
+  }
+  function cerrarEscogencia(elegidos) {
+    cartones = [];
+    for (var m = 0; m < 4; m++) elegidos[m].forEach(function (pi, k) { cartones.push({ mesa: m, nombre: miembros[m][k], f: pool[m][pi], sale: {}, gano: false }); });
+    $("escoger").hidden = true; fase = "listo";
+    actual = cartones.findIndex(function (c) { return c.mesa === mesaElegida; });
+    $("go").disabled = false; $("go").textContent = "Empezar";
+    $("dicho").textContent = "Cartones listos. Dale a «Empezar» para que la señora saque la primera ficha.";
+    dibujarCarton(); dibujarCola();
   }
 
   /* ---------- Cartones ---------- */
@@ -290,6 +392,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     });
   }
   function dibujarCarton() {
+    if (!cartones.length) { $("carton").innerHTML = ""; $("cNombre").textContent = "Cartones"; $("cInfo").textContent = "Aún no se han escogido"; return; }
     var cd = cartones[actual], tipo = $("canto").value, fz = faltan(cd, tipo);
     var win = {};
     if (cd.gano && cd.patron) cd.patron.forEach(function (x) { win[x[0] + "," + x[1]] = 1; });
@@ -312,6 +415,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
   function dibujarCola() {
     var tipo = $("canto").value;
+    if (!cartones.length) { $("mini").innerHTML = ""; return; }
     $("mini").innerHTML = cartones.map(function (cd, i) {
       var fz = faltan(cd, tipo), cel = "";
       for (var r = 0; r < 5; r++) for (var c = 0; c < 5; c++) cel += "<s class=\"" + (marcado(cd, r, c) ? "on" : "") + "\"></s>";
@@ -359,7 +463,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     var iv = setInterval(function () { b.setAttribute("ry", k % 2 ? 2 : 4.5); if (++k > 7) { clearInterval(iv); b.setAttribute("ry", 2); } }, 130);
   }
   function sacar() {
-    if (!bombo.length) { parar(); $("dicho").textContent = "Se acabaron las fichas. ¡Nadie cantó! Nueva ronda."; return; }
+    if (!bombo.length) { parar(); terminado = true; pote += ANTE * 4 - Math.round(ANTE * 4 * 0.1); pintaPote(); $("dicho").textContent = "Se acabaron las fichas. ¡Nadie cantó! El premio se va al pote."; finRonda(); return; }
     var n = bombo.pop(); bolas.push(n);
     cartones.forEach(function (cd) { cd.sale[n] = 1; });
     var g = $("bolaSale");
@@ -396,8 +500,23 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     ruidoGrito(); confeti();
     hablar("¡Bingooo!", true);
     setTimeout(function () { hablar("¡Bingo, bingo, bingo!", true); ruidoGrito(); }, 1400);
-    $("go").textContent = "Empezar"; $("go").disabled = true;
+    var gm = Object.keys(mesas).map(Number), premio = ANTE * 4 - Math.round(ANTE * 4 * 0.1), ult = ronda >= totalRondas();
+    var parte = Math.floor(premio / gm.length), txt = " Ganó " + parte + " fichas" + (gm.length > 1 ? " cada mesa" : "") + ".";
+    if (ult) { var pp = Math.floor(pote / gm.length); gm.forEach(function (m) { fichas[m] += pp; }); txt += " ¡Y se llevó el POTE de " + pote + " fichas!"; pote = 0; }
+    gm.forEach(function (m) { fichas[m] += parte; });
+    $("bTxt").textContent += txt;
+    pintaPote(); finRonda();
+  }
+  function finRonda() {
+    var ult = ronda >= totalRondas();
+    $("go").disabled = false;
+    $("go").textContent = ult ? "Nueva partida" : "Siguiente ronda";
     $("canto").disabled = false;
+    if (ult) {
+      var mx = Math.max.apply(null, fichas), g = fichas.map(function (f, m) { return f === mx ? m + 1 : 0; }).filter(Boolean);
+      $("dicho").textContent = "Fin de la partida. Gana la Mesa " + g.join(" y ") + " con " + mx + " fichas.";
+      fase = "fin";
+    } else { fase = "entre"; }
   }
   function confeti() {
     var c = $("confeti"); c.innerHTML = "";
@@ -424,7 +543,10 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     if (!terminado) timer = setInterval(sacar, +$("vel").value);
   }
   function nueva() {
-    parar(); terminado = false;
+    parar(); terminado = false; fase = "sentar"; ronda = 0; fichas = [1000, 1000, 1000, 1000]; pote = 0; mesaElegida = -1; cartones = [];
+    $("escoger").hidden = true; $("rondas").disabled = false; $("tuMesa").textContent = "toca una mesa para sentarte";
+    for (var q = 0; q < 4; q++) $("mesa" + q).classList.remove("elegida");
+    pintaPote();
     if ("speechSynthesis" in window) try { speechSynthesis.cancel(); } catch (e) {}
     bombo = barajar(Array.apply(null, { length: 75 }).map(function (_, i) { return i + 1; }));
     bolas = []; actual = 0;
@@ -432,22 +554,27 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     for (var i = 0; i < 4; i++) $("mesa" + i).classList.remove("up");
     $("banner").hidden = true; $("hist").innerHTML = ""; $("cuenta").textContent = 0;
     $("ultima").innerHTML = "<div><small>—</small><b>?</b></div>";
-    $("dicho").textContent = "Dale a «Empezar» para que la señora saque la primera ficha.";
-    $("go").textContent = "Empezar"; $("go").disabled = false; $("canto").disabled = false;
+    $("dicho").textContent = "Toca una mesa de la cancha para sentarte con esa familia.";
+    $("go").textContent = "Empezar"; $("go").disabled = true; $("canto").disabled = false;
     dibujarCarton(); dibujarCola();
   }
 
   $("go").addEventListener("click", function () {
+    if (fase === "entre") { iniciarRonda(); return; }
+    if (fase === "fin") { nueva(); return; }
+    if (fase !== "listo") return;
     if (corriendo) { parar(); } else { arrancar(); }
   });
   $("nuevo").addEventListener("click", nueva);
+  $("escOk").addEventListener("click", confirmarCartones);
+  $("rondas").addEventListener("change", pintaPote);
   $("canto").addEventListener("change", function () { dibujarCarton(); dibujarCola(); });
   $("vel").addEventListener("change", function () { if (corriendo) { clearInterval(timer); timer = setInterval(sacar, +$("vel").value); } });
   $("rulesBtn").addEventListener("click", function () {
     var r = $("rules"), a = r.hidden; r.hidden = !a; this.setAttribute("aria-expanded", String(a));
   });
   // cola: cada pocos segundos pasa al siguiente cartón mientras corre la partida
-  setInterval(function () { if (corriendo && !terminado) { actual = (actual + 1) % cartones.length; dibujarCarton(); dibujarCola(); } }, 2200);
+  setInterval(function () { if (corriendo && !terminado && cartones.length) { actual = (actual + 1) % cartones.length; dibujarCarton(); dibujarCola(); } }, 2200);
   if ("speechSynthesis" in window) { try { speechSynthesis.getVoices(); } catch (e) {} }
 
   escena(); nueva();
