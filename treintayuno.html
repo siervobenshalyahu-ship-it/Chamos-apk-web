@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="31, el juego de cartas venezolano con baraja española: llega a 31 o acércate sin pasarte. De Chamos.">
+<meta name="description" content="Treinta y uno (31), el juego de cartas con baraja española, de Chamos.">
 <title>31 Chamos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,10 +31,8 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 .manito { display:flex; justify-content:center; gap:3px; margin-top:4px; }
 .carta { width:62px; flex:none; border:0; background:none; padding:0; border-radius:8px; cursor:default; }
 .carta svg { display:block; width:100%; height:auto; filter:drop-shadow(0 3px 5px rgba(0,0,0,.45)); }
-.carta.sel { transform:translateY(-12px); } .carta.clic { cursor:pointer; }
-.carta.clic:hover svg { filter:drop-shadow(0 3px 8px rgba(244,181,74,.8)); }
-.mini { width:30px; flex:none; } .manito { flex-wrap:wrap; row-gap:3px; } .manito > * + * { margin-left:-6px; } .manito .dorso { width:30px; } .mini svg { display:block; width:100%; height:auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
-.pote { color:#f4e3b0; font-size:12px; margin-top:6px; }
+.carta.sel { transform:translateY(-12px); } .carta.btn { cursor:pointer; }
+.carta.btn:hover svg { filter:drop-shadow(0 3px 8px rgba(244,181,74,.8)); }
 .dorso { width:34px; aspect-ratio:100/156; border-radius:5px; background:repeating-linear-gradient(45deg,#7a1d17 0 4px,#a32b22 4px 8px); border:2px solid #fffcf2; }
 .centro { text-align:center; } .centro small { color:#bcd; font-size:11px; display:block; margin-bottom:4px; letter-spacing:.06em; text-transform:uppercase; }
 .fila { display:flex; justify-content:center; gap:8px; }
@@ -52,36 +50,35 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 <body>
 <div class="app">
   <header>
-    <div><h1>31</h1><p class="sub">Llega a 31 o acércate sin pasarte. Tú contra Doña Carmen, Don Pedro y Yoli.</p></div>
+    <div><h1>31</h1><p class="sub">Junta 31 puntos con tres cartas del mismo palo. Tú contra Doña Carmen, Don Pedro y Yoli.</p></div>
     <button class="rulesbtn" id="rulesBtn" aria-expanded="false" aria-controls="rules">Reglas</button>
   </header>
 
   <section class="panel" id="rules" hidden>
     <h2>Cómo se juega</h2>
     <ul>
-      <li>Se juega con la <b>baraja española de 40 cartas</b>. Cada jugador pone una ficha en el <b>pote</b> y recibe <b>tres cartas boca abajo</b> (solo tú ves las tuyas). El que reparte también juega.</li>
-      <li>Luego se pone <b>una carta boca arriba en la mesa</b>. En tu turno la puedes cambiar, como un comodín, por una de las tuyas.</li>
-      <li>Las <b>cartas numéricas</b> valen lo que dicen (el 3 de copas vale 3). La <b>sota, el caballo y el rey valen 10</b>. El <b>as vale 1 u 11</b>, el que más te convenga.</li>
-      <li>En tu turno sumas tus puntos y decides: <b>pedir una carta</b> (llega boca arriba, a la vista de todos) o <b>plantarte</b>.</li>
-      <li>Si al pedir carta <b>te pasas de 31</b>, quedas descalificado de la ronda y tus cartas vuelven al mazo.</li>
-      <li>El que llega <b>exactamente a 31</b> gana la ronda en el acto.</li>
-      <li>Cuando <b>el que reparte se planta</b>, se terminan los turnos y todos enseñan sus cartas. Gana el <b>más cercano a 31</b>, y <b>el que reparte gana a todos los que tengan igual o menos puntos que él</b>.</li>
-      <li>Si empatan dos que no reparten, <b>se reparten el pote</b>. Si todos se pasan, el pote queda para la próxima ronda.</li>
-      <li>Reparte después el jugador que sigue al último que repartió. Empiezas con <b>10 fichas</b>; el que se queda sin fichas sale.</li>
+      <li>Se juega con la baraja española de 40 cartas. Cada jugador recibe 3 cartas y se ponen otras 3 boca arriba en el centro.</li>
+      <li>Tu puntaje es la suma de las cartas de <b>un mismo palo</b> (el mejor palo que tengas). El <b>as vale 11</b>; la sota, el caballo y el rey valen <b>10</b>; las demás valen lo que dicen.</li>
+      <li><b>Tres cartas iguales</b> (por ejemplo tres 5) valen <b>30,5</b>.</li>
+      <li>En tu turno haces una de estas cosas: <b>cambiar una carta</b> de tu mano por una del centro, <b>cambiar las tres</b>, <b>pasar</b> o <b>golpear</b> la mesa.</li>
+      <li>Si alguien consigue <b>31 exacto</b>, enseña su mano y la ronda termina de una vez.</li>
+      <li>Al <b>golpear</b>, avisas que crees tener buen puntaje. Cada uno de los demás juega un último turno y se enseñan todas las manos.</li>
+      <li>El que tenga el <b>puntaje más bajo pierde una vida</b>. Si empatan los más bajos, pierden todos. Si golpeaste y quedaste de último, pierdes <b>dos vidas</b>.</li>
+      <li>Cada quien empieza con <b>3 vidas</b>. El que se queda sin vidas sale, y gana el último que quede.</li>
     </ul>
-    <p class="sub" style="margin-top:8px">Hay variantes: cada grupo juega a su manera.</p>
   </section>
 
   <div class="mesa">
     <div class="rivales" id="rivales"></div>
-    <div class="centro"><small>La mesa: toca una carta tuya y luego esta para cambiarla</small><div class="fila" id="centro"></div><div class="pote" id="pote"></div></div>
+    <div class="centro"><small>El centro: toca una para cambiarla</small><div class="fila" id="centro"></div></div>
     <div class="tuyo"><small>Tu mano · <span class="pts" id="miPts">0</span> puntos</small><div class="fila" id="mano"></div></div>
   </div>
 
   <div class="msg" id="msg"></div>
   <div class="acc">
-    <button class="btn" id="bPedir">Pedir carta</button>
-    <button class="btn alt" id="bPlanto">Me planto</button>
+    <button class="btn" id="bTres">Cambiar las 3</button>
+    <button class="btn alt" id="bPasar">Pasar</button>
+    <button class="btn" id="bGolpe">✊ Golpear</button>
   </div>
   <div class="panel res" id="res" hidden></div>
   <div class="acc"><button class="btn alt" id="bNueva" hidden>Siguiente ronda</button><button class="btn alt" id="bReinicio" hidden>Jugar otra vez</button></div>
@@ -91,12 +88,9 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
 (function () {
   "use strict";
   var $ = function (i) { return document.getElementById(i); };
-  var FAST = !!window.__fast;
   var NOMBRES = ["Tú", "Doña Carmen", "Don Pedro", "Yoli"];
-  var FICHAS0 = 10;
-  var jug = [], mesa = null, mazo = [], pote = 0, dealer = -1, turno = 0, fin = true, sel = -1, usoCambio = false, accion = null, tok = 0;
+  var jug = [], centro = [], mazo = [], turno = 0, golpeo = -1, restantes = 0, fin = false, sel = -1, ocupado = false, dealer = 0;
 
-  function sleep(ms) { return new Promise(function (r) { setTimeout(r, FAST ? 4 : ms); }); }
   function baraja() {
     var m = [];
     Cartas.suits.forEach(function (s) { Cartas.ranks.forEach(function (r) { m.push({ r: r, s: s }); }); });
@@ -104,227 +98,146 @@ h1 { font-family:var(--font-serif); font-size:26px; line-height:1.1; margin:0; f
     return m;
   }
   function valor(c) { return c.r === 1 ? 11 : (c.r >= 10 ? 10 : c.r); }
-  /* El as cuenta 11, y baja a 1 cuando hace falta para no pasarse de 31 */
-  function total(mano) {
-    var t = 0, a = 0;
-    mano.forEach(function (c) { t += valor(c); if (c.r === 1) a++; });
-    while (t > 31 && a > 0) { t -= 10; a--; }
-    return t;
+  function puntos(mano) {
+    if (mano.length === 3 && mano[0].r === mano[1].r && mano[1].r === mano[2].r) return 30.5;
+    var por = {}, best = 0;
+    mano.forEach(function (c) { por[c.s] = (por[c.s] || 0) + valor(c); });
+    Object.keys(por).forEach(function (s) { if (por[s] > best) best = por[s]; });
+    return best;
   }
-  function msg(h) { $("msg").innerHTML = h; }
-  function vivosAntes() { return jug.filter(function (p) { return p.fichas > 0; }); }
-  function sigVivo(i) { for (var k = 1; k <= 4; k++) { var j = (i + k + 4) % 4; if (jug[j].en) return j; } return -1; }
+  function fmt(n) { return String(n).replace(".", ","); }
+  function vivos() { return jug.filter(function (p) { return p.vidas > 0; }); }
 
-  function nuevaPartida() {
-    tok++;
-    jug = NOMBRES.map(function (n) { return { nombre: n, fichas: FICHAS0, mano: [], est: "fuera", en: true }; });
-    pote = 0; dealer = Math.floor(Math.random() * 4); fin = true;
-    $("bReinicio").hidden = true; $("bNueva").hidden = true; $("res").hidden = true;
-    ronda();
-  }
-
-  function ronda() {
-    tok++; var mi = tok;
+  function nuevaRonda() {
+    fin = false; golpeo = -1; restantes = 0; sel = -1; ocupado = false;
+    mazo = baraja();
+    jug.forEach(function (p) { p.mano = p.vidas > 0 ? [mazo.pop(), mazo.pop(), mazo.pop()] : []; p.golpe = false; });
+    centro = [mazo.pop(), mazo.pop(), mazo.pop()];
     $("res").hidden = true; $("bNueva").hidden = true; $("bReinicio").hidden = true;
-    jug.forEach(function (p) { p.en = p.fichas > 0; p.mano = []; p.est = "fuera"; });
-    if (!jug[0].en) { fin = true; msg("Te quedaste sin fichas. ¡Fin de la partida!"); $("bReinicio").hidden = false; pintar(); return; }
-    if (vivosAntes().length === 1) { fin = true; msg("🏆 ¡Ganaste la partida! Los demás se quedaron sin fichas."); $("bReinicio").hidden = false; pintar(); return; }
-    do { dealer = (dealer + 1) % 4; } while (!jug[dealer].en);
-    mazo = baraja(); fin = false; sel = -1; usoCambio = false;
-    jug.forEach(function (p) {
-      if (!p.en) return;
-      p.fichas--; pote++; p.est = "juego";
-      p.mano = [mazo.pop(), mazo.pop(), mazo.pop()].map(function (c) { c.vista = false; return c; });
-    });
-    mesa = mazo.pop();
-    turno = sigVivo(dealer);
-    msg("Reparte <b>" + jug[dealer].nombre + "</b>. Todos pusieron una ficha al pote.");
-    pintar();
-    sleep(900).then(function () { bucle(mi); });
+    do { dealer = (dealer + 1) % 4; } while (jug[dealer].vidas <= 0);
+    turno = dealer;
+    do { turno = (turno + 1) % 4; } while (jug[turno].vidas <= 0);
+    msg("Ronda nueva. " + (turno === 0 ? "Empiezas tú." : "Empieza " + jug[turno].nombre + "."));
+    dibujar();
+    revisar31();
+    if (!fin) siguiente();
   }
+  function msg(t) { $("msg").textContent = t; }
 
-  function pasoTurno() { turno = sigVivo(turno); }
-
-  async function bucle(mi) {
-    while (!fin && mi === tok) {
-      var p = jug[turno];
-      if (p.est === "juego") {
-        var ganaCon31 = false;
-        if (turno === 0) ganaCon31 = await turnoUsuario(mi); else ganaCon31 = await turnoCPU(turno, mi);
-        if (mi !== tok) return;
-        if (ganaCon31) { await finRonda(mi, turno, true); return; }
-        /* termina el juego cuando el que reparte se planta o se pasa */
-        if (turno === dealer && jug[dealer].est !== "juego") { await finRonda(mi, -1, false); return; }
-      }
-      if (!jug.some(function (q) { return q.en && q.est === "juego"; })) { await finRonda(mi, -1, false); return; }
-      pasoTurno();
-    }
+  function carta(c, cls, fn) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "carta " + (cls || ""); b.innerHTML = Cartas.svg(c.r, c.s);
+    b.setAttribute("aria-label", Cartas.nombre(c.r) + " de " + c.s);
+    if (fn) { b.classList.add("btn"); b.addEventListener("click", fn); } else b.tabIndex = -1;
+    return b;
   }
-
-  function pedir(i) {
-    var p = jug[i];
-    if (!mazo.length) return false;
-    var c = mazo.pop(); c.vista = true; p.mano.push(c);
-    return true;
-  }
-  function pasarse(i) {
-    var p = jug[i];
-    p.pasado = p.mano.slice(); p.est = "pasado";
-    p.mano.forEach(function (c) { mazo.unshift({ r: c.r, s: c.s }); });
-    p.mano = [];
-  }
-
-  function turnoUsuario(mi) {
-    usoCambio = false; sel = -1;
-    msg("Tu turno: tienes <b>" + total(jug[0].mano) + "</b>. Pide carta o plántate. También puedes cambiar una carta por la de la mesa.");
-    pintar();
-    return new Promise(function (res) {
-      accion = function (que) {
-        if (mi !== tok || fin) return;
-        var p = jug[0];
-        if (que === "planto") { p.est = "plantado"; accion = null; msg("Te plantaste con <b>" + total(p.mano) + "</b>."); pintar(); res(false); return; }
-        if (que === "pedir") {
-          accion = null;
-          if (!pedir(0)) { p.est = "plantado"; msg("No quedan cartas: te plantas."); pintar(); res(false); return; }
-          var t = total(p.mano);
-          if (t === 31) { msg("🎉 ¡31 exacto!"); pintar(); res(true); return; }
-          if (t > 31) { msg("Te pasaste con <b>" + t + "</b>. Quedas fuera de la ronda."); pasarse(0); pintar(); res(false); return; }
-          msg("Pediste carta: ahora tienes <b>" + t + "</b>."); pintar(); res(false); return;
-        }
-        if (que === "cambio") {
-          var viejo = p.mano[sel]; var nuevo = mesa; nuevo.vista = true;
-          p.mano[sel] = nuevo; mesa = { r: viejo.r, s: viejo.s }; usoCambio = true; sel = -1;
-          var t2 = total(p.mano);
-          if (t2 === 31) { accion = null; msg("🎉 ¡31 exacto!"); pintar(); res(true); return; }
-          msg("Cambiaste una carta. Ahora tienes <b>" + t2 + "</b>. Pide carta o plántate."); pintar();
-        }
-      };
-      pintar();
-    });
-  }
-
-  /* cartas que un jugador puede ver: las suyas, la mesa y las que están boca arriba */
-  function desconocidas(i) {
-    var vistos = {};
-    function key(c) { return c.r + c.s; }
-    jug[i].mano.forEach(function (c) { vistos[key(c)] = 1; });
-    if (mesa) vistos[key(mesa)] = 1;
-    jug.forEach(function (p, j) { if (j !== i) p.mano.forEach(function (c) { if (c.vista) vistos[key(c)] = 1; }); });
-    var pool = [];
-    Cartas.suits.forEach(function (s) { Cartas.ranks.forEach(function (r) { if (!vistos[r + s]) pool.push({ r: r, s: s }); }); });
-    return pool;
-  }
-  function riesgo(i) {
-    var pool = desconocidas(i), m = jug[i].mano, malas = 0;
-    pool.forEach(function (c) { if (total(m.concat([c])) > 31) malas++; });
-    return pool.length ? malas / pool.length : 1;
-  }
-
-  async function turnoCPU(i, mi) {
-    var p = jug[i], esD = i === dealer;
-    await sleep(1000); if (mi !== tok) return false;
-    /* ¿le sirve la carta de la mesa? */
-    var t0 = total(p.mano), mejor = null;
-    p.mano.forEach(function (c, k) {
-      var m = p.mano.slice(); m[k] = mesa; var t = total(m);
-      if (t <= 31 && t > (mejor ? mejor.t : t0)) mejor = { k: k, t: t };
-    });
-    if (mejor && mejor.t - t0 >= 1) {
-      var viejo = p.mano[mejor.k], nuevo = mesa; nuevo.vista = true; p.mano[mejor.k] = nuevo; mesa = { r: viejo.r, s: viejo.s };
-      msg("<b>" + p.nombre + "</b> cambió una carta por la de la mesa."); pintar(); await sleep(900); if (mi !== tok) return false;
-      if (total(p.mano) === 31) { msg("<b>" + p.nombre + "</b> dice: ¡31!"); pintar(); await sleep(700); return true; }
-    }
-    var t = total(p.mano), r = riesgo(i);
-    var limite = (esD ? 0.28 : 0.4) + (Math.random() - 0.5) * 0.12;
-    var pide = t <= 20 || (t < 27 && r < limite);
-    if (!pide) { p.est = "plantado"; msg("<b>" + p.nombre + "</b> se planta."); pintar(); return false; }
-    if (!pedir(i)) { p.est = "plantado"; pintar(); return false; }
-    var nt = total(p.mano);
-    if (nt === 31) { msg("<b>" + p.nombre + "</b> pide carta y dice: ¡31!"); pintar(); await sleep(700); return true; }
-    if (nt > 31) { msg("<b>" + p.nombre + "</b> pidió carta y se pasó de 31."); pasarse(i); pintar(); await sleep(900); return false; }
-    msg("<b>" + p.nombre + "</b> pidió carta (queda a la vista)."); pintar(); await sleep(700);
-    return false;
-  }
-
-  async function finRonda(mi, ganador31, por31) {
-    if (mi !== tok) return;
-    fin = true; accion = null; sel = -1;
-    jug.forEach(function (p) { p.mano.forEach(function (c) { c.vista = true; }); });
-    var candidatos = [];
-    var filas = "";
-    var ganadores = [];
-    if (por31) {
-      ganadores = [ganador31];
-    } else {
-      var mx = -1;
-      jug.forEach(function (p, i) { if (p.en && p.est !== "pasado") { var t = total(p.mano); if (t > mx) mx = t; } });
-      jug.forEach(function (p, i) { if (p.en && p.est !== "pasado" && total(p.mano) === mx) candidatos.push(i); });
-      if (candidatos.indexOf(dealer) >= 0) ganadores = [dealer]; else ganadores = candidatos;
-    }
-    jug.forEach(function (p, i) {
-      if (!p.en) return;
-      var t = p.est === "pasado" ? null : total(p.mano);
-      var gana = ganadores.indexOf(i) >= 0;
-      filas += "<tr><td>" + p.nombre + (i === dealer ? " (reparte)" : "") + "</td><td>" + (t === null ? "Se pasó" : t) + "</td><td class=\"" + (gana ? "win" : "") + "\">" + (gana ? "Gana" : "") + "</td></tr>";
-    });
-    var texto;
-    if (!ganadores.length) {
-      texto = "Todos se pasaron: el pote de <b>" + pote + "</b> " + (pote === 1 ? "ficha" : "fichas") + " queda para la próxima ronda.";
-    } else {
-      var parte = Math.floor(pote / ganadores.length);
-      ganadores.forEach(function (g) { jug[g].fichas += parte; });
-      pote -= parte * ganadores.length;
-      var nom = ganadores.map(function (g) { return g === 0 ? "tú" : jug[g].nombre; }).join(" y ");
-      texto = (ganadores.indexOf(0) >= 0 ? "🏆 ¡Ganas " : "Gana <b>" + nom + "</b>: ") + (ganadores.indexOf(0) >= 0 ? "<b>" + parte + "</b> " : "<b>" + parte + "</b> ") + (parte === 1 ? "ficha" : "fichas") + (ganadores.length > 1 ? " cada uno" : "") + (por31 ? " con 31 exacto." : (ganadores[0] === dealer && candidatos.length > 1 ? ", el que reparte gana los empates." : ".")) + (ganadores.indexOf(0) >= 0 ? "" : "");
-    }
-    msg(texto);
-    var r = $("res"); r.innerHTML = "<h2>Se enseñan las manos</h2><table><tr><th>Jugador</th><th>Puntos</th><th></th></tr>" + filas + "</table>"; r.hidden = false;
-    pintar();
-    var algunoSinFichas = jug.some(function (p) { return p.en && p.fichas <= 0; });
-    $("bNueva").hidden = false; $("bNueva").textContent = "Siguiente ronda";
-  }
-
-  /* ---------- dibujo ---------- */
-  function miniCarta(c) { return '<div class="mini">' + Cartas.svg(c.r, c.s) + "</div>"; }
-  function pintar() {
+  function dibujar() {
     var rv = $("rivales"); rv.innerHTML = "";
     for (var i = 1; i < 4; i++) {
       var p = jug[i], d = document.createElement("div");
-      d.className = "rival" + (turno === i && !fin ? " turno" : "") + (!p.en || p.est === "pasado" ? " fuera" : "");
-      var cartas = p.est === "pasado" && p.pasado ? p.pasado.map(miniCarta).join("") : p.mano.map(function (c) { return c.vista ? miniCarta(c) : '<div class="dorso"></div>'; }).join("");
-      var estado = !p.en ? "sin fichas" : (p.est === "plantado" ? "plantado" : (p.est === "pasado" ? "se pasó" : ""));
-      d.innerHTML = "<b>" + p.nombre + (i === dealer && p.en ? " · reparte" : "") + "</b><span class=\"vidas\">🪙 " + p.fichas + "</span><div class=\"manito\">" + cartas + "</div><small>" + estado + "</small>";
+      d.className = "rival" + (turno === i && !fin ? " turno" : "") + (p.vidas <= 0 ? " fuera" : "");
+      var v = ""; for (var k = 0; k < 3; k++) v += k < p.vidas ? "❤️" : "🖤";
+      var man = "";
+      if (fin && p.mano.length) { d.innerHTML = "<b>" + p.nombre + "</b><span class='vidas'>" + v + "</span>"; var m = document.createElement("div"); m.className = "manito"; p.mano.forEach(function (c) { var x = carta(c); x.style.width = "29px"; m.appendChild(x); }); d.appendChild(m); var s = document.createElement("div"); s.innerHTML = "<span class='pts'>" + fmt(puntos(p.mano)) + "</span>"; d.appendChild(s); }
+      else { for (k = 0; k < p.mano.length; k++) man += "<span class='dorso'></span>"; d.innerHTML = "<b>" + p.nombre + (p.golpe ? " ✊" : "") + "</b><span class='vidas'>" + v + "</span><div class='manito'>" + man + "</div>"; }
       rv.appendChild(d);
     }
     var ce = $("centro"); ce.innerHTML = "";
-    if (mesa) {
-      var b = document.createElement("button"); b.className = "carta" + (esMiTurno() && sel >= 0 ? " clic" : ""); b.type = "button"; b.setAttribute("aria-label", "Carta de la mesa");
-      b.innerHTML = Cartas.svg(mesa.r, mesa.s);
-      b.onclick = function () { if (esMiTurno() && sel >= 0 && accion) accion("cambio"); };
-      ce.appendChild(b);
-    }
-    $("pote").textContent = "Pote: " + pote + (pote === 1 ? " ficha" : " fichas") + " · Mazo: " + mazo.length + " cartas · Tus fichas: " + jug[0].fichas;
-    var m = $("mano"); m.innerHTML = "";
-    jug[0].mano.forEach(function (c, k) {
-      var b2 = document.createElement("button"); b2.type = "button";
-      b2.className = "carta" + (esMiTurno() && !usoCambio ? " clic" : "") + (sel === k ? " sel" : "");
-      b2.innerHTML = Cartas.svg(c.r, c.s);
-      b2.onclick = function () { if (esMiTurno() && !usoCambio) { sel = sel === k ? -1 : k; pintar(); } };
-      m.appendChild(b2);
-    });
-    var tt = jug[0].est === "pasado" ? "te pasaste" : total(jug[0].mano);
-    $("miPts").textContent = jug[0].mano.length || jug[0].est === "pasado" ? tt : "0";
-    $("bPedir").disabled = !esMiTurno(); $("bPlanto").disabled = !esMiTurno();
+    centro.forEach(function (c, i) { ce.appendChild(carta(c, "", (turno === 0 && !fin && !ocupado && sel >= 0) ? function () { cambiar(0, sel, i); } : null)); });
+    var ma = $("mano"); ma.innerHTML = "";
+    jug[0].mano.forEach(function (c, i) { ma.appendChild(carta(c, i === sel ? "sel" : "", (turno === 0 && !fin && !ocupado) ? function () { sel = (sel === i ? -1 : i); if (sel >= 0) msg("Ahora toca la carta del centro que quieres."); dibujar(); } : null)); });
+    $("miPts").textContent = jug[0].mano.length ? fmt(puntos(jug[0].mano)) : "0";
+    var mi = turno === 0 && !fin && !ocupado && jug[0].vidas > 0;
+    $("bTres").disabled = !mi; $("bPasar").disabled = !mi; $("bGolpe").disabled = !mi || golpeo >= 0;
   }
-  function esMiTurno() { return !fin && turno === 0 && jug[0].est === "juego" && !!accion; }
+  function cambiar(i, h, c) {
+    var p = jug[i], t = p.mano[h]; p.mano[h] = centro[c]; centro[c] = t;
+    sel = -1;
+    msg(i === 0 ? "Cambiaste una carta." : p.nombre + " cambió una carta.");
+    terminarTurno(i);
+  }
+  function cambiarTres(i) {
+    var p = jug[i], t = p.mano; p.mano = centro; centro = t; sel = -1;
+    msg(i === 0 ? "Cambiaste las tres cartas." : p.nombre + " cambió las tres cartas.");
+    terminarTurno(i);
+  }
+  function golpear(i) {
+    golpeo = i; jug[i].golpe = true; restantes = vivos().length - 1;
+    msg((i === 0 ? "¡Golpeaste la mesa!" : jug[i].nombre + " golpeó la mesa.") + " Los demás juegan un último turno.");
+    terminarTurno(i, true);
+  }
+  function revisar31() {
+    var g = jug.filter(function (p) { return p.vidas > 0 && puntos(p.mano) === 31; });
+    if (g.length) { msg("¡" + (g[0].nombre === "Tú" ? "Tienes" : g[0].nombre + " tiene") + " 31!"); acabar(); return true; }
+    return false;
+  }
+  function terminarTurno(i, yaGolpe) {
+    dibujar();
+    if (revisar31()) return;
+    if (golpeo >= 0 && !yaGolpe) restantes--;
+    if (golpeo >= 0 && restantes <= 0) { acabar(); return; }
+    do { turno = (turno + 1) % 4; } while (jug[turno].vidas <= 0);
+    dibujar(); siguiente();
+  }
+  function siguiente() {
+    if (fin) return;
+    if (turno === 0) { ocupado = false; msg("Tu turno: toca una carta tuya y luego una del centro; o cambia las tres, pasa o golpea."); dibujar(); return; }
+    ocupado = true; dibujar();
+    setTimeout(botJuega, 1100);
+  }
+  function mejorCambio(p) {
+    var best = { pts: puntos(p.mano), h: -1, c: -1 };
+    for (var h = 0; h < 3; h++) for (var c = 0; c < 3; c++) {
+      var m = p.mano.slice(); m[h] = centro[c]; var x = puntos(m);
+      if (x > best.pts) best = { pts: x, h: h, c: c };
+    }
+    var t = puntos(centro); if (t > best.pts + 0.4) best = { pts: t, tres: true };
+    return best;
+  }
+  function botJuega() {
+    if (fin) return;
+    var p = jug[turno], i = turno, ya = puntos(p.mano), b = mejorCambio(p);
+    if (golpeo < 0 && ya >= 26 && Math.random() < 0.55 + (ya - 26) * 0.1) { golpear(i); return; }
+    if (b.tres) { cambiarTres(i); return; }
+    if (b.h >= 0) { cambiar(i, b.h, b.c); return; }
+    if (golpeo < 0 && ya >= 22 && Math.random() < 0.3) { golpear(i); return; }
+    msg(p.nombre + " pasó."); terminarTurno(i);
+  }
+  function acabar() {
+    fin = true; ocupado = true; sel = -1;
+    var vs = vivos(), min = 99;
+    vs.forEach(function (p) { p.pt = puntos(p.mano); if (p.pt < min) min = p.pt; });
+    var h = "<h2>Se enseñan las manos</h2><table><tr><th>Jugador</th><th>Puntos</th><th>Resultado</th></tr>";
+    var quedan;
+    vs.forEach(function (p) {
+      var pierde = p.pt === min, quita = 0;
+      if (pierde) quita = (p.golpe ? 2 : 1);
+      p.vidas = Math.max(0, p.vidas - quita);
+      h += "<tr><td>" + p.nombre + (p.golpe ? " ✊" : "") + "</td><td>" + fmt(p.pt) + "</td><td class='" + (pierde ? "lose" : "win") + "'>" + (pierde ? "pierde " + quita + (quita === 1 ? " vida" : " vidas") : (p.pt === 31 ? "¡31!" : "se salva")) + "</td></tr>";
+    });
+    $("res").innerHTML = h + "</table>"; $("res").hidden = false;
+    dibujar();
+    quedan = vivos();
+    if (jug[0].vidas <= 0) { msg("Te quedaste sin vidas. ¡Ganó " + quedan[0].nombre + "!"); $("bReinicio").hidden = false; }
+    else if (quedan.length === 1) { msg("🎉 ¡Ganaste, chamo! Eres el último con vidas."); $("bReinicio").hidden = false; }
+    else { msg("Fin de la ronda."); $("bNueva").hidden = false; }
+    $("bTres").disabled = $("bPasar").disabled = $("bGolpe").disabled = true;
+    // ver las manos rivales
+    dibujar();
+  }
+  function reinicio() {
+    jug = NOMBRES.map(function (n) { return { nombre: n, vidas: 3, mano: [], golpe: false }; });
+    dealer = Math.floor(Math.random() * 4);
+    nuevaRonda();
+  }
 
-  $("bPedir").onclick = function () { if (esMiTurno()) accion("pedir"); };
-  $("bPlanto").onclick = function () { if (esMiTurno()) accion("planto"); };
-  $("bNueva").onclick = function () { ronda(); };
-  $("bReinicio").onclick = function () { nuevaPartida(); };
-  $("rulesBtn").addEventListener("click", function () { var r = $("rules"); r.hidden = !r.hidden; this.setAttribute("aria-expanded", r.hidden ? "false" : "true"); });
-  if (window.__fast) window.__t31 = { jug: function () { return jug; }, st: function () { return { fin: fin, pote: pote, dealer: dealer, turno: turno, mazo: mazo.length }; } };
-  nuevaPartida();
+  $("bTres").addEventListener("click", function () { if (turno === 0 && !fin && !ocupado) cambiarTres(0); });
+  $("bPasar").addEventListener("click", function () { if (turno === 0 && !fin && !ocupado) { msg("Pasaste."); terminarTurno(0); } });
+  $("bGolpe").addEventListener("click", function () { if (turno === 0 && !fin && !ocupado && golpeo < 0) golpear(0); });
+  $("bNueva").addEventListener("click", nuevaRonda);
+  $("bReinicio").addEventListener("click", reinicio);
+  $("rulesBtn").addEventListener("click", function () { var r = $("rules"), a = r.hidden; r.hidden = !a; this.setAttribute("aria-expanded", String(a)); });
+  reinicio();
 })();
 </script>
 </body>
