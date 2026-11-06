@@ -151,7 +151,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       <li>Cada cartón marca solo el número que salió. Abajo ves los cartones uno por uno, en cola, y los que están cerca de cantar llevan un 🔥.</li>
       <li>Escoge el canto antes de empezar: <b>Línea</b> (fila, columna o diagonal), <b>Cuatro esquinas</b> o <b>Cartón lleno</b>.</li>
       <li>El primer cartón que complete el canto grita ¡BINGO! y toda su mesa se para gritando. Si dos cartones cantan con la misma ficha, ganan los dos.</li>
-      <li>Al empezar la partida <b>toca una mesa para sentarte</b> (tú tomas el lugar de uno de la familia). Escribes tu nombre y escoges <b>en qué lugar de la mesa te sientas</b>. Antes de cada ronda hay <b>100 cartones distintos</b> en un carrusel: desliza de lado a lado y escoge los 4 de tu mesa. Ningún cartón se repite: ni los números ni las líneas son iguales, y las otras mesas escogen otros diferentes. Si gritas ¡bingo, bingo, bingo! la señora del globo se enoja y te grita: <i>«¡Cállate la boca, que te escuché!»</i></li>
+      <li>Al empezar la partida <b>toca una mesa para sentarte</b> (tú tomas el lugar de uno de la familia). Escribes tu nombre y escoges <b>en qué lugar de la mesa te sientas</b>. Antes de cada ronda hay <b>100 cartones distintos</b> en un carrusel: desliza de lado a lado y escoge los 4 de tu mesa. Ningún cartón se repite: ni los números ni las líneas son iguales, y las otras mesas escogen otros diferentes. Si gritas ¡bingo, bingo, bingo! la señora del globo se enoja y te grita por tu nombre: <i>«¡Cállate la boca, (tu nombre), que te escuché!»</i></li>
       <li>En cada ronda cada mesa pone <b>100 fichas</b> (empiezan con 1000). De esas 400, el <b>10% (40 fichas) va al pote</b> y el resto se lo lleva la mesa que cante bingo. Si cantan dos mesas a la vez, se reparte.</li>
       <li>El <b>pote</b> se acumula ronda tras ronda y se lo lleva la mesa que gane la <b>última ronda</b> de la partida.</li>
     </ul>
@@ -353,7 +353,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     // brazos de la señora hacia el globo
     s += '<path d="M150 160Q146 178 158 186M210 160Q222 172 214 183" fill="none" stroke="#f1c9a0" stroke-width="7" stroke-linecap="round"/>';
     s += '<g id="bolaSale"></g>';
-    s += '<g id="globoHabla" style="display:none"><path d="M128 50h104a8 8 0 0 1 8 8v30a8 8 0 0 1-8 8h-56l-10 14-4-14h-34a8 8 0 0 1-8-8V58a8 8 0 0 1 8-8z" fill="#fff" stroke="#b3261e" stroke-width="2"/><text x="180" y="71" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">¡Cállate la boca,</text><text x="180" y="85" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">que te escuché!</text></g>';
+    s += '<g id="globoHabla" style="display:none"><path d="M128 36h104a8 8 0 0 1 8 8v44a8 8 0 0 1-8 8h-56l-10 14-4-14h-34a8 8 0 0 1-8-8V44a8 8 0 0 1 8-8z" fill="#fff" stroke="#b3261e" stroke-width="2"/><text id="hb1" x="180" y="55" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">¡Cállate la boca,</text><text id="hb2" x="180" y="70" text-anchor="middle" font-size="12" font-weight="800" fill="#1a1205" font-family="serif"></text><text id="hb3" x="180" y="85" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">que te escuché!</text></g>';
     s += '</g>';
     $("escena").innerHTML = s;
     for (var i = 0; i < 4; i++) {
@@ -544,12 +544,15 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
 
   /* ---------- Juego ---------- */
-  function enojar() {
+  function enojar(nombre) {
     var c = $("centro"); if (!c) return;
+    nombre = (nombre || miNombre || "").trim();
     c.classList.add("enojada"); $("cejas").style.display = ""; $("globoHabla").style.display = "";
-    var rg = $("regano"); rg.hidden = false; rg.textContent = "La señora del globo: «¡Cállate la boca, que te escuché!»";
+    var hb2 = $("hb2"); hb2.textContent = nombre ? nombre + "," : "";
+    hb2.setAttribute("font-size", nombre.length > 9 ? 10 : 12);
+    var rg = $("regano"); rg.hidden = false; rg.textContent = "La señora del globo: «¡Cállate la boca, " + (nombre ? nombre + ", " : "") + "que te escuché!»";
     hablaBoca(); setTimeout(hablaBoca, 1100);
-    hablar("¡Cállate la boca, que te escuché!", true, true);
+    hablar("¡Cállate la boca, " + (nombre ? nombre + ", " : "") + "que te escuché!", true, true);
     ruidoGrito();
   }
   function desenojar() {
@@ -600,7 +603,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     ruidoGrito(); confeti();
     hablar("¡Bingooo!", true);
     setTimeout(function () { hablar("¡Bingo, bingo, bingo!", true); ruidoGrito(); }, 1400);
-    tEnojo = setTimeout(enojar, $("voz").value === "1" ? 4200 : 2800);
+    var quienGrita = miNombre;
+    tEnojo = setTimeout(function () { enojar(quienGrita); }, $("voz").value === "1" ? 4200 : 2800);
     var gm = Object.keys(mesas).map(Number), premio = ANTE * 4 - Math.round(ANTE * 4 * 0.1), ult = ronda >= totalRondas();
     var parte = Math.floor(premio / gm.length), txt = " Ganó " + parte + " fichas" + (gm.length > 1 ? " cada mesa" : "") + ".";
     if (ult) { var pp = Math.floor(pote / gm.length); gm.forEach(function (m) { fichas[m] += pp; }); txt += " ¡Y se llevó el POTE de " + pote + " fichas!"; pote = 0; }
