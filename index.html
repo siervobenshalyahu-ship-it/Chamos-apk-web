@@ -291,6 +291,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         <a class="btn ia" id="chamos-ia" href="#" data-url="" aria-label="Abrir Chamos IA"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px;vertical-align:middle;margin-right:8px">Chamos IA</a>
         <a class="btn" href="#app">Conocer la app</a>
       </div>
+      <p class="ver-info" id="ver-info" style="margin:10px 0 0;font-size:.9rem;opacity:.8">Versión: <b id="ver-num">…</b> · <span id="ver-fecha"></span>Requiere Android 7.0 o superior</p>
       <div class="rail-wrap games hero-juegos"><div class="rail" id="track-juegos" role="region" aria-label="Carrusel de juegos: desliza con el dedo o usa las flechas" tabindex="0">
       <article class="shot gcard"><div class="art a1" aria-hidden="true"><svg viewBox="0 0 100 100"><g transform="rotate(-18 50 50)"><rect x="22" y="14" width="56" height="72" rx="8" fill="#f4f1e6" stroke="#1b1c20" stroke-width="3"/><path d="M22 50H78" stroke="#1b1c20" stroke-width="3"/><g fill="#1b1c20"><circle cx="38" cy="30" r="5"/><circle cx="62" cy="30" r="5"/><circle cx="50" cy="30" r="0"/><circle cx="38" cy="70" r="5"/><circle cx="62" cy="70" r="5"/><circle cx="50" cy="70" r="5"/></g></g></svg></div><div class="txt"><b>Dominó</b><small>Dominó venezolano de mesa, en parejas.</small></div><div class="acts"><a class="go" href="domino.html">Jugar</a></div></article>
       <article class="shot gcard"><div class="art a2" aria-hidden="true"><div class="cartas-par" data-cartas="1:oros,7:copas"></div></div><div class="txt"><b>Caída</b><small>Juego de cartas de la mesa venezolana, con baraja española.</small></div><div class="acts"><a class="go" href="caida.html">Jugar</a></div></article>
@@ -847,6 +848,22 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   document.querySelectorAll(".cartas-par").forEach(function(el){
     el.innerHTML = el.getAttribute("data-cartas").split(",").map(function(p){ var a=p.split(":"); return '<span class="cp">'+Cartas.svg(+a[0],a[1])+'</span>'; }).join("");
   });
+})();
+</script>
+<script>
+(function () {
+  try {
+    fetch("https://api.github.com/repos/siervobenshalyahu-ship-it/Chamos/releases/latest", { headers: { Accept: "application/vnd.github+json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.tag_name) return;
+        document.getElementById("ver-num").textContent = j.tag_name.replace(/^v/i, "");
+        if (j.published_at) {
+          var d = new Date(j.published_at).toLocaleDateString("es-VE", { day: "numeric", month: "long", year: "numeric" });
+          document.getElementById("ver-fecha").textContent = "actualizada el " + d + " · ";
+        }
+      }).catch(function () {});
+  } catch (e) {}
 })();
 </script>
 </body>
