@@ -552,7 +552,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     "¡Ay {n}, qué escándalo! ¡Ya te oí, mijo!",
     "¡{n}, baja esa voz que me tienes sorda!"
   ];
-  var tEsc = [];
+  var tEsc = [], cantadas = 0; /* las 2 últimas frases solo salen cuando cantas bingo repetidas veces (3.ª vez en adelante) */
   function programar(f, ms) { tEsc.push(setTimeout(f, ms)); }
   function globo(texto) {
     var pal = texto.split(" "), lin = [], cur = "";
@@ -575,7 +575,8 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   function anotar(h) { var rg = $("regano"); rg.hidden = false; rg.innerHTML += (rg.innerHTML ? "<br>" : "") + h; }
   function enojar(nombre) {
     nombre = (nombre || miNombre || "").trim() || "mijo";
-    var t = REGANOS[Math.floor(Math.random() * REGANOS.length)].replace(/\{n\}/g, nombre);
+    var pool = cantadas >= 3 ? REGANOS : REGANOS.slice(0, 3);
+    var t = pool[Math.floor(Math.random() * pool.length)].replace(/\{n\}/g, nombre);
     $("regano").innerHTML = ""; anotar("La señora del globo: «" + t + "»");
     frase(t);
   }
@@ -652,7 +653,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     ruidoGrito(); confeti();
     hablar("¡Bingooo!", true);
     setTimeout(function () { hablar("¡Bingo, bingo, bingo!", true); ruidoGrito(); }, 1400);
-    var gano = !!mesas[mesaElegida];
+    var gano = !!mesas[mesaElegida]; cantadas++;
     tEnojo = setTimeout(function () { if (gano) verificar(gs); else enojar(miNombre); }, $("voz").value === "1" ? 4200 : 2800);
     var gm = Object.keys(mesas).map(Number), premio = ANTE * 4 - Math.round(ANTE * 4 * 0.1), ult = ronda >= totalRondas();
     var parte = Math.floor(premio / gm.length), txt = " Ganó " + parte + " fichas" + (gm.length > 1 ? " cada mesa" : "") + ".";
