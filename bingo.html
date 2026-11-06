@@ -109,6 +109,25 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 .pc th { font-size: 8px; background: #b3261e; color: #fff; border-radius: 2px; }
 .pc td { font-size: 9px; text-align: center; background: #fff; border-radius: 2px; font-weight: 700; padding: 1px 0; }
 .pc td.l { background: #e3a824; font-size: 6px; }
+/* Carrusel de 100 cartones */
+.rail { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 12px 6px 8px; margin: 6px -6px; scrollbar-width: thin; }
+.rail .pc { flex: 0 0 156px; scroll-snap-align: center; padding: 5px; border-radius: 9px; }
+.rail .pc th { font-size: 12px; padding: 2px 0; }
+.rail .pc td { font-size: 14px; padding: 4px 0; }
+.rail .pc td.l { font-size: 8px; }
+.pc .num { text-align: center; font-weight: 800; font-size: 12px; color: #6b3a12; margin-bottom: 3px; }
+.carr-ctl { display: flex; align-items: center; gap: 8px; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.carr-ctl .btn { padding: 6px 12px; }
+.elegidos { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; min-height: 26px; }
+.elegidos span { background: #2f9a5e; color: #fff; border-radius: 999px; padding: 3px 10px; font-weight: 800; cursor: pointer; }
+.sentar label.op { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.sentar label.op:has(input:checked) { border-color: var(--amber); background: rgba(244,181,74,.1); }
+.sentar input[type=text] { width: 100%; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: inherit; }
+.sentar .opts { display: grid; gap: 6px; margin: 8px 0; }
+.regano { font-family: var(--font-serif); font-size: 16px; color: #ffd0c8; margin-top: 4px; }
+.enojada .cuerpo-sra { animation: tiembla .12s linear infinite alternate; transform-box: fill-box; transform-origin: center; }
+@keyframes tiembla { from { transform: translate(-1px, 0) rotate(-1deg); } to { transform: translate(1px, 0) rotate(1deg); } }
+@media (prefers-reduced-motion: reduce) { .enojada .cuerpo-sra { animation: none; } }
 .eslog { font-size: 13px; color: #cdd4e3; display: grid; gap: 2px; margin-top: 6px; }
 .marc { display: flex; gap: 8px; justify-content: space-between; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
 .marc b { color: var(--amber); }
@@ -132,7 +151,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       <li>Cada cartón marca solo el número que salió. Abajo ves los cartones uno por uno, en cola, y los que están cerca de cantar llevan un 🔥.</li>
       <li>Escoge el canto antes de empezar: <b>Línea</b> (fila, columna o diagonal), <b>Cuatro esquinas</b> o <b>Cartón lleno</b>.</li>
       <li>El primer cartón que complete el canto grita ¡BINGO! y toda su mesa se para gritando. Si dos cartones cantan con la misma ficha, ganan los dos.</li>
-      <li>Al empezar la partida <b>toca una mesa para sentarte</b> (tú tomas el lugar de uno de la familia). Antes de cada ronda cada mesa <b>escoge sus 4 cartones</b> entre 8 que le ofrecen: en tu mesa los escoges tú y en las otras mesas los escoge uno de los cuatro de la familia.</li>
+      <li>Al empezar la partida <b>toca una mesa para sentarte</b> (tú tomas el lugar de uno de la familia). Escribes tu nombre y escoges <b>en qué lugar de la mesa te sientas</b>. Antes de cada ronda hay <b>100 cartones distintos</b> en un carrusel: desliza de lado a lado y escoge los 4 de tu mesa. Ningún cartón se repite: ni los números ni las líneas son iguales, y las otras mesas escogen otros diferentes. Si gritas ¡bingo, bingo, bingo! la señora del globo se enoja y te grita: <i>«¡Cállate la boca, que te escuché!»</i></li>
       <li>En cada ronda cada mesa pone <b>100 fichas</b> (empiezan con 1000). De esas 400, el <b>10% (40 fichas) va al pote</b> y el resto se lo lleva la mesa que cante bingo. Si cantan dos mesas a la vez, se reparte.</li>
       <li>El <b>pote</b> se acumula ronda tras ronda y se lo lleva la mesa que gane la <b>última ronda</b> de la partida.</li>
     </ul>
@@ -159,10 +178,21 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   <div class="pote" id="pote"></div>
 
+  <section class="panel sentar" id="sentarse" hidden>
+    <h2 id="senTit">Siéntate en la mesa</h2>
+    <label for="nombre" style="font-size:13px;color:var(--muted)">Tu nombre</label>
+    <input type="text" id="nombre" maxlength="14" placeholder="Escribe tu nombre" autocomplete="nickname">
+    <p style="margin:10px 0 0;font-size:13px;color:var(--muted)">¿En qué lugar de la mesa te sientas? Tomas el lugar de uno de la familia.</p>
+    <div class="opts" id="senOpts"></div>
+    <div class="ctrl"><button class="btn" id="senOk">Sentarme</button><button class="btn alt" id="senNo">Cambiar de mesa</button></div>
+  </section>
+
   <section class="panel" id="escoger" hidden>
     <h2 id="escTit">Escoge los cartones de la mesa</h2>
     <p style="margin:0;color:var(--muted);font-size:13px" id="escSub"></p>
-    <div class="pool" id="pool"></div>
+    <div class="carr-ctl"><button class="btn alt" id="carrAnt" type="button" aria-label="Cartones anteriores">◀</button><span id="carrPos">Desliza para ver los 100 cartones</span><button class="btn alt" id="carrSig" type="button" aria-label="Cartones siguientes">▶</button></div>
+    <div class="rail" id="pool" role="region" aria-label="Carrusel de 100 cartones: desliza de lado a lado para escoger" tabindex="0"></div>
+    <div class="elegidos" id="elegidos" aria-live="polite"></div>
     <div class="ctrl"><button class="btn" id="escOk" disabled>Confirmar 4 cartones</button></div>
     <div class="eslog" id="escLog" aria-live="polite"></div>
   </section>
@@ -180,7 +210,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     <div class="dicho" id="dicho">Dale a «Empezar» para que la señora saque la primera ficha.</div>
   </div>
 
-  <div class="banner" id="banner" hidden><b id="bTit">¡BINGO!</b><span id="bTxt"></span></div>
+  <div class="banner" id="banner" hidden><b id="bTit">¡BINGO!</b><span id="bTxt"></span><div class="regano" id="regano" hidden></div></div>
 
   <div class="panel">
     <div class="cola-tit"><b id="cNombre">Cartón</b><small id="cInfo"></small></div>
@@ -201,7 +231,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   ];
   var DICHOS = { 1: "el solito", 7: "la suerte", 11: "los palitos", 13: "la mala suerte", 15: "la quinceañera", 22: "los patitos", 33: "la edad de Cristo", 44: "las sillas", 55: "las manitos", 66: "el par de sextas", 69: "ay mijo", 77: "las banderitas", 88: "los gorditos", 90: "el abuelo" };
   var $ = function (id) { return document.getElementById(id); };
-  var cartones = [], bolas = [], bombo = [], timer = null, corriendo = false, terminado = false, mesaElegida = -1, actual = 0, fase = "sentar", ronda = 0, fichas = [1000, 1000, 1000, 1000], pote = 0, pool = [], seleccion = {}, miembros = [], ANTE = 100, rot = null;
+  var tEnojo = null, cartones = [], bolas = [], bombo = [], timer = null, corriendo = false, terminado = false, mesaElegida = -1, actual = 0, fase = "sentar", ronda = 0, fichas = [1000, 1000, 1000, 1000], pote = 0, pool = [], seleccion = {}, miembros = [], ANTE = 100, rot = null, catalogo = [], miNombre = "Tú", miIdx = 0, mesaPend = -1;
 
   function barajar(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function nuevoCarton() {
@@ -214,6 +244,30 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     for (var r = 0; r < 5; r++) { f.push([]); for (var cc = 0; cc < 5; cc++) f[r].push(cols[cc][r]); }
     f[2][2] = 0;
     return f;
+  }
+  /* 100 cartones que nunca se repiten: ni el cartón entero ni ninguna de sus líneas ni sus cuatro esquinas */
+  function firmas(f) {
+    var out = [], i, j, a;
+    for (i = 0; i < 5; i++) {
+      a = []; for (j = 0; j < 5; j++) a.push(f[i][j]); out.push("F" + a.slice().sort(function (x, y) { return x - y; }).join("-"));
+      a = []; for (j = 0; j < 5; j++) a.push(f[j][i]); out.push("C" + a.slice().sort(function (x, y) { return x - y; }).join("-"));
+    }
+    a = []; for (i = 0; i < 5; i++) a.push(f[i][i]); out.push("D" + a.slice().sort(function (x, y) { return x - y; }).join("-"));
+    a = []; for (i = 0; i < 5; i++) a.push(f[i][4 - i]); out.push("D" + a.slice().sort(function (x, y) { return x - y; }).join("-"));
+    out.push("E" + [f[0][0], f[0][4], f[4][0], f[4][4]].sort(function (x, y) { return x - y; }).join("-"));
+    return out;
+  }
+  function generarCatalogo(n) {
+    var usadas = {}, lista = [], intentos = 0;
+    while (lista.length < n && intentos < 20000) {
+      intentos++;
+      var f = nuevoCarton(), fm = firmas(f), ok = true;
+      for (var k = 0; k < fm.length; k++) if (usadas[fm[k]]) { ok = false; break; }
+      if (!ok) continue;
+      fm.forEach(function (x) { usadas[x] = 1; });
+      lista.push({ id: lista.length + 1, f: f });
+    }
+    return lista;
   }
   function letra(n) { return LET[Math.floor((n - 1) / 15)]; }
 
@@ -273,7 +327,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     s += '<ellipse cx="180" cy="225" rx="44" ry="13" fill="#4b2f17" opacity=".35"/>';
     s += '<rect x="148" y="203" width="64" height="24" rx="6" fill="#f3e3c0" stroke="#4b2f17" stroke-width="1.5"/>';
     // señora gorda (detrás de la mesa, mirando al público)
-    s += '<g>' +
+    s += '<g class="cuerpo-sra">' +
       '<ellipse cx="180" cy="168" rx="34" ry="30" fill="#e0457b" stroke="#4b2f17" stroke-width="1.5"/>' + // cuerpo
       '<ellipse cx="180" cy="171" rx="22" ry="18" fill="#f07aa3" opacity=".6"/>' +
       '<circle cx="180" cy="128" r="16" fill="#f1c9a0" stroke="#4b2f17" stroke-width="1.2"/>' + // cabeza
@@ -282,6 +336,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       '<circle cx="174.5" cy="128" r="1.6" fill="#2b2118"/><circle cx="185.5" cy="128" r="1.6" fill="#2b2118"/>' +
       '<circle cx="170" cy="134" r="3.2" fill="#ef8a8a" opacity=".6"/><circle cx="190" cy="134" r="3.2" fill="#ef8a8a" opacity=".6"/>' +
       '<ellipse id="boca" cx="180" cy="137" rx="4" ry="2" fill="#8a1d1d"/>' +
+      '<g id="cejas" style="display:none"><path d="M167 120L177 125M193 120L183 125" stroke="#2a1a0e" stroke-width="2.4" stroke-linecap="round"/><circle cx="170" cy="134" r="5" fill="#e63b2e" opacity=".55"/><circle cx="190" cy="134" r="5" fill="#e63b2e" opacity=".55"/></g>' +
       '</g>';
     // globo rodante
     s += '<g>' +
@@ -298,6 +353,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     // brazos de la señora hacia el globo
     s += '<path d="M150 160Q146 178 158 186M210 160Q222 172 214 183" fill="none" stroke="#f1c9a0" stroke-width="7" stroke-linecap="round"/>';
     s += '<g id="bolaSale"></g>';
+    s += '<g id="globoHabla" style="display:none"><path d="M128 50h104a8 8 0 0 1 8 8v30a8 8 0 0 1-8 8h-56l-10 14-4-14h-34a8 8 0 0 1-8-8V58a8 8 0 0 1 8-8z" fill="#fff" stroke="#b3261e" stroke-width="2"/><text x="180" y="71" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">¡Cállate la boca,</text><text x="180" y="85" text-anchor="middle" font-size="10" font-weight="800" fill="#b3261e" font-family="serif">que te escuché!</text></g>';
     s += '</g>';
     $("escena").innerHTML = s;
     for (var i = 0; i < 4; i++) {
@@ -306,10 +362,24 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
   function elegir(i) {
     if (fase !== "sentar") return;
-    mesaElegida = i;
-    miembros = FAMILIAS.map(function (F, m) { var g = F.g.slice(); if (m === i) g[0] = "Tú"; return g; });
+    mesaPend = i;
     for (var k = 0; k < 4; k++) $("mesa" + k).classList.toggle("elegida", k === i);
-    $("tuMesa").textContent = FAMILIAS[i].n + " (Mesa " + (i + 1) + ")";
+    var F = FAMILIAS[i];
+    $("senTit").textContent = "Siéntate en la Mesa " + (i + 1) + " · " + F.n;
+    try { var g = localStorage.getItem("bingoNombre"); if (g && !$("nombre").value) $("nombre").value = g; } catch (e) {}
+    $("senOpts").innerHTML = F.g.map(function (nm, k) { return '<label class="op"><input type="radio" name="lugar" value="' + k + '"' + (k === 0 ? " checked" : "") + '> Ocupar el lugar de ' + nm + "</label>"; }).join("");
+    $("sentarse").hidden = false; $("dicho").textContent = "Escribe tu nombre y escoge tu lugar en la mesa.";
+    $("sentarse").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  function sentarme() {
+    var i = mesaPend; if (i < 0 || fase !== "sentar") return;
+    var nm = ($("nombre").value || "").replace(/\s+/g, " ").trim().slice(0, 14) || "Tú";
+    miNombre = nm; try { localStorage.setItem("bingoNombre", nm); } catch (e) {}
+    var sel = document.querySelector('input[name="lugar"]:checked'); miIdx = sel ? +sel.value : 0;
+    mesaElegida = i;
+    miembros = FAMILIAS.map(function (F, m) { var g = F.g.slice(); if (m === i) g[miIdx] = nm; return g; });
+    $("tuMesa").textContent = nm + " · " + FAMILIAS[i].n + " (Mesa " + (i + 1) + ")";
+    $("sentarse").hidden = true;
     iniciarRonda();
   }
   function totalRondas() { return +$("rondas").value; }
@@ -335,20 +405,19 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     $("ultima").innerHTML = "<div><small>—</small><b>?</b></div>";
     $("go").textContent = "Empezar"; $("go").disabled = true; $("canto").disabled = false; $("rondas").disabled = true;
     pintaPote();
-    pool = []; seleccion = {};
-    for (var m = 0; m < 4; m++) { pool[m] = []; for (var k = 0; k < 8; k++) pool[m].push(nuevoCarton()); }
+    catalogo = generarCatalogo(100); seleccion = {};
+    desenojar();
     $("escoger").hidden = false;
     $("escTit").textContent = "Ronda " + ronda + ": escoge los 4 cartones de tu mesa";
-    $("escSub").textContent = "Cada mesa pone " + ANTE + " fichas: " + Math.round(ANTE * 4 * 0.1) + " van al pote y " + (ANTE * 4 - Math.round(ANTE * 4 * 0.1)) + " al ganador. Escoges tú, " + FAMILIAS[mesaElegida].n + ".";
+    $("escSub").textContent = "Hay 100 cartones distintos: desliza de lado a lado y toca los 4 que quieras. Cada mesa pone " + ANTE + " fichas: " + Math.round(ANTE * 4 * 0.1) + " van al pote y " + (ANTE * 4 - Math.round(ANTE * 4 * 0.1)) + " al ganador.";
     $("escLog").innerHTML = "";
-    $("pool").innerHTML = pool[mesaElegida].map(function (f, i) { return '<div class="pc" data-i="' + i + '" role="button" tabindex="0" aria-label="Cartón ' + (i + 1) + '">' + minicarton(f) + "</div>"; }).join("");
+    $("pool").innerHTML = catalogo.map(function (c, i) { return '<div class="pc" data-i="' + i + '" role="button" tabindex="0" aria-label="Cartón ' + c.id + '"><div class="num">Cartón N.º ' + c.id + "</div>" + minicarton(c.f) + "</div>"; }).join("");
+    $("pool").scrollLeft = 0; pintaEleg();
     Array.prototype.forEach.call($("pool").children, function (el) {
       var al = function () {
         var i = +el.getAttribute("data-i"), n = Object.keys(seleccion).length;
-        if (seleccion[i]) delete seleccion[i]; else if (n < 4) seleccion[i] = 1;
-        el.classList.toggle("sel", !!seleccion[i]);
-        var q = Object.keys(seleccion).length;
-        $("escOk").disabled = q !== 4; $("escOk").textContent = q === 4 ? "Confirmar 4 cartones" : "Escoge " + (4 - q) + " más";
+        if (seleccion[i]) delete seleccion[i]; else if (n < 4) seleccion[i] = 1; else { $("escLog").innerHTML = "<div>Ya tienes 4. Toca uno escogido para quitarlo.</div>"; return; }
+        el.classList.toggle("sel", !!seleccion[i]); pintaEleg();
       };
       el.addEventListener("click", al);
       el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); al(); } });
@@ -357,28 +426,45 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     $("dicho").textContent = "Escoge los cartones de tu mesa para empezar.";
     dibujarCarton(); dibujarCola();
   }
+  function pintaEleg() {
+    var q = Object.keys(seleccion).map(Number);
+    $("escOk").disabled = q.length !== 4; $("escOk").textContent = q.length === 4 ? "Confirmar 4 cartones" : "Escoge " + (4 - q.length) + " más";
+    $("elegidos").innerHTML = q.length ? "Tus cartones: " + q.map(function (i) { return '<span data-i="' + i + '" title="Toca para quitar">N.º ' + catalogo[i].id + " ✕</span>"; }).join("") : "Aún no has escogido ninguno.";
+    Array.prototype.forEach.call($("elegidos").querySelectorAll("span"), function (sp) {
+      sp.addEventListener("click", function () {
+        var i = +sp.getAttribute("data-i"); delete seleccion[i];
+        var el = $("pool").children[i]; if (el) el.classList.remove("sel"); pintaEleg();
+      });
+    });
+  }
+  function posCarrusel() {
+    var p = $("pool"), w = p.firstChild ? p.firstChild.getBoundingClientRect().width + 10 : 166;
+    var i = Math.round(p.scrollLeft / w) + 1; $("carrPos").textContent = "Cartón " + Math.min(100, i) + " de 100 · desliza";
+  }
   function confirmarCartones() {
     $("escOk").disabled = true;
-    var elegidos = {};
+    var elegidos = {}, usados = {};
     elegidos[mesaElegida] = Object.keys(seleccion).map(Number);
+    elegidos[mesaElegida].forEach(function (i) { usados[i] = 1; });
     var orden = [0, 1, 2, 3].filter(function (m) { return m !== mesaElegida; });
     var log = $("escLog");
     log.innerHTML = "<div>Mesa " + (mesaElegida + 1) + ": escogiste tus 4 cartones.</div>";
     orden.forEach(function (m, k) {
       setTimeout(function () {
-        var idx = barajar([0, 1, 2, 3, 4, 5, 6, 7]).slice(0, 4);
+        var libres = []; for (var q = 0; q < catalogo.length; q++) if (!usados[q]) libres.push(q);
+        var idx = barajar(libres).slice(0, 4); idx.forEach(function (i) { usados[i] = 1; });
         elegidos[m] = idx;
         var quien = miembros[m][Math.floor(Math.random() * 4)];
-        log.innerHTML += "<div>Mesa " + (m + 1) + ": " + quien + " escogió los cartones de la familia.</div>";
+        log.innerHTML += "<div>Mesa " + (m + 1) + ": " + quien + " escogió otros 4 cartones distintos.</div>";
         if (k === orden.length - 1) setTimeout(function () { cerrarEscogencia(elegidos); }, 600);
       }, 700 * (k + 1));
     });
   }
   function cerrarEscogencia(elegidos) {
     cartones = [];
-    for (var m = 0; m < 4; m++) elegidos[m].forEach(function (pi, k) { cartones.push({ mesa: m, nombre: miembros[m][k], f: pool[m][pi], sale: {}, gano: false }); });
+    for (var m = 0; m < 4; m++) elegidos[m].forEach(function (pi, k) { cartones.push({ mesa: m, nombre: miembros[m][k], f: catalogo[pi].f, id: catalogo[pi].id, sale: {}, gano: false }); });
     $("escoger").hidden = true; fase = "listo";
-    actual = cartones.findIndex(function (c) { return c.mesa === mesaElegida; });
+    actual = mesaElegida * 4 + miIdx;
     $("go").disabled = false; $("go").textContent = "Empezar";
     $("dicho").textContent = "Cartones listos. Dale a «Empezar» para que la señora saque la primera ficha.";
     dibujarCarton(); dibujarCola();
@@ -386,9 +472,9 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
 
   /* ---------- Cartones ---------- */
   function crearCartones() {
-    cartones = [];
+    cartones = []; var demo = generarCatalogo(16);
     FAMILIAS.forEach(function (F, m) {
-      F.g.forEach(function (nombre) { cartones.push({ mesa: m, nombre: nombre, f: nuevoCarton(), sale: {}, gano: false }); });
+      F.g.forEach(function (nombre) { var c = demo.shift(); cartones.push({ mesa: m, nombre: nombre, f: c.f, id: c.id, sale: {}, gano: false }); });
     });
   }
   function dibujarCarton() {
@@ -410,7 +496,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       h += "</tr>";
     }
     $("carton").innerHTML = h + "</table>";
-    $("cNombre").textContent = cd.nombre + " · " + FAMILIAS[cd.mesa].n;
+    $("cNombre").textContent = cd.nombre + " · " + FAMILIAS[cd.mesa].n + (cd.id ? " · Cartón N.º " + cd.id : "");
     $("cInfo").textContent = cd.gano ? "¡CANTÓ BINGO!" : (fz.f === 0 ? "¡Completo!" : "Le faltan " + fz.f);
   }
   function dibujarCola() {
@@ -444,7 +530,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     g.gain.setValueAtTime(.18, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .25);
     o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + .26);
   }
-  function hablar(t, fuerte) {
+  function hablar(t, fuerte, enojo) {
     if ($("voz").value !== "1" || !("speechSynthesis" in window)) return;
     try {
       var u = new SpeechSynthesisUtterance(t);
@@ -452,12 +538,26 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
       var vs = speechSynthesis.getVoices();
       var v = vs.filter(function (x) { return /es[-_]VE/i.test(x.lang); })[0] || vs.filter(function (x) { return /^es/i.test(x.lang); })[0];
       if (v) u.voice = v;
-      u.rate = fuerte ? 1.05 : .92; u.pitch = fuerte ? 1.25 : .85; u.volume = 1;
+      u.rate = enojo ? 1.15 : (fuerte ? 1.05 : .92); u.pitch = enojo ? 0.7 : (fuerte ? 1.25 : .85); u.volume = 1;
       speechSynthesis.speak(u);
     } catch (e) {}
   }
 
   /* ---------- Juego ---------- */
+  function enojar() {
+    var c = $("centro"); if (!c) return;
+    c.classList.add("enojada"); $("cejas").style.display = ""; $("globoHabla").style.display = "";
+    var rg = $("regano"); rg.hidden = false; rg.textContent = "La señora del globo: «¡Cállate la boca, que te escuché!»";
+    hablaBoca(); setTimeout(hablaBoca, 1100);
+    hablar("¡Cállate la boca, que te escuché!", true, true);
+    ruidoGrito();
+  }
+  function desenojar() {
+    var c = $("centro"); if (!c) return;
+    c.classList.remove("enojada"); $("cejas").style.display = "none"; $("globoHabla").style.display = "none";
+    var rg = $("regano"); if (rg) { rg.hidden = true; rg.textContent = ""; }
+    clearTimeout(tEnojo);
+  }
   function hablaBoca() {
     var b = $("boca"); if (!b) return; var k = 0;
     var iv = setInterval(function () { b.setAttribute("ry", k % 2 ? 2 : 4.5); if (++k > 7) { clearInterval(iv); b.setAttribute("ry", 2); } }, 130);
@@ -500,6 +600,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     ruidoGrito(); confeti();
     hablar("¡Bingooo!", true);
     setTimeout(function () { hablar("¡Bingo, bingo, bingo!", true); ruidoGrito(); }, 1400);
+    tEnojo = setTimeout(enojar, $("voz").value === "1" ? 4200 : 2800);
     var gm = Object.keys(mesas).map(Number), premio = ANTE * 4 - Math.round(ANTE * 4 * 0.1), ult = ronda >= totalRondas();
     var parte = Math.floor(premio / gm.length), txt = " Ganó " + parte + " fichas" + (gm.length > 1 ? " cada mesa" : "") + ".";
     if (ult) { var pp = Math.floor(pote / gm.length); gm.forEach(function (m) { fichas[m] += pp; }); txt += " ¡Y se llevó el POTE de " + pote + " fichas!"; pote = 0; }
@@ -544,7 +645,7 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   }
   function nueva() {
     parar(); terminado = false; fase = "sentar"; ronda = 0; fichas = [1000, 1000, 1000, 1000]; pote = 0; mesaElegida = -1; cartones = [];
-    $("escoger").hidden = true; $("rondas").disabled = false; $("tuMesa").textContent = "toca una mesa para sentarte";
+    $("escoger").hidden = true; $("sentarse").hidden = true; mesaPend = -1; desenojar(); $("rondas").disabled = false; $("tuMesa").textContent = "toca una mesa para sentarte";
     for (var q = 0; q < 4; q++) $("mesa" + q).classList.remove("elegida");
     pintaPote();
     if ("speechSynthesis" in window) try { speechSynthesis.cancel(); } catch (e) {}
@@ -567,6 +668,12 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
   });
   $("nuevo").addEventListener("click", nueva);
   $("escOk").addEventListener("click", confirmarCartones);
+  $("senOk").addEventListener("click", sentarme);
+  $("senNo").addEventListener("click", function () { $("sentarse").hidden = true; mesaPend = -1; for (var k = 0; k < 4; k++) $("mesa" + k).classList.remove("elegida"); $("dicho").textContent = "Toca una mesa de la cancha para sentarte con esa familia."; });
+  $("nombre").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); sentarme(); } });
+  $("carrAnt").addEventListener("click", function () { $("pool").scrollBy({ left: -330, behavior: "smooth" }); });
+  $("carrSig").addEventListener("click", function () { $("pool").scrollBy({ left: 330, behavior: "smooth" }); });
+  $("pool").addEventListener("scroll", posCarrusel, { passive: true });
   $("rondas").addEventListener("change", pintaPote);
   $("canto").addEventListener("change", function () { dibujarCarton(); dibujarCola(); });
   $("vel").addEventListener("change", function () { if (corriendo) { clearInterval(timer); timer = setInterval(sacar, +$("vel").value); } });
