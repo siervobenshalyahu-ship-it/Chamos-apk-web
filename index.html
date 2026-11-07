@@ -453,6 +453,64 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   </div>
 </section>
 
+<section id="opinion" class="opinion">
+  <div class="wrap">
+    <h2>Danos tu opinión</h2>
+    <p class="op-sub">Estamos mejorando Chamos. Cuéntanos qué te gusta, qué falla o qué quisieras que tuviera.</p>
+    <form id="form-opinion" autocomplete="off">
+      <input type="text" id="op-nombre" maxlength="60" placeholder="Tu nombre (opcional)" aria-label="Tu nombre (opcional)">
+      <textarea id="op-texto" maxlength="1000" rows="4" placeholder="Escribe tu opinión aquí…" aria-label="Tu opinión" required></textarea>
+      <input type="text" id="op-web" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0">
+      <div class="op-fila">
+        <span class="op-cont" id="op-cont">0 / 1000</span>
+        <button type="submit" class="btn solid" id="op-enviar">Enviar</button>
+      </div>
+      <p class="op-msg" id="op-msg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<style>
+.opinion { padding: 56px 16px; }
+.opinion .wrap { max-width: 640px; margin: 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 28px 20px; }
+.opinion h2 { margin: 0 0 6px; font-family: var(--font-serif); font-size: 28px; color: var(--ink); }
+.opinion .op-sub { margin: 0 0 18px; color: var(--muted); line-height: 1.5; }
+.opinion input[type=text], .opinion textarea { width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--ink); font: inherit; }
+.opinion textarea { resize: vertical; min-height: 110px; }
+.opinion input:focus, .opinion textarea:focus { outline: 2px solid var(--amber-soft); }
+.opinion .op-fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.opinion .op-cont { color: var(--muted); font-size: 13px; }
+.opinion .op-msg { min-height: 1.4em; margin: 12px 0 0; color: var(--amber); }
+.opinion .op-msg.error { color: #ff8a80; }
+</style>
+<script>
+(function () {
+  var URL_OP = "https://chamos-push.siervodeyhwh57.workers.dev/opinion";
+  var f = document.getElementById("form-opinion");
+  if (!f) return;
+  var t = document.getElementById("op-texto"), n = document.getElementById("op-nombre");
+  var c = document.getElementById("op-cont"), b = document.getElementById("op-enviar"), m = document.getElementById("op-msg");
+  t.addEventListener("input", function () { c.textContent = t.value.length + " / 1000"; });
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var texto = t.value.trim();
+    if (texto.length < 3) { m.className = "op-msg error"; m.textContent = "Escribe tu opinión antes de enviar."; return; }
+    b.disabled = true; m.className = "op-msg"; m.textContent = "Enviando…";
+    fetch(URL_OP, {
+      method: "POST",
+      headers: { "content-type": "text/plain" },
+      body: JSON.stringify({ texto: texto, nombre: n.value.trim(), web: document.getElementById("op-web").value })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (r) {
+        if (r.ok) { m.textContent = "¡Gracias! Recibimos tu opinión."; t.value = ""; c.textContent = "0 / 1000"; }
+        else { m.className = "op-msg error"; m.textContent = (r.j && r.j.error) || "No se pudo enviar. Inténtalo otra vez."; }
+      })
+      .catch(function () { m.className = "op-msg error"; m.textContent = "No se pudo enviar. Revisa tu conexión."; })
+      .then(function () { b.disabled = false; });
+  });
+})();
+</script>
+
 <div class="flag" aria-hidden="true"></div>
 <footer>
   <div class="wrap">
