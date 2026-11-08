@@ -588,7 +588,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 <script>
 /* Chamos IA: chat público que solo conversa. Habla con el Worker de Cloudflare. */
 (function () {
-  var URL_IA = "https://bitter-bread-d90c.siervodeyhwh57.workers.dev";
+  var URL_IA = "https://chamos-push.siervodeyhwh57.workers.dev/ia";
   var btn = document.getElementById("chamos-ia");
   var panel = document.getElementById("ia-panel");
   if (!btn || !panel) return;
@@ -627,11 +627,11 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     historial.push({ rol: "user", texto: texto });
     ocupado = true; enviarBtn.disabled = true;
     var espera = burbuja("bot", "Escribiendo…");
-    fetch(URL_IA, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ messages: historial.slice(-8).map(function (m) { return { role: m.rol, content: m.texto }; }) }) })
+    fetch(URL_IA, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ mensajes: historial.slice(-8) }) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (x) {
-        if (x.ok && x.d.text) { espera.textContent = x.d.text; historial.push({ rol: "assistant", texto: x.d.text }); }
-        else { espera.textContent = x.d.text || x.d.error || "No pude responder ahora. Intenta otra vez."; historial.pop(); }
+        if (x.ok && x.d.respuesta) { espera.textContent = x.d.respuesta; historial.push({ rol: "assistant", texto: x.d.respuesta }); }
+        else { espera.textContent = (x.d.error || "No pude responder ahora. Intenta otra vez.") + (x.d.detalle ? "\n\n[detalle: " + x.d.detalle + "]" : ""); historial.pop(); }
       })
       .catch(function () { espera.textContent = "Se cortó la conexión. Intenta otra vez."; historial.pop(); })
       .then(function () { ocupado = false; enviarBtn.disabled = false; lista.scrollTop = lista.scrollHeight; campo.focus(); });
