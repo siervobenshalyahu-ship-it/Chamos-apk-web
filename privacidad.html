@@ -27,6 +27,7 @@ a { color:var(--acc); } ul { padding-left:20px; }
 <li><b>Tu número de teléfono (opcional).</b> Si lo vinculas, se verifica con un bot de Telegram y se guarda <b>cifrado</b>, solo para que tus contactos te encuentren por número.</li>
 <li><b>Fotos, videos y notas de voz.</b> Los que publicas se guardan en el servidor Matrix. Los videos de Estados (24 horas) y de Videos Chamos (12 horas) pasan por el servidor de Chamos (Cloudflare) y se borran solos al vencer el tiempo.</li>
 <li><b>Notificaciones.</b> Se usa un identificador del teléfono (Firebase Cloud Messaging) solo para avisarte de mensajes nuevos.</li>
+<li><b>Instalación de la app.</b> Al abrir Chamos se cuenta la instalación: modelo del teléfono, versión de la app, país aproximado y si la app es la oficial. Se usa un identificador aleatorio; no incluye tu nombre, tu número ni tus mensajes.</li>
 <li><b>Descargas y visitas de la web.</b> Se cuentan sin cookies; puede guardarse la dirección IP, el país y el modelo del dispositivo, solo para saber cuánta gente usa Chamos.</li>
 </ul>
 
