@@ -1,0 +1,8 @@
+Lista de música para los estados de Chamos.
+Sube tus mp3 a esta carpeta (musica/) y agrégalos en catalogo.json así:
+
+[
+  {"titulo": "Nombre de la canción", "autor": "Artista", "url": "https://siervobenshalyahu-ship-it.github.io/Chamos-apk-web/musica/mi-cancion.mp3"}
+]
+
+La app lee este archivo al abrir la lista, así que no hace falta recompilar. Usa solo música que tengas permiso de usar.
