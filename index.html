@@ -264,6 +264,20 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 @media (max-width: 480px) { .ia-panel { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; } body.ia-abierto { overflow: hidden; } }
 .banner-hebreo{margin:22px auto 8px;max-width:1120px}
 .banner-hebreo img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+
+.reg-fondo{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,5,18,.82);backdrop-filter:blur(6px)}
+.reg-fondo.on{display:flex}
+.reg-caja{width:100%;max-width:400px;background:linear-gradient(160deg,#0d1236,#1a0f3d);border:1.5px solid #29c5ff;border-radius:20px;padding:26px 22px;box-shadow:0 0 28px rgba(41,197,255,.35),0 0 60px rgba(155,92,255,.25);position:relative}
+.reg-caja h3{margin:0 0 6px;font-size:1.5rem;background:linear-gradient(90deg,#29c5ff,#9b5cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.reg-caja p{margin:0 0 16px;color:#b8c0ff;font-size:.95rem}
+.reg-caja label{display:block;font-size:.85rem;color:#b8c0ff;margin:10px 0 4px}
+.reg-caja input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(41,197,255,.5);background:#070a1f;color:#fff;font-size:16px;font-family:inherit}
+.reg-caja input:focus{outline:2px solid #9b5cff;border-color:#9b5cff}
+.reg-go{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;font-weight:800;font-size:16px;color:#fff;cursor:pointer;background:linear-gradient(90deg,#29c5ff,#9b5cff);box-shadow:0 0 18px rgba(41,197,255,.45)}
+.reg-go:disabled{opacity:.6}
+.reg-x{position:absolute;top:10px;right:14px;background:none;border:0;color:#b8c0ff;font-size:26px;cursor:pointer}
+.reg-msg{min-height:1.2em;margin-top:10px;font-size:.9rem;color:#ff8fa3}
+.reg-msg.ok{color:#7dffb0}
 </style>
 </head>
 <body>
@@ -290,7 +304,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         <figure class="banner-hebreo"><img src="img/hebreo-banner.jpg" width="1600" height="834" alt="El hebreo venezolano y sus amigos salen corriendo de WhatsApp rumbo a Chamos" loading="eager"></figure>
       <p class="lead">Aquí hablamos como somos. Chamos reúne a los tuyos en un solo lugar: mensajes privados, grupos, fotos, llamadas y videos, con la identidad de la calle, la mesa y la música venezolanas.</p>
       <div class="cta-row">
-        <a class="btn solid" href="https://github.com/siervobenshalyahu-ship-it/Chamos/releases/latest/download/Chamos.apk">Descargar para Android</a>
+        <a class="btn solid" id="btn-descargar" href="#registro" data-registro="1">Descargar para Android</a>
         <a class="btn ia" id="chamos-ia" href="#" data-url="" aria-label="Abrir Chamos IA"><img src="img/chamos-ia.png" width="28" height="28" alt="" style="border-radius:8px;vertical-align:middle;margin-right:8px">Chamos IA</a>
         <a class="btn" href="#app">Conocer la app</a>
       </div>
@@ -926,6 +940,53 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         }
       }).catch(function () {});
   } catch (e) {}
+})();
+</script>
+
+<div class="reg-fondo" id="reg-fondo" role="dialog" aria-modal="true" aria-labelledby="reg-t">
+  <form class="reg-caja" id="reg-form" autocomplete="on">
+    <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
+    <h3 id="reg-t">Regístrate para descargar</h3>
+    <p>Pon tu nombre y tu correo y la descarga de Chamos empieza al instante.</p>
+    <label for="reg-nombre">Nombre</label>
+    <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
+    <label for="reg-email">Correo</label>
+    <input id="reg-email" name="email" type="email" autocomplete="email" required maxlength="120">
+    <button class="reg-go" id="reg-go" type="submit">Registrarme y descargar</button>
+    <div class="reg-msg" id="reg-msg" role="status"></div>
+  </form>
+</div>
+<script>
+(function () {
+  var W = "https://chamos-push.siervodeyhwh57.workers.dev";
+  var f = document.getElementById("reg-fondo"), form = document.getElementById("reg-form"),
+      msg = document.getElementById("reg-msg"), go = document.getElementById("reg-go");
+  function abrir() { f.classList.add("on"); setTimeout(function () { var n = document.getElementById("reg-nombre"); if (!n.value) n.focus(); }, 50);
+    try { document.getElementById("reg-nombre").value = localStorage.getItem("chamos_reg_n") || ""; document.getElementById("reg-email").value = localStorage.getItem("chamos_reg_e") || ""; } catch (e) {} }
+  function cerrar() { f.classList.remove("on"); }
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("[data-registro]");
+    if (a) { ev.preventDefault(); msg.textContent = ""; abrir(); }
+  });
+  document.getElementById("reg-x").onclick = cerrar;
+  f.addEventListener("click", function (e) { if (e.target === f) cerrar(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = document.getElementById("reg-nombre").value, m = document.getElementById("reg-email").value;
+    go.disabled = true; msg.className = "reg-msg"; msg.textContent = "Registrando…";
+    fetch(W + "/web/registro", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ nombre: n, email: m }) })
+      .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); })
+      .then(function (j) {
+        go.disabled = false;
+        if (!j.ok) { msg.textContent = j.error || "No se pudo registrar"; return; }
+        try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
+        msg.className = "reg-msg ok"; msg.textContent = "¡Listo! Tu descarga está empezando…";
+        location.href = j.url;
+        setTimeout(cerrar, 2500);
+      })
+      .catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+  });
 })();
 </script>
 </body>
