@@ -635,23 +635,38 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   document.getElementById("ia-cerrar").addEventListener("click", cerrar);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) cerrar(); });
 
+  var paso = 1;
+  function post(ruta, cuerpo) {
+    return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
+  }
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var texto = campo.value.trim();
-    if (!texto || ocupado) return;
-    campo.value = "";
-    burbuja("yo", texto);
-    historial.push({ rol: "user", texto: texto });
-    ocupado = true; enviarBtn.disabled = true;
-    var espera = burbuja("bot", "Escribiendo…");
-    fetch(URL_IA, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ mensajes: historial.slice(-8) }) })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
-      .then(function (x) {
-        if (x.ok && x.d.respuesta) { espera.textContent = x.d.respuesta; historial.push({ rol: "assistant", texto: x.d.respuesta }); }
-        else { espera.textContent = (x.d.error || "No pude responder ahora. Intenta otra vez.") + (x.d.detalle ? "\n\n[detalle: " + x.d.detalle + "]" : ""); historial.pop(); }
-      })
-      .catch(function () { espera.textContent = "Se cortó la conexión. Intenta otra vez."; historial.pop(); })
-      .then(function () { ocupado = false; enviarBtn.disabled = false; lista.scrollTop = lista.scrollHeight; campo.focus(); });
+    var n = document.getElementById("reg-nombre").value, m = document.getElementById("reg-email").value;
+    go.disabled = true; msg.className = "reg-msg";
+    if (paso === 1) {
+      msg.textContent = "Enviando código…";
+      post("/web/registro", { nombre: n, email: m }).then(function (j) {
+        go.disabled = false;
+        if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
+        try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
+        paso = 2;
+        document.getElementById("reg-paso2").style.display = "block";
+        document.getElementById("reg-sub").textContent = "Te enviamos un código a " + m + ". Revisa tu bandeja y también Spam.";
+        go.textContent = "Verificar y descargar";
+        document.getElementById("reg-codigo").focus();
+        msg.className = "reg-msg ok"; msg.textContent = "Código enviado.";
+      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+    } else {
+      msg.textContent = "Verificando…";
+      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value }).then(function (j) {
+        go.disabled = false;
+        if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
+        msg.className = "reg-msg ok"; msg.textContent = "¡Verificado! Tu descarga está empezando…";
+        location.href = j.url;
+        setTimeout(cerrar, 2500);
+      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+    }
   });
 })();
 </script>
@@ -947,12 +962,16 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <form class="reg-caja" id="reg-form" autocomplete="on">
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
     <h3 id="reg-t">Regístrate para descargar</h3>
-    <p>Pon tu nombre y tu correo. Te enviamos el enlace de descarga al correo.</p>
+    <p id="reg-sub">Pon tu nombre y tu correo. Te enviamos un código para liberar la descarga.</p>
     <label for="reg-nombre">Nombre</label>
     <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
     <label for="reg-email">Correo</label>
     <input id="reg-email" name="email" type="email" autocomplete="email" required maxlength="120">
-    <button class="reg-go" id="reg-go" type="submit">Enviarme el enlace</button>
+    <div id="reg-paso2" style="display:none">
+      <label for="reg-codigo">Código de 6 números que te llegó al correo</label>
+      <input id="reg-codigo" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" style="letter-spacing:8px;text-align:center;font-size:22px">
+    </div>
+    <button class="reg-go" id="reg-go" type="submit">Enviarme el código</button>
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
@@ -966,7 +985,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   function cerrar() { f.classList.remove("on"); }
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("[data-registro]");
-    if (a) { ev.preventDefault(); msg.textContent = ""; abrir(); }
+    if (a) { ev.preventDefault(); msg.textContent = ""; paso = 1; document.getElementById("reg-paso2").style.display = "none"; go.textContent = "Enviarme el código"; abrir(); }
   });
   document.getElementById("reg-x").onclick = cerrar;
   f.addEventListener("click", function (e) { if (e.target === f) cerrar(); });
