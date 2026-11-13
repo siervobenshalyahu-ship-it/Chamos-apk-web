@@ -947,12 +947,12 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <form class="reg-caja" id="reg-form" autocomplete="on">
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
     <h3 id="reg-t">Regístrate para descargar</h3>
-    <p>Pon tu nombre y tu correo y la descarga de Chamos empieza al instante.</p>
+    <p>Pon tu nombre y tu correo. Te enviamos el enlace de descarga al correo.</p>
     <label for="reg-nombre">Nombre</label>
     <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
     <label for="reg-email">Correo</label>
     <input id="reg-email" name="email" type="email" autocomplete="email" required maxlength="120">
-    <button class="reg-go" id="reg-go" type="submit">Registrarme y descargar</button>
+    <button class="reg-go" id="reg-go" type="submit">Enviarme el enlace</button>
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
@@ -981,9 +981,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "No se pudo registrar"; return; }
         try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
-        msg.className = "reg-msg ok"; msg.textContent = "¡Listo! Tu descarga está empezando…";
-        location.href = j.url;
-        setTimeout(cerrar, 2500);
+        msg.className = "reg-msg ok"; msg.textContent = "¡Listo! Te enviamos un correo con el enlace de descarga. Revisa tu bandeja y también Spam.";
       })
       .catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
   });
