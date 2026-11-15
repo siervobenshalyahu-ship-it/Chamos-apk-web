@@ -276,6 +276,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 .reg-go{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;font-weight:800;font-size:16px;color:#fff;cursor:pointer;background:linear-gradient(90deg,#29c5ff,#9b5cff);box-shadow:0 0 18px rgba(41,197,255,.45)}
 .reg-go:disabled{opacity:.6}
 .reg-x{position:absolute;top:10px;right:14px;background:none;border:0;color:#b8c0ff;font-size:26px;cursor:pointer}
+.reg-aviso{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(155,92,255,.18);border:1px solid rgba(155,92,255,.5);color:#e6dcff;font-size:.88rem}
 .reg-msg{min-height:1.2em;margin-top:10px;font-size:.9rem;color:#ff8fa3}
 .reg-msg.ok{color:#7dffb0}
 </style>
@@ -653,7 +654,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         if (j.manual) {
           document.getElementById("reg-sub").textContent = "¡Gracias, " + n + "!";
           go.style.display = "none";
-          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te enviaremos el enlace de descarga de Chamos a " + m + " en cuanto lo tengamos listo, revisa tu correo (y Spam).";
+          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te responderemos con el enlace de descarga a " + m + " en un máximo de 24 horas. Revisa tu correo y también Spam.";
           return;
         }
         paso = 2;
@@ -969,6 +970,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
     <h3 id="reg-t">Regístrate para descargar</h3>
     <p id="reg-sub">Pon tu nombre y tu correo y te enviamos el enlace de descarga de Chamos.</p>
+    <p class="reg-aviso">⏳ Por los momentos estamos trabajando de forma manual: respondemos cada solicitud en un máximo de <b>24 horas</b>.</p>
     <label for="reg-nombre">Nombre</label>
     <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
     <label for="reg-email">Correo</label>
