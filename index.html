@@ -636,45 +636,6 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   document.getElementById("ia-cerrar").addEventListener("click", cerrar);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) cerrar(); });
 
-  var paso = 1;
-  function post(ruta, cuerpo) {
-    return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
-      .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
-  }
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var n = document.getElementById("reg-nombre").value, m = document.getElementById("reg-email").value;
-    go.disabled = true; msg.className = "reg-msg";
-    if (paso === 1) {
-      msg.textContent = "Enviando código…";
-      post("/web/registro", { nombre: n, email: m }).then(function (j) {
-        go.disabled = false;
-        if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
-        try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
-        if (j.manual) {
-          document.getElementById("reg-sub").textContent = "¡Gracias, " + n + "!";
-          go.style.display = "none";
-          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te responderemos con el enlace de descarga a " + m + " en un máximo de 24 horas. Revisa tu correo y también Spam.";
-          return;
-        }
-        paso = 2;
-        document.getElementById("reg-paso2").style.display = "block";
-        document.getElementById("reg-sub").textContent = "Te enviamos un código a " + m + ". Revisa tu bandeja y también Spam.";
-        go.textContent = "Verificar y descargar";
-        document.getElementById("reg-codigo").focus();
-        msg.className = "reg-msg ok"; msg.textContent = "Código enviado.";
-      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
-    } else {
-      msg.textContent = "Verificando…";
-      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value }).then(function (j) {
-        go.disabled = false;
-        if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
-        msg.className = "reg-msg ok"; msg.textContent = "¡Verificado! Tu descarga está empezando…";
-        location.href = j.url;
-        setTimeout(cerrar, 2500);
-      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
-    }
-  });
 })();
 </script>
 <script>
@@ -969,8 +930,8 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <form class="reg-caja" id="reg-form" autocomplete="on">
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
     <h3 id="reg-t">Regístrate para descargar</h3>
-    <p id="reg-sub">Pon tu nombre y tu correo y te enviamos el enlace de descarga de Chamos.</p>
-    <p class="reg-aviso">⏳ Por los momentos estamos trabajando de forma manual: respondemos cada solicitud en un máximo de <b>24 horas</b>.</p>
+    <p id="reg-sub">Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de Chamos.</p>
+    <p class="reg-aviso">📩 El código llega en menos de un minuto. Si no lo ves, revisa también la carpeta de <b>Spam</b>.</p>
     <label for="reg-nombre">Nombre</label>
     <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
     <label for="reg-email">Correo</label>
@@ -979,7 +940,8 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <label for="reg-codigo">Código de 6 números que te llegó al correo</label>
       <input id="reg-codigo" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" style="letter-spacing:8px;text-align:center;font-size:22px">
     </div>
-    <button class="reg-go" id="reg-go" type="submit">Registrarme</button>
+    <button class="reg-go" id="reg-go" type="submit">Enviarme el código</button>
+    <button type="button" id="reg-otro" style="display:none;background:none;border:0;color:#9fb3ff;text-decoration:underline;margin-top:10px;font:inherit;cursor:pointer">Cambiar el correo o pedir otro código</button>
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
@@ -987,30 +949,66 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 (function () {
   var W = "https://chamos-push.siervodeyhwh57.workers.dev";
   var f = document.getElementById("reg-fondo"), form = document.getElementById("reg-form"),
-      msg = document.getElementById("reg-msg"), go = document.getElementById("reg-go");
-  function abrir() { f.classList.add("on"); setTimeout(function () { var n = document.getElementById("reg-nombre"); if (!n.value) n.focus(); }, 50);
-    try { document.getElementById("reg-nombre").value = localStorage.getItem("chamos_reg_n") || ""; document.getElementById("reg-email").value = localStorage.getItem("chamos_reg_e") || ""; } catch (e) {} }
+      msg = document.getElementById("reg-msg"), go = document.getElementById("reg-go"),
+      sub = document.getElementById("reg-sub"), paso2 = document.getElementById("reg-paso2"),
+      otro = document.getElementById("reg-otro"), paso = 1;
+  var SUB1 = "Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de Chamos.";
+  function post(ruta, cuerpo) {
+    return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
+  }
+  function paso1() {
+    paso = 1; paso2.style.display = "none"; otro.style.display = "none"; go.style.display = "";
+    go.textContent = "Enviarme el código"; sub.textContent = SUB1; msg.textContent = ""; msg.className = "reg-msg";
+    document.getElementById("reg-codigo").value = "";
+  }
+  function abrir() {
+    f.classList.add("on");
+    try { document.getElementById("reg-nombre").value = localStorage.getItem("chamos_reg_n") || ""; document.getElementById("reg-email").value = localStorage.getItem("chamos_reg_e") || ""; } catch (e) {}
+    setTimeout(function () { var n = document.getElementById("reg-nombre"); if (!n.value) n.focus(); }, 50);
+  }
   function cerrar() { f.classList.remove("on"); }
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("[data-registro]");
-    if (a) { ev.preventDefault(); msg.textContent = ""; paso = 1; go.style.display = ""; document.getElementById("reg-paso2").style.display = "none"; go.textContent = "Registrarme"; abrir(); }
+    if (a) { ev.preventDefault(); paso1(); abrir(); }
   });
+  otro.addEventListener("click", paso1);
   document.getElementById("reg-x").onclick = cerrar;
   f.addEventListener("click", function (e) { if (e.target === f) cerrar(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var n = document.getElementById("reg-nombre").value, m = document.getElementById("reg-email").value;
-    go.disabled = true; msg.className = "reg-msg"; msg.textContent = "Registrando…";
-    fetch(W + "/web/registro", { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify({ nombre: n, email: m }) })
-      .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); })
-      .then(function (j) {
+    go.disabled = true; msg.className = "reg-msg";
+    if (paso === 1) {
+      msg.textContent = "Enviando el código…";
+      post("/web/registro", { nombre: n, email: m }).then(function (j) {
         go.disabled = false;
-        if (!j.ok) { msg.textContent = j.error || "No se pudo registrar"; return; }
+        if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
         try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
-        msg.className = "reg-msg ok"; msg.textContent = "¡Listo! Te enviamos un correo con el enlace de descarga. Revisa tu bandeja y también Spam.";
-      })
-      .catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+        if (j.manual) {
+          sub.textContent = "¡Gracias, " + n + "!";
+          go.style.display = "none";
+          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te responderemos con el enlace de descarga a " + m + " en un máximo de 24 horas. Revisa tu correo y también Spam.";
+          return;
+        }
+        paso = 2;
+        paso2.style.display = "block"; otro.style.display = "inline-block";
+        sub.textContent = "Te enviamos un código de 6 números a " + m + ". Escríbelo aquí para entrar a la descarga.";
+        go.textContent = "Verificar y descargar";
+        document.getElementById("reg-codigo").focus();
+        msg.className = "reg-msg ok"; msg.textContent = "Código enviado. Revisa tu bandeja y también Spam.";
+      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+    } else {
+      msg.textContent = "Verificando…";
+      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value.trim() }).then(function (j) {
+        go.disabled = false;
+        if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
+        msg.className = "reg-msg ok"; msg.textContent = "¡Verificado! Tu descarga está empezando…";
+        location.href = j.url;
+        setTimeout(cerrar, 2500);
+      }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
+    }
   });
 })();
 </script>
