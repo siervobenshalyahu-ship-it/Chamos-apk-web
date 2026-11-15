@@ -650,6 +650,12 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
         try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
+        if (j.manual) {
+          document.getElementById("reg-sub").textContent = "¡Gracias, " + n + "!";
+          go.style.display = "none";
+          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te enviaremos el enlace de descarga de Chamos a " + m + " en cuanto lo tengamos listo, revisa tu correo (y Spam).";
+          return;
+        }
         paso = 2;
         document.getElementById("reg-paso2").style.display = "block";
         document.getElementById("reg-sub").textContent = "Te enviamos un código a " + m + ". Revisa tu bandeja y también Spam.";
@@ -962,7 +968,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <form class="reg-caja" id="reg-form" autocomplete="on">
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
     <h3 id="reg-t">Regístrate para descargar</h3>
-    <p id="reg-sub">Pon tu nombre y tu correo. Te enviamos un código para liberar la descarga.</p>
+    <p id="reg-sub">Pon tu nombre y tu correo y te enviamos el enlace de descarga de Chamos.</p>
     <label for="reg-nombre">Nombre</label>
     <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
     <label for="reg-email">Correo</label>
@@ -971,7 +977,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       <label for="reg-codigo">Código de 6 números que te llegó al correo</label>
       <input id="reg-codigo" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" style="letter-spacing:8px;text-align:center;font-size:22px">
     </div>
-    <button class="reg-go" id="reg-go" type="submit">Enviarme el código</button>
+    <button class="reg-go" id="reg-go" type="submit">Registrarme</button>
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
@@ -985,7 +991,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   function cerrar() { f.classList.remove("on"); }
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("[data-registro]");
-    if (a) { ev.preventDefault(); msg.textContent = ""; paso = 1; document.getElementById("reg-paso2").style.display = "none"; go.textContent = "Enviarme el código"; abrir(); }
+    if (a) { ev.preventDefault(); msg.textContent = ""; paso = 1; go.style.display = ""; document.getElementById("reg-paso2").style.display = "none"; go.textContent = "Registrarme"; abrir(); }
   });
   document.getElementById("reg-x").onclick = cerrar;
   f.addEventListener("click", function (e) { if (e.target === f) cerrar(); });
