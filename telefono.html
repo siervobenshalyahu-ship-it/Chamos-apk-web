@@ -51,6 +51,11 @@ iframe{width:100%;height:240px;border:0;border-radius:10px;margin-top:10px}
         h += '<iframe loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=' + (lo - d) + "," + (la - d) + "," + (lo + d) + "," + (la + d) + "&layer=mapnik&marker=" + la + "," + lo + '"></iframe>';
         h += '<p><a style="color:#ffcc00" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=' + la + "&mlon=" + lo + "#map=17/" + la + "/" + lo + '">Abrir mapa grande</a></p>';
       } else { h += "Aún no ha enviado su ubicación."; }
+      h += '<p style="margin-bottom:0"><b>🔔 Alarma</b></p>';
+      h += '<input class="msg" data-id="' + esc(t.device_id) + '" maxlength="140" placeholder="Mensaje para quien lo tenga" value="Este teléfono está perdido. Por favor devuélvelo a su dueño.">';
+      if (t.alarma_hasta && t.alarma_hasta > Date.now()) h += "<small>Alarma pendiente: sonará cuando el teléfono se conecte (hasta ~15 minutos).</small>";
+      h += '<button data-alarma="1" data-id="' + esc(t.device_id) + '">Hacer sonar la alarma</button>';
+      h += '<button class="sec" data-alarma="0" data-id="' + esc(t.device_id) + '">Cancelar alarma</button>';
       h += "</div>";
     });
     $("lista").innerHTML = h;
@@ -83,6 +88,18 @@ iframe{width:100%;height:240px;border:0;border-radius:10px;margin-top:10px}
       })
       .catch(function () { $("entrar").disabled = false; $("err").textContent = "Sin conexión. Intenta otra vez."; });
   };
+  $("lista").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-alarma]");
+    if (!b || !token) return;
+    var id = b.getAttribute("data-id"), on = b.getAttribute("data-alarma") === "1";
+    var campo = $("lista").querySelector('input.msg[data-id="' + id + '"]');
+    b.disabled = true;
+    fetch(W + "/telefono/alarma", { method: "POST", headers: { authorization: "Bearer " + token, "content-type": "application/json" },
+      body: JSON.stringify({ id: id, on: on, msg: campo ? campo.value : "" }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { alert(j.ok ? (on ? "Listo. La alarma sonará cuando el teléfono se conecte (hasta ~15 minutos) y se verá tu mensaje." : "Alarma cancelada.") : (j.error || "No se pudo.")); b.disabled = false; cargar(); })
+      .catch(function () { alert("Sin conexión. Intenta otra vez."); b.disabled = false; });
+  });
   $("recargar").onclick = cargar;
   $("salir").onclick = cerrar;
   window.addEventListener("pagehide", function () { if (token) cerrar(); });
