@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mi teléfono · Chamos</title>
+<style>
+:root{color-scheme:dark}
+body{margin:0;background:#0f1115;color:#f2f2f2;font-family:system-ui,sans-serif;padding:16px;box-sizing:border-box}
+main{max-width:460px;margin:0 auto}
+h1{font-size:1.4rem}
+p,small{color:#c9ccd3;line-height:1.5}
+input,button{font:inherit;padding:12px 14px;border-radius:10px;border:1px solid #2b3140;background:#171a21;color:#fff;width:100%;box-sizing:border-box;margin-top:10px}
+button{background:#ffcc00;color:#111;font-weight:700;border:0;cursor:pointer}
+button.sec{background:#232836;color:#fff}
+.tel{background:#171a21;border-radius:14px;padding:14px;margin-top:14px}
+iframe{width:100%;height:240px;border:0;border-radius:10px;margin-top:10px}
+#err{color:#ff8a8a}
+</style></head><body><main>
+<h1>📍 Mi teléfono</h1>
+<div id="login">
+  <p>Entra con tu cuenta de Chamos para ver dónde está tu teléfono. Tu contraseña va directo al servidor de tu cuenta (matrix.org): no pasa por Chamos ni se guarda aquí.</p>
+  <input id="u" placeholder="Tu usuario (por ejemplo: pedro o @pedro:matrix.org)" autocomplete="username" autocapitalize="none">
+  <input id="p" type="password" placeholder="Tu contraseña" autocomplete="current-password">
+  <button id="entrar">Entrar</button>
+  <p id="err"></p>
+  <small>Solo aparecen teléfonos donde activaste "Mi teléfono" en Ajustes de la app. Si no activaste esa opción antes, no hay nada que ver.</small>
+</div>
+<div id="panel" hidden>
+  <div id="lista"></div>
+  <button class="sec" id="recargar">Actualizar</button>
+  <button class="sec" id="salir">Salir y cerrar sesión</button>
+  <small>La ubicación se actualiza más o menos cada 15 minutos mientras el teléfono tenga internet.</small>
+</div>
+<script>
+(function () {
+  var MX = "https://matrix-client.matrix.org/_matrix/client/v3";
+  var W = "https://chamos-push.siervodeyhwh57.workers.dev";
+  var token = null;
+  var $ = function (i) { return document.getElementById(i); };
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function usuario(v) { v = v.trim(); return v.charAt(0) === "@" ? v.slice(1).split(":")[0] : v; }
+  function cuando(ts) { return ts ? new Date(ts).toLocaleString("es-VE", { timeZone: "America/Caracas" }) : "sin ubicación aún"; }
+  function pintar(tels) {
+    var h = "";
+    if (!tels.length) h = "<p>No hay teléfonos con \"Mi teléfono\" activado en esta cuenta.</p>";
+    tels.forEach(function (t) {
+      h += '<div class="tel"><b>' + esc(t.nombre || "Teléfono") + "</b><br>";
+      if (t.ts) {
+        var la = Number(t.lat), lo = Number(t.lon), d = 0.004;
+        h += "Última vez: " + cuando(t.ts) + " · batería " + (t.bateria | 0) + "%";
+        h += '<iframe loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=' + (lo - d) + "," + (la - d) + "," + (lo + d) + "," + (la + d) + "&layer=mapnik&marker=" + la + "," + lo + '"></iframe>';
+        h += '<p><a style="color:#ffcc00" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=' + la + "&mlon=" + lo + "#map=17/" + la + "/" + lo + '">Abrir mapa grande</a></p>';
+      } else { h += "Aún no ha enviado su ubicación."; }
+      h += "</div>";
+    });
+    $("lista").innerHTML = h;
+  }
+  function cargar() {
+    $("lista").textContent = "Cargando…";
+    return fetch(W + "/telefono/lista", { headers: { authorization: "Bearer " + token } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { pintar(j.telefonos || []); })
+      .catch(function () { $("lista").textContent = "No se pudo cargar. Intenta otra vez."; });
+  }
+  function cerrar() {
+    var t = token; token = null;
+    if (t) { try { fetch(MX + "/logout", { method: "POST", headers: { authorization: "Bearer " + t, "content-type": "application/json" }, body: "{}", keepalive: true }); } catch (e) {} }
+    $("panel").hidden = true; $("login").hidden = false; $("p").value = ""; $("lista").innerHTML = "";
+  }
+  $("entrar").onclick = function () {
+    $("err").textContent = "";
+    var u = usuario($("u").value), p = $("p").value;
+    if (!u || !p) { $("err").textContent = "Escribe tu usuario y tu contraseña."; return; }
+    $("entrar").disabled = true;
+    fetch(MX + "/login", { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "m.login.password", identifier: { type: "m.id.user", user: u }, password: p, initial_device_display_name: "Chamos web (temporal)" }) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        $("entrar").disabled = false;
+        if (!x.ok || !x.j.access_token) { $("err").textContent = x.j && x.j.errcode === "M_LIMIT_EXCEEDED" ? "Demasiados intentos. Espera un momento." : "Usuario o contraseña incorrectos."; return; }
+        token = x.j.access_token; $("p").value = "";
+        $("login").hidden = true; $("panel").hidden = false; cargar();
+      })
+      .catch(function () { $("entrar").disabled = false; $("err").textContent = "Sin conexión. Intenta otra vez."; });
+  };
+  $("recargar").onclick = cargar;
+  $("salir").onclick = cerrar;
+  window.addEventListener("pagehide", function () { if (token) cerrar(); });
+})();
+</script>
+</main></body></html>
