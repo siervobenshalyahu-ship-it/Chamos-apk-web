@@ -282,6 +282,8 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 .cuenta-btn{position:fixed;top:12px;right:12px;z-index:9000;padding:10px 16px;border:0;border-radius:999px;font:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(90deg,#29c5ff,#9b5cff);box-shadow:0 0 16px rgba(41,197,255,.45)}
 .salir-btn{position:fixed;top:12px;right:150px;z-index:9000;padding:10px 14px;border:1.5px solid #ff8fa3;border-radius:999px;font:inherit;font-weight:800;font-size:14px;color:#ff8fa3;cursor:pointer;background:rgba(7,10,31,.85);display:none}
 .salir-btn.on{display:block}
+.perdido-btn{position:fixed;top:58px;right:12px;z-index:9000;padding:9px 14px;border:1.5px solid #ffcc00;border-radius:999px;font:inherit;font-weight:800;font-size:13px;color:#ffcc00;cursor:pointer;background:rgba(7,10,31,.88)}
+.reg-perdido{display:block;margin:14px 0 0;padding:10px;border-radius:10px;border:1px dashed #ffcc00;background:none;color:#ffcc00;font:inherit;font-weight:700;width:100%;cursor:pointer}
 .reg-caja{max-height:92vh;overflow:auto}
 .reg-caja select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(41,197,255,.5);background:#070a1f;color:#fff;font-size:16px;font-family:inherit}
 .reg-chk{display:flex!important;gap:10px;align-items:flex-start;color:#e6dcff;font-size:.85rem!important;margin:10px 0 0!important}
@@ -296,6 +298,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 </head>
 <body>
 <button type="button" class="salir-btn" id="salir-btn">Cerrar sesión</button>
+<button type="button" class="perdido-btn" id="perdido-btn">📍 Teléfono perdido</button>
 <button type="button" class="cuenta-btn" id="cuenta-btn">Entrar / Registrarme</button>
 
 
@@ -1015,6 +1018,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     </div>
     <button class="reg-go" id="reg-go" type="submit">Enviarme el código</button>
     <button type="button" id="reg-otro" style="display:none;background:none;border:0;color:#9fb3ff;text-decoration:underline;margin-top:10px;font:inherit;cursor:pointer">Cambiar el correo o pedir otro código</button>
+    <button type="button" class="reg-perdido" id="reg-perdido">📍 ¿Perdiste tu teléfono? Entra y rastréalo</button>
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
@@ -1116,6 +1120,11 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   f.addEventListener("click", function (e) { if (e.target === f) cerrarReg(); });
   cf.addEventListener("click", function (e) { if (e.target === cf) cerrarCta(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { cerrarReg(); cerrarCta(); } });
+  function irTelefono() {
+    if (leer()) { location.href = "telefono.html"; return; }
+    destino = "telefono"; abrirReg("ent");
+  }
+  $("perdido-btn").onclick = irTelefono; $("reg-perdido").onclick = function () { destino = "telefono"; modo = "ent"; paso1(); };
   function salir() { borrar(); pintarSesion(); cerrarCta(); cerrarReg(); }
   $("cta-salir").onclick = salir; sbtn.onclick = salir;
 
@@ -1158,7 +1167,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
         var d = destino; destino = null;
         setTimeout(function () {
           cerrarReg();
-          if (d) location.href = j.url; else abrirCta();
+          if (d === "telefono") location.href = "telefono.html"; else if (d) location.href = j.url; else abrirCta();
         }, 600);
       }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
     }
