@@ -293,12 +293,12 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 .reg-tabs button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(41,197,255,.5);background:transparent;color:#b8c0ff;font:inherit;font-weight:700;cursor:pointer}
 .reg-tabs button.on{background:linear-gradient(90deg,#29c5ff,#9b5cff);color:#fff;border-color:transparent}
 .cta-lista{display:grid;gap:10px;margin-top:8px}
+.cta-ico{width:32px;height:32px;border-radius:8px;vertical-align:middle;margin-right:8px}
 .cta-lista button,.cta-lista a{display:block;text-align:center;text-decoration:none;padding:13px;border-radius:12px;border:1px solid rgba(41,197,255,.5);background:#070a1f;color:#fff;font:inherit;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
 <button type="button" class="salir-btn" id="salir-btn">Cerrar sesión</button>
-<button type="button" class="perdido-btn" id="perdido-btn">📍 Teléfono perdido</button>
 <button type="button" class="cuenta-btn" id="cuenta-btn">Entrar / Registrarme</button>
 
 
@@ -1029,8 +1029,8 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <h3 id="cta-t">Mi cuenta</h3>
     <p id="cta-quien"></p>
     <div class="cta-lista">
-      <button type="button" data-bajar="chamos">⬇ Descargar Chamos</button>
-      <button type="button" data-bajar="golpe">⬇ Descargar el juego Golpe, secuestro o traición</button>
+      <button type="button" data-bajar="chamos"><img class="cta-ico" src="img/icono-chamos.png" alt="" width="32" height="32"> Descargar Chamos</button>
+      <button type="button" data-bajar="golpe"><img class="cta-ico" src="img/icono-golpe.svg" alt="" width="32" height="32"> Descargar el juego Golpe, secuestro o traición</button>
       <a href="telefono.html">📍 Mi teléfono: ubicación y alarma</a>
       <button type="button" id="cta-salir">Cerrar sesión</button>
     </div>
@@ -1124,7 +1124,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     if (leer()) { location.href = "telefono.html"; return; }
     destino = "telefono"; abrirReg("ent");
   }
-  $("perdido-btn").onclick = irTelefono; $("reg-perdido").onclick = function () { destino = "telefono"; modo = "ent"; paso1(); };
+  $("reg-perdido").onclick = function () { destino = "telefono"; modo = "ent"; paso1(); };
   function salir() { borrar(); pintarSesion(); cerrarCta(); cerrarReg(); }
   $("cta-salir").onclick = salir; sbtn.onclick = salir;
 
