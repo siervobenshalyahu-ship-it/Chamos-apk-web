@@ -279,9 +279,16 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 .reg-aviso{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(155,92,255,.18);border:1px solid rgba(155,92,255,.5);color:#e6dcff;font-size:.88rem}
 .reg-msg{min-height:1.2em;margin-top:10px;font-size:.9rem;color:#ff8fa3}
 .reg-msg.ok{color:#7dffb0}
+.cuenta-btn{position:fixed;top:12px;right:12px;z-index:9000;padding:10px 16px;border:0;border-radius:999px;font:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(90deg,#29c5ff,#9b5cff);box-shadow:0 0 16px rgba(41,197,255,.45)}
+.reg-tabs{display:flex;gap:8px;margin:0 0 14px}
+.reg-tabs button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(41,197,255,.5);background:transparent;color:#b8c0ff;font:inherit;font-weight:700;cursor:pointer}
+.reg-tabs button.on{background:linear-gradient(90deg,#29c5ff,#9b5cff);color:#fff;border-color:transparent}
+.cta-lista{display:grid;gap:10px;margin-top:8px}
+.cta-lista button,.cta-lista a{display:block;text-align:center;text-decoration:none;padding:13px;border-radius:12px;border:1px solid rgba(41,197,255,.5);background:#070a1f;color:#fff;font:inherit;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
+<button type="button" class="cuenta-btn" id="cuenta-btn">Entrar / Registrarme</button>
 
 
 <header class="hero" id="inicio">
@@ -349,14 +356,14 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <div class="rail-wrap" style="margin-top:18px"><div class="rail" id="track2" role="region" aria-label="Galería de juegos tradicionales venezolanos (desliza o usa las flechas)" tabindex="0"></div></div>
 </section>
 
-<section id="golpe">
+<section id="golpe" data-miembros="1" hidden style="display:none">
   <div class="wrap">
     <div class="head">
       <p class="kicker">Juego para Android</p>
       <h2>Golpe, secuestro o traición</h2>
       <p>Juego 3D en tercera persona, con historia que cambia según tus decisiones. Siete capítulos, cuatro protagonistas distintos, misiones en el barrio, la avenida y la plaza, minijuegos de radio y señales de luz, y nueve finales posibles.</p>
-      <p style="opacity:.8;font-size:.92rem">Obra de ficción inspirada en hechos reales. Los personajes son inventados. Es un juego aparte de Chamos: se descarga con el mismo registro, pesa unos 30&nbsp;MB y requiere Android 7.0 o superior.</p>
-      <p><a class="btn solid" href="#registro" data-registro="1" data-app="golpe">Descargar el juego</a></p>
+      <p style="opacity:.8;font-size:.92rem">Obra de ficción inspirada en hechos reales. Los personajes son inventados. Es un juego aparte de Chamos, solo para miembros registrados. Pesa unos 30&nbsp;MB y requiere Android 7.0 o superior.</p>
+      <p><a class="btn solid" href="#" data-bajar="golpe">Descargar el juego</a></p>
     </div>
   </div>
 </section>
@@ -963,11 +970,17 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 <div class="reg-fondo" id="reg-fondo" role="dialog" aria-modal="true" aria-labelledby="reg-t">
   <form class="reg-caja" id="reg-form" autocomplete="on">
     <button type="button" class="reg-x" id="reg-x" aria-label="Cerrar">&times;</button>
+    <div class="reg-tabs" id="reg-tabs">
+      <button type="button" id="tab-reg" class="on">Registrarme</button>
+      <button type="button" id="tab-ent">Entrar</button>
+    </div>
     <h3 id="reg-t">Regístrate para descargar</h3>
-    <p id="reg-sub">Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de Chamos.</p>
+    <p id="reg-sub"></p>
     <p class="reg-aviso">📩 El código llega en menos de un minuto. Si no lo ves, revisa también la carpeta de <b>Spam</b>.</p>
-    <label for="reg-nombre">Nombre</label>
-    <input id="reg-nombre" name="name" type="text" autocomplete="name" required maxlength="80">
+    <div id="reg-bloque-nombre">
+      <label for="reg-nombre">Nombre</label>
+      <input id="reg-nombre" name="name" type="text" autocomplete="name" maxlength="80">
+    </div>
     <label for="reg-email">Correo</label>
     <input id="reg-email" name="email" type="email" autocomplete="email" required maxlength="120">
     <div id="reg-paso2" style="display:none">
@@ -979,72 +992,143 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <div class="reg-msg" id="reg-msg" role="status"></div>
   </form>
 </div>
+
+<div class="reg-fondo" id="cta-fondo" role="dialog" aria-modal="true" aria-labelledby="cta-t">
+  <div class="reg-caja">
+    <button type="button" class="reg-x" id="cta-x" aria-label="Cerrar">&times;</button>
+    <h3 id="cta-t">Mi cuenta</h3>
+    <p id="cta-quien"></p>
+    <div class="cta-lista">
+      <button type="button" data-bajar="chamos">⬇ Descargar Chamos</button>
+      <button type="button" data-bajar="golpe">⬇ Descargar el juego Golpe, secuestro o traición</button>
+      <a href="telefono.html">📍 Mi teléfono: ubicación y alarma</a>
+      <button type="button" id="cta-salir">Cerrar sesión</button>
+    </div>
+    <div class="reg-msg" id="cta-msg" role="status"></div>
+  </div>
+</div>
 <script>
 (function () {
   var W = "https://chamos-push.siervodeyhwh57.workers.dev";
-  var f = document.getElementById("reg-fondo"), form = document.getElementById("reg-form"),
-      msg = document.getElementById("reg-msg"), go = document.getElementById("reg-go"),
-      sub = document.getElementById("reg-sub"), paso2 = document.getElementById("reg-paso2"),
-      otro = document.getElementById("reg-otro"), paso = 1, app = "chamos";
+  var $ = function (i) { return document.getElementById(i); };
+  var f = $("reg-fondo"), form = $("reg-form"), msg = $("reg-msg"), go = $("reg-go"), sub = $("reg-sub"),
+      paso2 = $("reg-paso2"), otro = $("reg-otro"), tit = $("reg-t"), bn = $("reg-bloque-nombre"),
+      cf = $("cta-fondo"), cbtn = $("cuenta-btn"), cmsg = $("cta-msg"),
+      paso = 1, modo = "reg", destino = null;
   var NOMBRES = { chamos: "Chamos", golpe: "el juego Golpe, secuestro o traición" };
-  function SUB1() { return "Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de " + NOMBRES[app] + "."; }
+
+  /* ---------- sesión (30 días) ---------- */
+  function leer() {
+    try { var x = JSON.parse(localStorage.getItem("chamos_sesion") || "null"); if (x && x.sesion && x.exp > Date.now()) return x; } catch (e) {}
+    return null;
+  }
+  function guardar(x) { try { localStorage.setItem("chamos_sesion", JSON.stringify(x)); } catch (e) {} }
+  function borrar() { try { localStorage.removeItem("chamos_sesion"); } catch (e) {} }
+  function pintarSesion() {
+    var x = leer();
+    cbtn.textContent = x ? "Mi cuenta" : "Entrar / Registrarme";
+    var g = $("golpe");
+    if (g) { g.hidden = !x; g.style.display = x ? "" : "none"; }
+    $("cta-quien").textContent = x ? "Sesión iniciada como " + (x.nombre ? x.nombre + " · " : "") + x.email : "";
+  }
   function post(ruta, cuerpo) {
     return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
       .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
   }
+  function bajar(app) {
+    var x = leer();
+    if (!x) { destino = app; abrirReg("reg"); return; }
+    cmsg.className = "reg-msg"; cmsg.textContent = "Preparando la descarga…";
+    post("/web/enlace", { sesion: x.sesion, app: app }).then(function (j) {
+      if (!j.ok) {
+        if (/venci/i.test(j.error || "")) { borrar(); pintarSesion(); cerrarCta(); destino = app; abrirReg("ent"); return; }
+        cmsg.textContent = j.error || "No se pudo preparar la descarga"; return;
+      }
+      cmsg.className = "reg-msg ok"; cmsg.textContent = "¡Listo! Tu descarga está empezando…";
+      location.href = j.url;
+    }).catch(function () { cmsg.textContent = "Sin conexión, intenta otra vez"; });
+  }
+
+  /* ---------- ventana de entrar / registrarme ---------- */
+  function textos() {
+    var ent = modo === "ent";
+    $("tab-reg").className = ent ? "" : "on"; $("tab-ent").className = ent ? "on" : "";
+    bn.style.display = ent ? "none" : "";
+    tit.textContent = ent ? "Entrar a mi cuenta" : "Regístrate";
+    sub.textContent = paso === 2 ? sub.textContent :
+      (ent ? "Escribe el correo con el que te registraste y te enviamos un código de 6 números."
+           : "Pon tu nombre y tu correo. Te enviamos un código de 6 números. Con tu cuenta podrás descargar Chamos" + (destino === "golpe" ? ", el juego" : "") + " y usar Mi teléfono.");
+    go.textContent = paso === 2 ? "Verificar y entrar" : "Enviarme el código";
+  }
   function paso1() {
     paso = 1; paso2.style.display = "none"; otro.style.display = "none"; go.style.display = "";
-    go.textContent = "Enviarme el código"; sub.textContent = SUB1(); msg.textContent = ""; msg.className = "reg-msg";
-    document.getElementById("reg-codigo").value = "";
+    msg.textContent = ""; msg.className = "reg-msg"; $("reg-codigo").value = "";
+    sub.textContent = ""; textos();
   }
-  function abrir() {
-    f.classList.add("on");
-    try { document.getElementById("reg-nombre").value = localStorage.getItem("chamos_reg_n") || ""; document.getElementById("reg-email").value = localStorage.getItem("chamos_reg_e") || ""; } catch (e) {}
-    setTimeout(function () { var n = document.getElementById("reg-nombre"); if (!n.value) n.focus(); }, 50);
+  function abrirReg(m) {
+    modo = m || "reg"; paso1(); f.classList.add("on");
+    try { $("reg-nombre").value = localStorage.getItem("chamos_reg_n") || ""; $("reg-email").value = localStorage.getItem("chamos_reg_e") || ""; } catch (e) {}
+    setTimeout(function () { var n = modo === "reg" ? $("reg-nombre") : $("reg-email"); if (!n.value) n.focus(); }, 50);
   }
-  function cerrar() { f.classList.remove("on"); }
+  function cerrarReg() { f.classList.remove("on"); }
+  function abrirCta() { cmsg.textContent = ""; cmsg.className = "reg-msg"; pintarSesion(); cf.classList.add("on"); }
+  function cerrarCta() { cf.classList.remove("on"); }
+
+  cbtn.addEventListener("click", function () { if (leer()) abrirCta(); else { destino = null; abrirReg("reg"); } });
+  $("tab-reg").onclick = function () { modo = "reg"; paso1(); };
+  $("tab-ent").onclick = function () { modo = "ent"; paso1(); };
   document.addEventListener("click", function (ev) {
+    var b = ev.target.closest && ev.target.closest("[data-bajar]");
+    if (b) { ev.preventDefault(); bajar(b.getAttribute("data-bajar")); return; }
     var a = ev.target.closest && ev.target.closest("[data-registro]");
-    if (a) { ev.preventDefault(); app = a.getAttribute("data-app") === "golpe" ? "golpe" : "chamos"; paso1(); abrir(); }
+    if (a) { ev.preventDefault(); destino = "chamos"; if (leer()) bajar("chamos"); else abrirReg("reg"); }
   });
   otro.addEventListener("click", paso1);
-  document.getElementById("reg-x").onclick = cerrar;
-  f.addEventListener("click", function (e) { if (e.target === f) cerrar(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
+  $("reg-x").onclick = cerrarReg; $("cta-x").onclick = cerrarCta;
+  f.addEventListener("click", function (e) { if (e.target === f) cerrarReg(); });
+  cf.addEventListener("click", function (e) { if (e.target === cf) cerrarCta(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { cerrarReg(); cerrarCta(); } });
+  $("cta-salir").onclick = function () { borrar(); pintarSesion(); cerrarCta(); };
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var n = document.getElementById("reg-nombre").value, m = document.getElementById("reg-email").value;
+    var n = $("reg-nombre").value, m = $("reg-email").value;
+    if (paso === 1 && modo === "reg" && n.trim().length < 2) { msg.className = "reg-msg"; msg.textContent = "Escribe tu nombre"; return; }
     go.disabled = true; msg.className = "reg-msg";
     if (paso === 1) {
       msg.textContent = "Enviando el código…";
-      post("/web/registro", { nombre: n, email: m }).then(function (j) {
+      post("/web/registro", { nombre: n, email: m, entrar: modo === "ent" }).then(function (j) {
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
-        try { localStorage.setItem("chamos_reg_n", n); localStorage.setItem("chamos_reg_e", m); } catch (e) {}
+        try { localStorage.setItem("chamos_reg_e", m); if (n) localStorage.setItem("chamos_reg_n", n); } catch (er) {}
         if (j.manual) {
-          sub.textContent = "¡Gracias, " + n + "!";
-          go.style.display = "none";
-          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te responderemos con el enlace de descarga a " + m + " en un máximo de 24 horas. Revisa tu correo y también Spam.";
+          sub.textContent = "¡Gracias!"; go.style.display = "none";
+          msg.className = "reg-msg ok"; msg.textContent = "Quedaste registrado. Te responderemos a " + m + " en un máximo de 24 horas. Revisa también Spam.";
           return;
         }
-        paso = 2;
-        paso2.style.display = "block"; otro.style.display = "inline-block";
-        sub.textContent = "Te enviamos un código de 6 números a " + m + ". Escríbelo aquí para entrar a la descarga.";
-        go.textContent = "Verificar y descargar";
-        document.getElementById("reg-codigo").focus();
+        paso = 2; paso2.style.display = "block"; otro.style.display = "inline-block";
+        sub.textContent = "Te enviamos un código de 6 números a " + m + ". Escríbelo aquí.";
+        textos();
+        $("reg-codigo").focus();
         msg.className = "reg-msg ok"; msg.textContent = "Código enviado. Revisa tu bandeja y también Spam.";
       }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
     } else {
       msg.textContent = "Verificando…";
-      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value.trim(), app: app }).then(function (j) {
+      post("/web/verificar", { email: m, codigo: $("reg-codigo").value.trim(), app: destino === "golpe" ? "golpe" : "chamos" }).then(function (j) {
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
-        msg.className = "reg-msg ok"; msg.textContent = "¡Verificado! Tu descarga está empezando…";
-        location.href = j.url;
-        setTimeout(cerrar, 2500);
+        guardar({ sesion: j.sesion, exp: j.exp, email: m.trim().toLowerCase(), nombre: j.nombre || n });
+        pintarSesion();
+        msg.className = "reg-msg ok"; msg.textContent = "¡Listo, entraste!";
+        var d = destino; destino = null;
+        setTimeout(function () {
+          cerrarReg();
+          if (d) location.href = j.url; else abrirCta();
+        }, 600);
       }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
     }
   });
+  pintarSesion();
 })();
 </script>
 </body>
