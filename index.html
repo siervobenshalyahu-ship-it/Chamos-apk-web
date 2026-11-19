@@ -280,6 +280,13 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 .reg-msg{min-height:1.2em;margin-top:10px;font-size:.9rem;color:#ff8fa3}
 .reg-msg.ok{color:#7dffb0}
 .cuenta-btn{position:fixed;top:12px;right:12px;z-index:9000;padding:10px 16px;border:0;border-radius:999px;font:inherit;font-weight:800;font-size:14px;color:#fff;cursor:pointer;background:linear-gradient(90deg,#29c5ff,#9b5cff);box-shadow:0 0 16px rgba(41,197,255,.45)}
+.salir-btn{position:fixed;top:12px;right:150px;z-index:9000;padding:10px 14px;border:1.5px solid #ff8fa3;border-radius:999px;font:inherit;font-weight:800;font-size:14px;color:#ff8fa3;cursor:pointer;background:rgba(7,10,31,.85);display:none}
+.salir-btn.on{display:block}
+.reg-caja{max-height:92vh;overflow:auto}
+.reg-caja select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(41,197,255,.5);background:#070a1f;color:#fff;font-size:16px;font-family:inherit}
+.reg-chk{display:flex!important;gap:10px;align-items:flex-start;color:#e6dcff;font-size:.85rem!important;margin:10px 0 0!important}
+.reg-chk input{width:auto!important;margin-top:3px}
+.reg-chk a{color:#29c5ff}
 .reg-tabs{display:flex;gap:8px;margin:0 0 14px}
 .reg-tabs button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(41,197,255,.5);background:transparent;color:#b8c0ff;font:inherit;font-weight:700;cursor:pointer}
 .reg-tabs button.on{background:linear-gradient(90deg,#29c5ff,#9b5cff);color:#fff;border-color:transparent}
@@ -288,6 +295,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
 </style>
 </head>
 <body>
+<button type="button" class="salir-btn" id="salir-btn">Cerrar sesión</button>
 <button type="button" class="cuenta-btn" id="cuenta-btn">Entrar / Registrarme</button>
 
 
@@ -979,10 +987,28 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <p class="reg-aviso">📩 El código llega en menos de un minuto. Si no lo ves, revisa también la carpeta de <b>Spam</b>.</p>
     <div id="reg-bloque-nombre">
       <label for="reg-nombre">Nombre</label>
-      <input id="reg-nombre" name="name" type="text" autocomplete="name" maxlength="80">
+      <input id="reg-nombre" name="name" type="text" autocomplete="given-name" maxlength="80">
+      <label for="reg-apellido">Apellido</label>
+      <input id="reg-apellido" name="apellido" type="text" autocomplete="family-name" maxlength="80">
     </div>
     <label for="reg-email">Correo</label>
     <input id="reg-email" name="email" type="email" autocomplete="email" required maxlength="120">
+    <div id="reg-bloque-extra">
+      <label for="reg-tel">Teléfono (opcional, con código de país)</label>
+      <input id="reg-tel" name="tel" type="tel" autocomplete="tel" maxlength="30" placeholder="+58 412 0000000">
+      <label for="reg-pais">País</label>
+      <select id="reg-pais" name="country-name" autocomplete="country-name">
+        <option>Venezuela</option><option>Colombia</option><option>Ecuador</option><option>Perú</option><option>Chile</option><option>Argentina</option><option>Brasil</option><option>México</option><option>Panamá</option><option>España</option><option>Estados Unidos</option><option>Otro</option>
+      </select>
+      <label for="reg-ciudad">Ciudad o estado (opcional)</label>
+      <input id="reg-ciudad" name="ciudad" type="text" autocomplete="address-level2" maxlength="60">
+      <label for="reg-origen">¿Cómo conociste Chamos?</label>
+      <select id="reg-origen" name="origen">
+        <option value="">Elige una opción</option><option>Un amigo o familiar</option><option>Redes sociales</option><option>Uptodown</option><option>Esta página web</option><option>Otro</option>
+      </select>
+      <label class="reg-chk"><input type="checkbox" id="reg-18"> Tengo 18 años o más</label>
+      <label class="reg-chk"><input type="checkbox" id="reg-acepto"> Acepto los <a href="privacidad.html" target="_blank" rel="noopener">términos y la política de privacidad</a></label>
+    </div>
     <div id="reg-paso2" style="display:none">
       <label for="reg-codigo">Código de 6 números que te llegó al correo</label>
       <input id="reg-codigo" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" style="letter-spacing:8px;text-align:center;font-size:22px">
@@ -1012,7 +1038,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   var W = "https://chamos-push.siervodeyhwh57.workers.dev";
   var $ = function (i) { return document.getElementById(i); };
   var f = $("reg-fondo"), form = $("reg-form"), msg = $("reg-msg"), go = $("reg-go"), sub = $("reg-sub"),
-      paso2 = $("reg-paso2"), otro = $("reg-otro"), tit = $("reg-t"), bn = $("reg-bloque-nombre"),
+      paso2 = $("reg-paso2"), otro = $("reg-otro"), tit = $("reg-t"), bn = $("reg-bloque-nombre"), bx = $("reg-bloque-extra"), sbtn = $("salir-btn"),
       cf = $("cta-fondo"), cbtn = $("cuenta-btn"), cmsg = $("cta-msg"),
       paso = 1, modo = "reg", destino = null;
   var NOMBRES = { chamos: "Chamos", golpe: "el juego Golpe, secuestro o traición" };
@@ -1027,6 +1053,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   function pintarSesion() {
     var x = leer();
     cbtn.textContent = x ? "Mi cuenta" : "Entrar / Registrarme";
+    sbtn.classList.toggle("on", !!x);
     var g = $("golpe");
     if (g) { g.hidden = !x; g.style.display = x ? "" : "none"; }
     $("cta-quien").textContent = x ? "Sesión iniciada como " + (x.nombre ? x.nombre + " · " : "") + x.email : "";
@@ -1055,6 +1082,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     $("tab-reg").className = ent ? "" : "on"; $("tab-ent").className = ent ? "on" : "";
     bn.style.display = ent ? "none" : "";
     tit.textContent = ent ? "Entrar a mi cuenta" : "Regístrate";
+    bn.style.display = bx.style.display = (modo === "reg" && paso === 1) ? "" : "none";
     sub.textContent = paso === 2 ? sub.textContent :
       (ent ? "Escribe el correo con el que te registraste y te enviamos un código de 6 números."
            : "Pon tu nombre y tu correo. Te enviamos un código de 6 números. Con tu cuenta podrás descargar Chamos" + (destino === "golpe" ? ", el juego" : "") + " y usar Mi teléfono.");
@@ -1088,16 +1116,23 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   f.addEventListener("click", function (e) { if (e.target === f) cerrarReg(); });
   cf.addEventListener("click", function (e) { if (e.target === cf) cerrarCta(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { cerrarReg(); cerrarCta(); } });
-  $("cta-salir").onclick = function () { borrar(); pintarSesion(); cerrarCta(); };
+  function salir() { borrar(); pintarSesion(); cerrarCta(); cerrarReg(); }
+  $("cta-salir").onclick = salir; sbtn.onclick = salir;
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var n = $("reg-nombre").value, m = $("reg-email").value;
-    if (paso === 1 && modo === "reg" && n.trim().length < 2) { msg.className = "reg-msg"; msg.textContent = "Escribe tu nombre"; return; }
+    var ap = $("reg-apellido").value;
+    if (paso === 1 && modo === "reg") {
+      var er = n.trim().length < 2 ? "Escribe tu nombre" : ap.trim().length < 2 ? "Escribe tu apellido" :
+        !$("reg-pais").value ? "Elige tu país" : !$("reg-18").checked ? "Debes confirmar que tienes 18 años o más" :
+        !$("reg-acepto").checked ? "Debes aceptar los términos y la política de privacidad" : "";
+      if (er) { msg.className = "reg-msg"; msg.textContent = er; return; }
+    }
     go.disabled = true; msg.className = "reg-msg";
     if (paso === 1) {
       msg.textContent = "Enviando el código…";
-      post("/web/registro", { nombre: n, email: m, entrar: modo === "ent" }).then(function (j) {
+      post("/web/registro", { nombre: n, apellido: ap, email: m, entrar: modo === "ent", telefono: $("reg-tel").value, pais: $("reg-pais").value, ciudad: $("reg-ciudad").value, origen: $("reg-origen").value, mayor18: $("reg-18").checked, acepto: $("reg-acepto").checked }).then(function (j) {
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "No se pudo enviar el código"; return; }
         try { localStorage.setItem("chamos_reg_e", m); if (n) localStorage.setItem("chamos_reg_n", n); } catch (er) {}
