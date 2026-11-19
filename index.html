@@ -349,6 +349,18 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   <div class="rail-wrap" style="margin-top:18px"><div class="rail" id="track2" role="region" aria-label="Galería de juegos tradicionales venezolanos (desliza o usa las flechas)" tabindex="0"></div></div>
 </section>
 
+<section id="golpe">
+  <div class="wrap">
+    <div class="head">
+      <p class="kicker">Juego para Android</p>
+      <h2>Golpe, secuestro o traición</h2>
+      <p>Juego 3D en tercera persona, con historia que cambia según tus decisiones. Siete capítulos, cuatro protagonistas distintos, misiones en el barrio, la avenida y la plaza, minijuegos de radio y señales de luz, y nueve finales posibles.</p>
+      <p style="opacity:.8;font-size:.92rem">Obra de ficción inspirada en hechos reales. Los personajes son inventados. Es un juego aparte de Chamos: se descarga con el mismo registro, pesa unos 30&nbsp;MB y requiere Android 7.0 o superior.</p>
+      <p><a class="btn solid" href="#registro" data-registro="1" data-app="golpe">Descargar el juego</a></p>
+    </div>
+  </div>
+</section>
+
 <section id="mesa" class="alt">
   <div class="wrap">
     <div class="head">
@@ -973,15 +985,16 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   var f = document.getElementById("reg-fondo"), form = document.getElementById("reg-form"),
       msg = document.getElementById("reg-msg"), go = document.getElementById("reg-go"),
       sub = document.getElementById("reg-sub"), paso2 = document.getElementById("reg-paso2"),
-      otro = document.getElementById("reg-otro"), paso = 1;
-  var SUB1 = "Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de Chamos.";
+      otro = document.getElementById("reg-otro"), paso = 1, app = "chamos";
+  var NOMBRES = { chamos: "Chamos", golpe: "el juego Golpe, secuestro o traición" };
+  function SUB1() { return "Pon tu nombre y tu correo. Te enviamos un código de 6 números para entrar a la descarga de " + NOMBRES[app] + "."; }
   function post(ruta, cuerpo) {
     return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
       .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
   }
   function paso1() {
     paso = 1; paso2.style.display = "none"; otro.style.display = "none"; go.style.display = "";
-    go.textContent = "Enviarme el código"; sub.textContent = SUB1; msg.textContent = ""; msg.className = "reg-msg";
+    go.textContent = "Enviarme el código"; sub.textContent = SUB1(); msg.textContent = ""; msg.className = "reg-msg";
     document.getElementById("reg-codigo").value = "";
   }
   function abrir() {
@@ -992,7 +1005,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
   function cerrar() { f.classList.remove("on"); }
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("[data-registro]");
-    if (a) { ev.preventDefault(); paso1(); abrir(); }
+    if (a) { ev.preventDefault(); app = a.getAttribute("data-app") === "golpe" ? "golpe" : "chamos"; paso1(); abrir(); }
   });
   otro.addEventListener("click", paso1);
   document.getElementById("reg-x").onclick = cerrar;
@@ -1023,7 +1036,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
     } else {
       msg.textContent = "Verificando…";
-      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value.trim() }).then(function (j) {
+      post("/web/verificar", { email: m, codigo: document.getElementById("reg-codigo").value.trim(), app: app }).then(function (j) {
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
         msg.className = "reg-msg ok"; msg.textContent = "¡Verificado! Tu descarga está empezando…";
