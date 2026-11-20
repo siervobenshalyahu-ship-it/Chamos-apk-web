@@ -1030,6 +1030,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     <p id="cta-quien"></p>
     <div class="cta-lista">
       <button type="button" data-bajar="chamos"><img class="cta-ico" src="img/icono-chamos.png" alt="" width="32" height="32"> Descargar Chamos</button>
+      <button type="button" data-bajar="juegos"><img class="cta-ico" src="img/icono-juegos.png" alt="" width="32" height="32"> Descargar Juegos de mesas venezolanos</button>
       <button type="button" data-bajar="golpe"><img class="cta-ico" src="img/icono-golpe.svg" alt="" width="32" height="32"> Descargar el juego Golpe, secuestro o traición</button>
       <a href="telefono.html">📍 Mi teléfono: ubicación y alarma</a>
       <button type="button" id="cta-salir">Cerrar sesión</button>
@@ -1045,7 +1046,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       paso2 = $("reg-paso2"), otro = $("reg-otro"), tit = $("reg-t"), bn = $("reg-bloque-nombre"), bx = $("reg-bloque-extra"), sbtn = $("salir-btn"),
       cf = $("cta-fondo"), cbtn = $("cuenta-btn"), cmsg = $("cta-msg"),
       paso = 1, modo = "reg", destino = null;
-  var NOMBRES = { chamos: "Chamos", golpe: "el juego Golpe, secuestro o traición" };
+  var NOMBRES = { chamos: "Chamos", golpe: "el juego Golpe, secuestro o traición", juegos: "Juegos de mesas venezolanos" };
 
   /* ---------- sesión (30 días) ---------- */
   function leer() {
@@ -1089,7 +1090,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     bn.style.display = bx.style.display = (modo === "reg" && paso === 1) ? "" : "none";
     sub.textContent = paso === 2 ? sub.textContent :
       (ent ? "Escribe el correo con el que te registraste y te enviamos un código de 6 números."
-           : "Pon tu nombre y tu correo. Te enviamos un código de 6 números. Con tu cuenta podrás descargar Chamos" + (destino === "golpe" ? ", el juego" : "") + " y usar Mi teléfono.");
+           : "Pon tu nombre y tu correo. Te enviamos un código de 6 números. Con tu cuenta podrás descargar Chamos" + (destino === "golpe" ? ", el juego" : destino === "juegos" ? ", los juegos de mesas" : "") + " y usar Mi teléfono.");
     go.textContent = paso === 2 ? "Verificar y entrar" : "Enviarme el código";
   }
   function paso1() {
@@ -1158,7 +1159,7 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
       }).catch(function () { go.disabled = false; msg.textContent = "Sin conexión, intenta otra vez"; });
     } else {
       msg.textContent = "Verificando…";
-      post("/web/verificar", { email: m, codigo: $("reg-codigo").value.trim(), app: destino === "golpe" ? "golpe" : "chamos" }).then(function (j) {
+      post("/web/verificar", { email: m, codigo: $("reg-codigo").value.trim(), app: (destino === "golpe" || destino === "juegos") ? destino : "chamos" }).then(function (j) {
         go.disabled = false;
         if (!j.ok) { msg.textContent = j.error || "Código incorrecto"; return; }
         guardar({ sesion: j.sesion, exp: j.exp, email: m.trim().toLowerCase(), nombre: j.nombre || n });
