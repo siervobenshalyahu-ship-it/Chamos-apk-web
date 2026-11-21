@@ -1067,7 +1067,23 @@ footer b { color: var(--ink); letter-spacing: .24em; font-size: 13px; }
     return fetch(W + ruta, { method: "POST", headers: { "content-type": "text/plain" }, body: JSON.stringify(cuerpo) })
       .then(function (r) { return r.json().catch(function () { return { error: "Error del servidor" }; }); });
   }
+  /* Descargas cerradas: ponlo en false para volver a abrirlas. */
+  var DESCARGAS_CERRADAS = true;
+  function avisoCerrado() {
+    var t = document.getElementById("aviso-cerrado");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "aviso-cerrado";
+      t.style.cssText = "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1b1b1f;color:#fff;padding:14px 22px;border-radius:12px;font:600 16px system-ui,sans-serif;z-index:99999;box-shadow:0 6px 24px rgba(0,0,0,.4);max-width:90vw;text-align:center";
+      t.textContent = "Las descargas están cerradas por ahora.";
+      document.body.appendChild(t);
+    }
+    t.style.display = "block";
+    clearTimeout(avisoCerrado.t);
+    avisoCerrado.t = setTimeout(function () { t.style.display = "none"; }, 3500);
+  }
   function bajar(app) {
+    if (DESCARGAS_CERRADAS) { avisoCerrado(); return; }
     var x = leer();
     if (!x) { destino = app; abrirReg("reg"); return; }
     cmsg.className = "reg-msg"; cmsg.textContent = "Preparando la descarga…";
