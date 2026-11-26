@@ -533,15 +533,26 @@ h1 { font-family: var(--font-serif); font-size: 26px; line-height: 1.1; margin: 
     o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + .26);
   }
   /* Voz de la señora: si existe la grabación voz-senora/<nombre>.mp3 la usa; si no, la voz del teléfono */
-  var clipA = null;
-  function pararClip() { if (clipA) { try { clipA.pause(); } catch (e) {} clipA = null; } }
+  var clipA = null, clipEl = null, clipTok = 0;
+  function pararClip() { clipTok++; if (clipA) { try { clipA.pause(); } catch (e) {} clipA = null; } }
+  /* Un solo reproductor, "desbloqueado" con un toque del usuario: así el navegador del celular no bloquea las fichas siguientes */
+  function desbloquear() {
+    if (clipEl) return;
+    try {
+      var a = new Audio(); clipEl = a; a.preload = "auto"; a.muted = true; a.src = "voz-senora/pide.mp3";
+      var ok = function () { if (clipA === a) { a.muted = false; return; } try { a.pause(); a.currentTime = 0; } catch (e) {} a.muted = false; };
+      var p = a.play(); if (p && p.then) p.then(ok, function () { a.muted = false; }); else ok();
+    } catch (e) {}
+  }
+  document.addEventListener("pointerdown", desbloquear, { once: true, capture: true });
   function senora(nombre, alt) {
     if ($("voz").value !== "1") return;
     pararClip();
+    var tok = clipTok;
     try {
-      var a = new Audio("voz-senora/" + nombre + ".mp3"); clipA = a;
-      var caer = function () { if (clipA === a) { clipA = null; alt(); } };
-      a.onerror = caer;
+      var a = clipEl || new Audio(); clipA = a;
+      var caer = function () { if (tok === clipTok) { clipA = null; alt(); } };
+      a.muted = false; a.onerror = caer; a.src = "voz-senora/" + nombre + ".mp3";
       var p = a.play(); if (p && p.catch) p.catch(caer);
     } catch (e) { alt(); }
   }
