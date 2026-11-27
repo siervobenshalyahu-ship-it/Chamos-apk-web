@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://siervobenshalyahu-ship-it.github.io/Chamos-apk-web/sitemap.xml
